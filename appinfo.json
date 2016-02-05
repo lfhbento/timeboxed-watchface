@@ -1,0 +1,48 @@
+{
+    "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
+    "shortName": "timeboxed",
+    "longName": "timeboxed",
+    "companyName": "LFHB",
+    "versionLabel": "1.0",
+    "sdkVersion": "3",
+    "targetPlatforms": ["aplite", "basalt", "chalk"],
+    "enableMultiJS": true,
+    "watchapp": {
+    "watchface": true
+    },
+    "appKeys": {
+    "dummy": 0
+    },
+    "resources": {
+        "media": [
+            {
+                "type": "font",
+                "name": "FONT_WEATHER_20",
+                "file": "fonts/weathericons-regular-webfont.ttf",
+                "compatibility":"2.7"
+            },
+            {
+                "type": "font",
+                "name": "FONT_IMAGINE_42",
+                "file": "fonts/imagine_font.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9:]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_IMAGINE_17",
+                "file": "fonts/imagine_font.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9a-z. ]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_IMAGINE_13",
+                "file": "fonts/imagine_font.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9:a-z.+% -]"
+            }
+        ]
+    },
+    "capabilities": ["health"]
+}
