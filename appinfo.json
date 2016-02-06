@@ -17,30 +17,37 @@
         "media": [
             {
                 "type": "font",
+                "name": "FONT_BLOCKO_56",
+                "file": "fonts/Blocko.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9:]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_BLOCKO_24",
+                "file": "fonts/Blocko.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9a-z. ]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_BLOCKO_16",
+                "file": "fonts/Blocko.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9:a-z.+%! -]"
+            },
+            {
+                "type": "font",
                 "name": "FONT_WEATHER_20",
                 "file": "fonts/weathericons-regular-webfont.ttf",
                 "compatibility":"2.7"
             },
             {
                 "type": "font",
-                "name": "FONT_IMAGINE_42",
-                "file": "fonts/imagine_font.ttf",
+                "name": "FONT_WEATHER_24",
+                "file": "fonts/weathericons-regular-webfont.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[0-9:]"
-            },
-            {
-                "type": "font",
-                "name": "FONT_IMAGINE_17",
-                "file": "fonts/imagine_font.ttf",
-                "compatibility":"2.7",
-                "characterRegex": "[0-9a-z. ]"
-            },
-            {
-                "type": "font",
-                "name": "FONT_IMAGINE_13",
-                "file": "fonts/imagine_font.ttf",
-                "compatibility":"2.7",
-                "characterRegex": "[0-9:a-z.+% -]"
+                "characterRegex": "[]"
             }
         ]
     },
