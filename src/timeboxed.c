@@ -161,29 +161,29 @@ static void update_time() {
 }
 
 static void set_colors(void) {
-    GColor base_color = persist_read_int(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
+    GColor base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
     bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : 0;
     text_layer_set_text_color(date, 
-            enableAdvanced && persist_exists(KEY_DATECOLOR) && persist_read_int(KEY_DATECOLOR) ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_DATECOLOR) ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time, 
-            enableAdvanced && persist_exists(KEY_ALTHOURSCOLOR) && persist_read_int(KEY_ALTHOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_ALTHOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
     text_layer_set_text_color(weather, 
-            enableAdvanced && persist_exists(KEY_WEATHERCOLOR) && persist_read_int(KEY_WEATHERCOLOR) ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_WEATHERCOLOR) ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
     text_layer_set_text_color(temp_cur, 
-            enableAdvanced && persist_exists(KEY_TEMPCOLOR) && persist_read_int(KEY_TEMPCOLOR) ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_TEMPCOLOR) ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
     text_layer_set_text_color(temp_min, 
-            enableAdvanced && persist_exists(KEY_MINCOLOR) && persist_read_int(KEY_MINCOLOR) ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_MINCOLOR) ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
     text_layer_set_text_color(min_icon, 
-            enableAdvanced && persist_exists(KEY_MINCOLOR) && persist_read_int(KEY_MINCOLOR) ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_MINCOLOR) ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
     text_layer_set_text_color(temp_max, 
-            enableAdvanced && persist_exists(KEY_MAXCOLOR) && persist_read_int(KEY_MAXCOLOR) ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_MAXCOLOR) ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
     text_layer_set_text_color(max_icon, 
-            enableAdvanced && persist_exists(KEY_MAXCOLOR) && persist_read_int(KEY_MAXCOLOR) ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_MAXCOLOR) ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
     text_layer_set_text_color(steps_or_sleep, 
-            enableAdvanced && persist_exists(KEY_STEPSCOLOR) && persist_read_int(KEY_STEPSCOLOR) ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_STEPSCOLOR) ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
     text_layer_set_text_color(dist_or_deep, 
-            enableAdvanced && persist_exists(KEY_DISTCOLOR) && persist_read_int(KEY_DISTCOLOR) ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
+            enableAdvanced && persist_exists(KEY_DISTCOLOR) ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
 
     BatteryChargeState charge_state = battery_state_service_peek();
     if (charge_state.charge_percent > 20) {
