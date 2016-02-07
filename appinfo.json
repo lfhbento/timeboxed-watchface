@@ -3,7 +3,7 @@
     "shortName": "timeboxed",
     "longName": "timeboxed",
     "companyName": "LFHB",
-    "versionLabel": "1.0",
+    "versionLabel": "0.1",
     "sdkVersion": "3",
     "targetPlatforms": ["aplite", "basalt", "chalk"],
     "enableMultiJS": true,
@@ -14,7 +14,29 @@
         "KEY_TEMP": 0,
         "KEY_MAX": 1,
         "KEY_MIN": 2,
-        "KEY_WEATHER": 3
+        "KEY_WEATHER": 3,
+        "KEY_ENABLEHEALTH": 4,
+        "KEY_USEKM": 5,
+        "KEY_SHOWSLEEP": 6,
+        "KEY_ENABLEWEATHER": 7,
+        "KEY_WEATHERKEY": 8,
+        "KEY_USECELSIUS": 9,
+        "KEY_TIMEZONES": 10,
+        "KEY_BGCOLOR": 11,
+        "KEY_HOURSCOLOR": 12,
+        "KEY_ENABLEADVANCED": 13,
+        "KEY_DATECOLOR": 14,
+        "KEY_ALTHOURSCOLOR": 15,
+        "KEY_BATTERYCOLOR": 16,
+        "KEY_BATTERYLOWCOLOR": 17,
+        "KEY_WEATHERCOLOR": 18,
+        "KEY_TEMPCOLOR": 19,
+        "KEY_MINCOLOR": 20,
+        "KEY_MAXCOLOR": 21,
+        "KEY_STEPSCOLOR": 22,
+        "KEY_DISTCOLOR": 23,
+        "KEY_TIMEZONESCODE": 24,
+        "KEY_TIMEZONESMINUTES": 25
     },
     "resources": {
         "media": [
@@ -54,5 +76,5 @@
             }
         ]
     },
-    "capabilities": ["health", "location"]
+    "capabilities": ["health", "location", "configurable"]
 }

@@ -1,26 +1,64 @@
 Pebble.addEventListener("ready",
     function(e) {
-        console.log("Hello world! - Sent from your javascript application.");
-	getWeather();
+        console.log("Pebble Ready!");
     }
 );
 
 Pebble.addEventListener('appmessage',
     function(e) {
         console.log('AppMessage received!');
-        getWeather();
+        console.log(JSON.stringify(e.payload));
+        getWeather(e.payload.KEY_WEATHERKEY, e.payload.KEY_USECELSIUS);
     }                     
 );
 
-function locationSuccess(pos) {
+Pebble.addEventListener('showConfiguration', function(e) {
+    Pebble.openURL('http://a4defdab.ngrok.io');
+});
+
+Pebble.addEventListener('webviewclosed', function(e) {
+    var configData = JSON.parse(decodeURIComponent(e.response));
+    console.log(JSON.stringify(configData));
+
+    var dict = {};
+
+    for (item in configData) {
+        var key = 'KEY_' + item.toUpperCase();
+        var value = configData[item];
+        if (String(value).indexOf('0x') !== -1) {
+            value = parseInt(value, 16);
+        }
+        if (String(value).indexOf('|') !== -1) {
+            newValue = value.split('|')[1].split(':')[0];
+            dict[key + 'CODE'] = value.split('|')[0];
+            dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
+            value = parseInt(newValue, 10);
+        }
+        dict[key] = value;
+    }
+
+    Pebble.sendAppMessage(dict, function() {
+	console.log('Send config successful: ' + JSON.stringify(dict));
+    }, function() {
+	console.log('Send failed!');
+    }); 
+});
+
+function locationSuccess(pos, weatherKey, useCelsius) {
+    console.log("Retrieving weather info");
+
     var url = 'http://api.wunderground.com/api/7456558e28f97728/conditions/forecast/q/' + pos.coords.latitude + ',' + pos.coords.longitude + '.json';
+    console.log(url);
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);
-            var temp = Math.round(resp.current_observation.temp_c);
-            var max = Math.round(resp.forecast.simpleforecast.forecastday[0].high.celsius);
-            var min = Math.round(resp.forecast.simpleforecast.forecastday[0].low.celsius);
-            var condition = wu_iconToId[resp.forecast.simpleforecast.forecastday[0].icon];
+            var temp = Math.round(useCelsius ? resp.current_observation.temp_c : resp.current_observation.temp_f);
+            var highTemp = resp.forecast.simpleforecast.forecastday[0].high;
+            var lowTemp = resp.forecast.simpleforecast.forecastday[0].low;
+            var max = Math.round(useCelsius ? highTemp.celsius : highTemp.fahrenheit);
+            var min = Math.round(useCelsius ? lowTemp.celsius : lowTemp.fahrenheit);
+            var icon = resp.current_observation.icon_url.match(/\/([^.\/]*)\.gif/)[1];
+            var condition = wu_iconToId[icon];
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
@@ -51,12 +89,16 @@ function locationError(err) {
     console.log('Error requesting location!');
 }
 
-function getWeather() {
-    navigator.geolocation.getCurrentPosition(
-	locationSuccess,
-	locationError,
-	{timeout: 15000, maximumAge: 60000}
-    );
+function getWeather(weatherKey, useCelsius) {
+    if (weatherKey) {
+        navigator.geolocation.getCurrentPosition(
+            function(pos) {
+                locationSuccess(pos, weatherKey, useCelsius);   
+            },
+            locationError,
+            {timeout: 15000, maximumAge: 60000}
+        );
+    }
 }
 
 
