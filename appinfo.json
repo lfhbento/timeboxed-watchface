@@ -11,7 +11,10 @@
     "watchface": true
     },
     "appKeys": {
-    "dummy": 0
+        "KEY_TEMP": 0,
+        "KEY_MAX": 1,
+        "KEY_MIN": 2,
+        "KEY_WEATHER": 3
     },
     "resources": {
         "media": [
@@ -34,7 +37,7 @@
                 "name": "FONT_BLOCKO_16",
                 "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[0-9:a-z.+%! -]"
+                "characterRegex": "[0-9:a-z.+%!()/= -]"
             },
             {
                 "type": "font",
@@ -51,5 +54,5 @@
             }
         ]
     },
-    "capabilities": ["health"]
+    "capabilities": ["health", "location"]
 }
