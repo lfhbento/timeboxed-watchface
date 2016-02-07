@@ -627,7 +627,7 @@ static void watchface_load(Window *window) {
     time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
     date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
     base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_16));
-    weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_20));
+    weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_22));
     weather_font_big = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
 
     GRect bounds = layer_get_bounds(window_layer);

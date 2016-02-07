@@ -63,7 +63,7 @@
             },
             {
                 "type": "font",
-                "name": "FONT_WEATHER_20",
+                "name": "FONT_WEATHER_22",
                 "file": "fonts/weathericons-regular-webfont.ttf",
                 "compatibility":"2.7"
             },
