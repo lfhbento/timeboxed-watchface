@@ -114,7 +114,6 @@ static void update_time() {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
     struct tm *gmt_time = gmtime(&temp);
-    char temp_hours[8];
     gmt_time->tm_hour = gmt_time->tm_hour + tz_hour;
     mktime(gmt_time);
     gmt_time->tm_min = gmt_time->tm_min + tz_minute;
@@ -263,7 +262,7 @@ static void update_steps_data(void) {
     HealthActivityMask activities = health_service_peek_current_activities();
     bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
     if (is_sleeping) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "we are asleep!");
+        APP_LOG(APP_LOG_LEVEL_INFO, "We are asleep.");
         text_layer_set_text(steps_or_sleep, "zzz");
         text_layer_set_text(dist_or_deep, "zzz");
     }
@@ -333,16 +332,16 @@ static void update_sleep_data(void) {
 static void health_handler(HealthEventType event, void *context) {
     switch(event) {
         case HealthEventSignificantUpdate:
-            APP_LOG(APP_LOG_LEVEL_INFO, 
-                "New HealthService HealthEventSignificantUpdate event");
             break;
         case HealthEventMovementUpdate:
             if (!sleep_data_visible) {
+                APP_LOG(APP_LOG_LEVEL_INFO, "Updating steps data.");
                 update_steps_data();
             }
             break;
         case HealthEventSleepUpdate:
             if (sleep_data_visible) {
+                APP_LOG(APP_LOG_LEVEL_INFO, "Updating sleep data.");
                 update_sleep_data();
             }
             break;
@@ -416,8 +415,9 @@ static void update_weather_values(int temp_val, int max_val, int min_val, int we
 static void toggle_weather(void) {
     weather_enabled = persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER);
     if (weather_enabled) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "weather enabled");
+        APP_LOG(APP_LOG_LEVEL_INFO, "Weather enabled, retrieving weather.");
         if (persist_exists(KEY_TEMP) && persist_exists(KEY_MAX) && persist_exists(KEY_MIN) && persist_exists(KEY_WEATHER)) {
+            APP_LOG(APP_LOG_LEVEL_INFO, "Using stored data.");
             int temp_val = persist_read_int(KEY_TEMP);
             int max_val = persist_read_int(KEY_MAX);
             int min_val = persist_read_int(KEY_MIN);
@@ -427,7 +427,7 @@ static void toggle_weather(void) {
         }
         update_weather();
     } else {
-        APP_LOG(APP_LOG_LEVEL_INFO, "weather disabled");
+        APP_LOG(APP_LOG_LEVEL_INFO, "Weather disabled, clearing up");
         text_layer_set_text(temp_cur, "");
         text_layer_set_text(temp_max, "");
         text_layer_set_text(temp_min, "");
