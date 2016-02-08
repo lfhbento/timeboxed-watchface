@@ -62,6 +62,7 @@ static bool weather_enabled;
 static bool health_enabled;
 static bool sleep_data_visible;
 static bool was_asleep;
+static bool first_weather_request_done;
 static int woke_up_at_hour;
 static int woke_up_at_min;
 static int tz_hour;
@@ -205,8 +206,6 @@ static void update_steps_data(void) {
     HealthMetric metric_dist = HealthMetricWalkedDistanceMeters;
     time_t start = time_start_of_today();
     time_t end = time(NULL);
-    time_t start_last_week = start - (SECONDS_PER_HOUR * HOURS_PER_DAY * 7);
-    time_t end_last_week = end - (SECONDS_PER_HOUR * HOURS_PER_DAY * 7);
 
     uint16_t current_steps = 0;
     uint16_t current_dist = 0;
@@ -218,25 +217,14 @@ static void update_steps_data(void) {
 
     HealthServiceAccessibilityMask mask_steps =
         health_service_metric_accessible(metric_steps, start, end);
-    HealthServiceAccessibilityMask mask_steps_last_week =
-        health_service_metric_accessible(metric_steps, start_last_week, end_last_week);
     HealthServiceAccessibilityMask mask_dist =
         health_service_metric_accessible(metric_dist, start, end);
-    HealthServiceAccessibilityMask mask_dist_last_week =
-        health_service_metric_accessible(metric_dist, start_last_week, end_last_week);
     
     if (mask_steps & HealthServiceAccessibilityMaskAvailable) {
         current_steps = (int)health_service_sum_today(metric_steps);
 
         snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), " %d", current_steps);
 
-        if (mask_steps_last_week & HealthServiceAccessibilityMaskAvailable) {
-            steps_last_week = (int)health_service_sum(metric_steps, start_last_week, end_last_week);
-            if (steps_last_week < current_steps) {
-                steps_or_sleep_text[0] = '+';
-            }
-        }
-        
         APP_LOG(APP_LOG_LEVEL_INFO, steps_or_sleep_text);
         text_layer_set_text(steps_or_sleep, steps_or_sleep_text);
     }
@@ -252,13 +240,6 @@ static void update_steps_data(void) {
 
         snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), (useKm ? " %d.%dkm" : " %d.%dmi"), current_dist_int, current_dist_dec);
         
-        if (mask_dist_last_week & HealthServiceAccessibilityMaskAvailable) {
-            dist_last_week = (int)health_service_sum(metric_dist, start_last_week, end_last_week);
-            if (dist_last_week < current_dist) {
-                dist_or_deep_text[0] = '+';
-            }
-        }
-
         APP_LOG(APP_LOG_LEVEL_INFO, dist_or_deep_text);
         text_layer_set_text(dist_or_deep, dist_or_deep_text);
     }
@@ -267,8 +248,9 @@ static void update_steps_data(void) {
     bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
     if (is_sleeping) {
         APP_LOG(APP_LOG_LEVEL_INFO, "We are asleep.");
-        text_layer_set_text(steps_or_sleep, "zzz");
-        text_layer_set_text(dist_or_deep, "zzz");
+        if (!was_asleep) {
+            was_asleep = true;
+        }
     }
 }
 
@@ -278,36 +260,21 @@ static void update_sleep_data(void) {
     
     time_t start = time_start_of_today() - (SECONDS_PER_HOUR * 4); // 8pm
     time_t end = time(NULL);
-    time_t start_last_week = start - (SECONDS_PER_HOUR * 4) - (SECONDS_PER_HOUR * HOURS_PER_DAY * 7); // last week 8pm
-    time_t end_last_week = end - (SECONDS_PER_HOUR * HOURS_PER_DAY * 7);
 
     uint16_t current_sleep = 0;
     uint16_t current_deep = 0;
-    uint16_t sleep_last_week = 0;
-    uint16_t deep_last_week = 0;
     
     HealthServiceAccessibilityMask mask_sleep =
         health_service_metric_accessible(metric_sleep, start, end);
-    HealthServiceAccessibilityMask mask_sleep_last_week =
-        health_service_metric_accessible(metric_sleep, start_last_week, end_last_week);
     HealthServiceAccessibilityMask mask_deep =
         health_service_metric_accessible(metric_deep, start, end);
-    HealthServiceAccessibilityMask mask_deep_last_week =
-        health_service_metric_accessible(metric_deep, start_last_week, end_last_week);
 
     if (mask_sleep & HealthServiceAccessibilityMaskAvailable) {
         current_sleep = (int)health_service_sum(metric_sleep, start, end);
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
         int current_sleep_minutes = (current_sleep - (current_sleep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
         
-        snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), " %dh%dm", current_sleep_hours, current_sleep_minutes);
-        
-        if (mask_sleep_last_week & HealthServiceAccessibilityMaskAvailable) {
-            sleep_last_week = (int)health_service_sum(metric_sleep, start_last_week, end_last_week);
-            if (sleep_last_week < current_sleep) {
-                steps_or_sleep_text[0] = '+';
-            }
-        }
+        snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), "%dh%dm", current_sleep_hours, current_sleep_minutes);
         
         APP_LOG(APP_LOG_LEVEL_INFO, steps_or_sleep_text);
         text_layer_set_text(steps_or_sleep, steps_or_sleep_text);
@@ -318,14 +285,7 @@ static void update_sleep_data(void) {
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
         int current_deep_minutes = (current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
         
-        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), " %dh%dm", current_deep_hours, current_deep_minutes);
-        
-        if (mask_deep_last_week & HealthServiceAccessibilityMaskAvailable) {
-            deep_last_week = (int)health_service_sum(metric_deep, start_last_week, end_last_week);
-            if (deep_last_week < current_deep) {
-                dist_or_deep_text[0] = '+';
-            }
-        }
+        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dh%dm", current_deep_hours, current_deep_minutes);
         
         APP_LOG(APP_LOG_LEVEL_INFO, dist_or_deep_text);
         text_layer_set_text(dist_or_deep, dist_or_deep_text);
@@ -377,7 +337,6 @@ static void toggle_health(void) {
 }
 
 static void update_weather(void) {
-    psleep(500);
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
 
@@ -416,7 +375,7 @@ static void update_weather_values(int temp_val, int max_val, int min_val, int we
     text_layer_set_text(max_icon, "\U0000F058");
 }
 
-static void toggle_weather(void) {
+static void toggle_weather(bool from_configs) {
     weather_enabled = persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER);
     if (weather_enabled) {
         APP_LOG(APP_LOG_LEVEL_INFO, "Weather enabled, retrieving weather.");
@@ -428,8 +387,12 @@ static void toggle_weather(void) {
             int weather_val = persist_read_int(KEY_WEATHER);
 
             update_weather_values(temp_val, max_val, min_val, weather_val);
+        } if (first_weather_request_done || from_configs) {
+            update_weather();
+            if (!first_weather_request_done) {
+                first_weather_request_done = true;
+            }
         }
-        update_weather();
     } else {
         APP_LOG(APP_LOG_LEVEL_INFO, "Weather disabled, clearing up");
         text_layer_set_text(temp_cur, "");
@@ -598,7 +561,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     set_colors();
     update_time();
     toggle_health();
-    toggle_weather();
+    toggle_weather(true);
 
 }
 
@@ -626,6 +589,7 @@ static void battery_handler(BatteryChargeState charge_state) {
 }
 
 static void watchface_load(Window *window) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "Watchface load start.");
     Layer *window_layer = window_get_root_layer(window);
 
     time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
@@ -742,6 +706,7 @@ static void watchface_load(Window *window) {
     } else {
         tz_name[0] = '#';
     }
+    APP_LOG(APP_LOG_LEVEL_INFO, "Watchface load end.");
 }
 
 static void watchface_unload(Window *window) {
@@ -794,8 +759,13 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     uint16_t tick_interval = is_sleeping ? 59 : 30;
 
-    if(tick_time->tm_min % tick_interval == 0 && weather_enabled) {
+    if((tick_time->tm_min % tick_interval == 0 || !first_weather_request_done) && weather_enabled) {
         update_weather();
+        if (!first_weather_request_done) {
+            first_weather_request_done = true;
+
+            APP_LOG(APP_LOG_LEVEL_INFO, "Initial weather request.");
+        }
     }
 }
 
@@ -822,10 +792,10 @@ static void init(void) {
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
-    app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+    app_message_open(256, 64);
     
     toggle_health();
-    toggle_weather();
+    toggle_weather(false);
 
     battery_handler(battery_state_service_peek());
 }
