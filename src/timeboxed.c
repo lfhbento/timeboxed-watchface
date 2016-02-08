@@ -47,13 +47,13 @@ static GFont base_font;
 static GFont weather_font;
 static GFont weather_font_big;
 
-static char hour_text[8];
+static char hour_text[13];
 static char date_text[13];
 static char temp_text[8];
 static char max_text[8];
 static char min_text[8];
 static char weather_text[4];
-static char tz_text[20];
+static char tz_text[22];
 static char s_battery_buffer[7];
 static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
@@ -125,7 +125,7 @@ static void update_time() {
     strftime(date_text, sizeof(date_text), "%a.%b.%d", tick_time);
 
     if (tz_name[0] != '#') {
-        strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), gmt_time);
+        strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
             (gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon > tick_time->tm_mon) ||
@@ -153,6 +153,10 @@ static void update_time() {
     for (unsigned char i = 0; date_text[i]; ++i) {
         date_text[i] = tolower((unsigned char)date_text[i]);
     }
+    for (unsigned char i = 0; hour_text[i]; ++i) {
+        hour_text[i] = tolower((unsigned char)hour_text[i]);
+    }
+    APP_LOG(APP_LOG_LEVEL_INFO, hour_text);
     text_layer_set_text(hours, hour_text);
     text_layer_set_text(date, date_text);
 }

@@ -13,7 +13,8 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed');
+    //Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed');
+    Pebble.openURL('http://0b13e463.ngrok.io');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -47,8 +48,18 @@ Pebble.addEventListener('webviewclosed', function(e) {
 function locationSuccess(pos, weatherKey, useCelsius) {
     console.log("Retrieving weather info");
 
-    var url = 'http://api.wunderground.com/api/7456558e28f97728/conditions/forecast/q/' + pos.coords.latitude + ',' + pos.coords.longitude + '.json';
+    if (weatherKey) {
+        fetchWeatherUndergroundData(pos, weatherKey, useCelsius);
+    } else {
+        fetchOpenWeatherMapData(pos, useCelsius);
+    }
+}
+
+function fetchWeatherUndergroundData(pos, weatherKey, useCelsius) {
+    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/' + pos.coords.latitude + ',' + pos.coords.longitude + '.json';
+
     console.log(url);
+
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);
@@ -62,27 +73,69 @@ function locationSuccess(pos, weatherKey, useCelsius) {
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
-
-            var data = {
-                'KEY_TEMP': temp,
-                'KEY_MAX': max,
-                'KEY_MIN': min,
-                'KEY_WEATHER': condition
-            }
-
-            Pebble.sendAppMessage(data,
-                function(e) {
-                    console.log('Weather info sent to Pebble successfully!');
-                },
-                function(e) {
-                    console.log('Error sending weather info to Pebble!');
-                }
-            );
+            
+            sendData(temp, max, min, condition);
 
         } catch(ex) {
             console.log(ex);
+            console.log('Falling back to OpenWeatherMap');
+            fetchOpenWeatherMapData(useCelsius);
         }
     });
+}
+
+function fetchOpenWeatherMapData(pos, useCelsius) {
+    var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
+        pos.coords.latitude + '&lon=' + pos.coords.longitude + '&appid=979cbf006bf67bc368a54af240d15cf3';
+
+    console.log(url);
+
+    xhrRequest(url, 'GET', function(responseText) {
+        try {
+            var resp = JSON.parse(responseText);
+            var temp = useCelsius ? kelvinToCelsius(resp.main.temp) : kelvinToFahrenheit(resp.main.temp);
+            var max = useCelsius ? kelvinToCelsius(resp.main.temp_max) : kelvinToFahrenheit(resp.main.temp_max);
+            var min = useCelsius ? kelvinToCelsius(resp.main.temp_min) : kelvinToFahrenheit(resp.main.temp_min);
+            var condition = ow_iconToId[resp.weather[0].icon];
+
+            if (typeof(condition) === 'undefined') {
+                condition = 0;
+            }
+            
+            sendData(temp, max, min, condition);
+
+        } catch (ex) {
+            console.log(ex);
+        }
+    });
+}
+
+function kelvinToCelsius(temp) {
+    return Math.round(temp - 273.15);
+}
+
+function kelvinToFahrenheit(temp) {
+    return Math.round(temp * 1.8 - 459.67);
+}
+
+function sendData(temp, max, min, condition) {
+    var data = {
+        'KEY_TEMP': temp,
+        'KEY_MAX': max,
+        'KEY_MIN': min,
+        'KEY_WEATHER': condition
+    }
+
+    console.log(JSON.stringify(data));
+
+    Pebble.sendAppMessage(data,
+        function(e) {
+            console.log('Weather info sent to Pebble successfully!');
+        },
+        function(e) {
+            console.log('Error sending weather info to Pebble!');
+        }
+    );
 }
 
 function locationError(err) {
@@ -90,15 +143,13 @@ function locationError(err) {
 }
 
 function getWeather(weatherKey, useCelsius) {
-    if (weatherKey) {
-        navigator.geolocation.getCurrentPosition(
-            function(pos) {
-                locationSuccess(pos, weatherKey, useCelsius);   
-            },
-            locationError,
-            {timeout: 15000, maximumAge: 60000}
-        );
-    }
+    navigator.geolocation.getCurrentPosition(
+        function(pos) {
+            locationSuccess(pos, weatherKey, useCelsius);   
+        },
+        locationError,
+        {timeout: 15000, maximumAge: 60000}
+    );
 }
 
 
@@ -150,4 +201,33 @@ var wu_iconToId = {
     'nt_chancesleat': 35,
     'nt_chancerain': 36,
     'nt_chanceflurries': 37,
+};
+
+var ow_iconToId = {
+    '01d': 1,
+    '01d': 2,
+    '02d': 3,
+    '02d': 4,
+    '02d': 5,
+    '02d': 6,
+    '03d': 7,
+    '04d': 7,
+    '09d': 8,
+    '10d': 8,
+    '13d': 9,
+    '11d': 10,
+    '50d': 13,
+    '01n': 20,
+    '01n': 21,
+    '02n': 22,
+    '02n': 23,
+    '02n': 24,
+    '02n': 25,
+    '03n': 26,
+    '04n': 26,
+    '09n': 27,
+    '10n': 27,
+    '13n': 28,
+    '11n': 29,
+    '50n': 32,
 };

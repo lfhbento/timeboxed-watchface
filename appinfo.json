@@ -3,7 +3,7 @@
     "shortName": "timeboxed",
     "longName": "timeboxed",
     "companyName": "LFHB",
-    "versionLabel": "0.1",
+    "versionLabel": "0.3",
     "sdkVersion": "3",
     "targetPlatforms": ["aplite", "basalt", "chalk"],
     "enableMultiJS": true,
@@ -45,7 +45,7 @@
                 "name": "FONT_BLOCKO_56",
                 "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[0-9:]"
+                "characterRegex": "[0-9a-z: ]"
             },
             {
                 "type": "font",
@@ -65,7 +65,8 @@
                 "type": "font",
                 "name": "FONT_WEATHER_22",
                 "file": "fonts/weathericons-regular-webfont.ttf",
-                "compatibility":"2.7"
+                "compatibility":"2.7",
+                "characterRegex": "[]"
             },
             {
                 "type": "font",
