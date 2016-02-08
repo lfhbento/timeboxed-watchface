@@ -78,7 +78,7 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius) {
         } catch(ex) {
             console.log(ex);
             console.log('Falling back to OpenWeatherMap');
-            fetchOpenWeatherMapData(useCelsius);
+            fetchOpenWeatherMapData(pos, useCelsius);
         }
     });
 }
