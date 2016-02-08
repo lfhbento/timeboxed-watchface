@@ -13,8 +13,7 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    //Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed');
-    Pebble.openURL('http://0b13e463.ngrok.io');
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {

@@ -3,7 +3,7 @@
     "shortName": "timeboxed",
     "longName": "timeboxed",
     "companyName": "LFHB",
-    "versionLabel": "0.3",
+    "versionLabel": "0.4",
     "sdkVersion": "3",
     "targetPlatforms": ["aplite", "basalt", "chalk"],
     "enableMultiJS": true,
