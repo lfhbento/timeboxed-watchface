@@ -1,19 +1,23 @@
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
+        if (localStorage['weatherEnabled'].toLowerCase() === 'true') {
+            getWeather(localStorage['weatherKey'], localStorage['useCelsius'], localStorage['overrideLocation']);
+        } else {
+            sendError();
+        }
     }
 );
 
 Pebble.addEventListener('appmessage',
     function(e) {
         console.log('AppMessage received!');
-        console.log(JSON.stringify(e.payload));
-        getWeather(e.payload.KEY_WEATHERKEY, e.payload.KEY_USECELSIUS);
+        getWeather(localStorage['weatherKey'], localStorage['useCelsius'], localStorage['overrideLocation']);
     }                     
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed');
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.0');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -34,8 +38,16 @@ Pebble.addEventListener('webviewclosed', function(e) {
             dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
             value = parseInt(newValue, 10);
         }
+        if (key === 'KEY_FONTTYPE') {
+            value = parseInt(value, 10);
+        }
         dict[key] = value;
     }
+
+    localStorage['weatherEnabled'] = dict['KEY_ENABLEWEATHER'];
+    localStorage['useCelsius'] = dict['KEY_USECELSIUS'];
+    localStorage['weatherKey'] = dict['KEY_WEATHERKEY'];
+    localStorage['overrideLocation'] = dict['KEY_OVERRIDELOCATION'];
 
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
@@ -44,18 +56,23 @@ Pebble.addEventListener('webviewclosed', function(e) {
     }); 
 });
 
-function locationSuccess(pos, weatherKey, useCelsius) {
+function locationSuccess(pos, weatherKey, useCelsius, overrideLocation) {
     console.log("Retrieving weather info");
 
     if (weatherKey) {
-        fetchWeatherUndergroundData(pos, weatherKey, useCelsius);
+        fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation);
     } else {
-        fetchOpenWeatherMapData(pos, useCelsius);
+        fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
     }
 }
 
-function fetchWeatherUndergroundData(pos, weatherKey, useCelsius) {
-    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/' + pos.coords.latitude + ',' + pos.coords.longitude + '.json';
+function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation) {
+    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/'
+    if (!overrideLocation) {
+        url += pos.coords.latitude + ',' + pos.coords.longitude + '.json';
+    } else {
+        url += encodeURIComponent(overrideLocation) + '.json';
+    }
 
     console.log(url);
 
@@ -83,9 +100,14 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius) {
     });
 }
 
-function fetchOpenWeatherMapData(pos, useCelsius) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
-        pos.coords.latitude + '&lon=' + pos.coords.longitude + '&appid=979cbf006bf67bc368a54af240d15cf3';
+function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
+    var url = 'http://api.openweathermap.org/data/2.5/weather?appid=979cbf006bf67bc368a54af240d15cf3';
+    
+    if (!overrideLocation) {
+        url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
+    } else {
+        url += '&q=' + encodeURIComponent(overrideLocation);
+    }
 
     console.log(url);
 
@@ -141,10 +163,13 @@ function locationError(err) {
     console.log('Error requesting location!');
 }
 
-function getWeather(weatherKey, useCelsius) {
+function getWeather(weatherKey, useCelsius, overrideLocation) {
+    weatherKey = weatherKey || '';
+    useCelsius = useCelsius || false;
+    overrideLocation = overrideLocation || '';
     navigator.geolocation.getCurrentPosition(
         function(pos) {
-            locationSuccess(pos, weatherKey, useCelsius);   
+            locationSuccess(pos, weatherKey, useCelsius, overrideLocation);   
         },
         locationError,
         {timeout: 15000, maximumAge: 60000}
@@ -157,9 +182,26 @@ var xhrRequest = function (url, type, callback) {
     xhr.onload = function () {
         callback(this.responseText);
     };
-    xhr.open(type, url);
-    xhr.send();
+
+    try {
+        xhr.open(type, url);
+        xhr.send();
+    } catch (ex) {
+        console.log(ex);
+        sendError();
+    }
 };
+
+var sendError = function() {
+    Pebble.sendAppMessage({'KEY_ERROR': true},
+        function(e) {
+            console.log('Sent error state to Pebble successfully!');
+        },
+        function(e) {
+            console.log('Error sending error state to Pebble!');
+        }
+    );
+}
 
 var wu_iconToId = {
     'unknown': 0,

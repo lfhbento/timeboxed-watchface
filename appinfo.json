@@ -3,7 +3,7 @@
     "shortName": "timeboxed",
     "longName": "timeboxed",
     "companyName": "LFHB",
-    "versionLabel": "0.5",
+    "versionLabel": "1.1",
     "sdkVersion": "3",
     "targetPlatforms": ["aplite", "basalt", "chalk"],
     "enableMultiJS": true,
@@ -36,7 +36,12 @@
         "KEY_STEPSCOLOR": 22,
         "KEY_DISTCOLOR": 23,
         "KEY_TIMEZONESCODE": 24,
-        "KEY_TIMEZONESMINUTES": 25
+        "KEY_TIMEZONESMINUTES": 25,
+        "KEY_FONTTYPE": 26,
+        "KEY_BLUETOOTHDISCONNECT": 29,
+        "KEY_BLUETOOTHCOLOR": 30,
+        "KEY_OVERRIDELOCATION": 31,
+        "KEY_ERROR": 32
     },
     "resources": {
         "media": [
@@ -45,14 +50,14 @@
                 "name": "FONT_BLOCKO_56",
                 "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[0-9a-z: ]"
+                "characterRegex": "[0-9:! ]"
             },
             {
                 "type": "font",
                 "name": "FONT_BLOCKO_24",
                 "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[0-9a-z. ]"
+                "characterRegex": "[0-9:a-z.+%!()/= -]"
             },
             {
                 "type": "font",
@@ -63,14 +68,35 @@
             },
             {
                 "type": "font",
-                "name": "FONT_WEATHER_22",
-                "file": "fonts/weathericons-regular-webfont.ttf",
+                "name": "FONT_BLOCKO_64",
+                "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[]"
+                "characterRegex": "[0-9: ]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_BLOCKO_32",
+                "file": "fonts/Blocko.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9!a-z. ]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_BLOCKO_19",
+                "file": "fonts/Blocko.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[0-9:a-z.+%!()/= -]"
             },
             {
                 "type": "font",
                 "name": "FONT_WEATHER_24",
+                "file": "fonts/weathericons-regular-webfont.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_WEATHER_28",
                 "file": "fonts/weathericons-regular-webfont.ttf",
                 "compatibility":"2.7",
                 "characterRegex": "[]"
