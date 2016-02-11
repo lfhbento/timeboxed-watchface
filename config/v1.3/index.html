@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" manifest="manifest-file">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="expires" content="0">
+    <link rel="stylesheet" type="text/css" href="../css/slate.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>Timeboxed</title>
+</head>
+<body>
+    <div class="item-container">
+        <h1 class="title">Timeboxed watchface</h1>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Pebble Health</div>
+        <div class="item-container-content">
+            <label class="item">
+                Enable Pebble Health data
+                <input id="enableHealth" class="item-toggle" type="checkbox">
+            </label>
+        </div>
+        <div class="item-container-footer">
+            Enables showing Pebble Health data. We show steps and distance by default, but you can enable showing sleep and deep sleep times after you wake up. (Not available for classic Pebble).
+        </div>
+        <div id="healthConfigs" class="hidden">
+            <div class="item-container-content">
+                <label class="item">
+                    Use kilometers
+                    <input id="useKm" class="item-toggle" type="checkbox">
+                </label>
+            </div>
+            <div class="item-container-content hidden">
+                <label class="item">
+                    Show sleep data after you wake up
+                    <input id="showSleep" class="item-toggle" type="checkbox">
+                </label>
+            </div>
+            <div class="item-container-footer hidden">
+                If set, the watch will show the sleep and deep sleep time for that night for an hour after you wake up, switching back to steps after that time.
+            </div>
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Weather</div>
+        <div class="item-container-content">
+            <label class="item">
+                Enable Weather
+                <input id="enableWeather" class="item-toggle" type="checkbox">
+            </label>
+        </div>
+        <div class="item-container-footer">
+            Enables showing weather data. <b>It uses OpenWeatherMap data by default, which is less accurate</b>. For better accuracy, use WeatherUnderground. This requires a WeatherUnderground API key. <b>Go to <a href="http://www.wunderground.com/weather/api/?apiref=73d2b41a1a02e3bd">wunderground.com</a> to create a free account and get a key and insert it below</b>.
+        </div>
+        <div id="weatherConfigs" class="hidden">
+            <div class="item-container-content">
+                <label class="item">
+                    Use celsius
+                    <input id="useCelsius" class="item-toggle" type="checkbox">
+                </label>
+            </div>
+            <div class="item-container-header">WeatherUnderground Key</div>
+            <div class="item-container-content">
+                <label class="item">
+                    <div class="item-input-wrapper">
+                        <input id="weatherKey" class="item-input" type="text" placeholder="Insert WeatherUnderground API key here">
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-header">Manual location</div>
+            <div class="item-container-content">
+                <label class="item">
+                    <div class="item-input-wrapper">
+                        <input id="overrideLocation" class="item-input" type="text" placeholder="City, State, Country" maxlength="64">
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-footer">
+                If you define a manual location, we won't try to use your current location for weather info. (max. length 64 characters)
+            </div>
+        </div>
+    </div>
+    
+    <div class="item-container">
+        <div class="item-container-header">Bluetooth</div>
+        <div class="item-container-content">
+            <label class="item">
+                Vibrate on disconnect
+                <input id="bluetoothDisconnect" class="item-toggle" type="checkbox">
+            </label>
+        </div>
+        <div class="item-container-footer">
+            Emits a vibration notification when the watch is disconnected from the phone. Won't trigger if you're asleep (only on Time and Time Round).
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Timezones</div>
+        <div class="item-container-content">
+            <label class="item">
+                Alternate timezone
+                <select name="timezones" id="timezones" class="item-select">
+                    <option class="item-select-option" selected value="#|0:00">None</option>
+                    <option class="item-select-option" value="aoe|-12:00">(GMT -12) Int. Date Line</option>
+                    <option class="item-select-option" value="sst|-11:00">(GMT -11) SST: Samoa</option>
+                    <option class="item-select-option" value="hast|-10:00">(GMT -10) HAST: Hawaii</option>
+                    <option class="item-select-option" value="hadt|-9:00">(GMT -9) HADT: Hawaii (Daylight)</option>
+                    <option class="item-select-option" value="akst|-9:00">(GMT -9) AKST: Alaska</option>
+                    <option class="item-select-option" value="akdt|-8:00">(GMT -8) AKDT: Alaska (Daylight)</option>
+                    <option class="item-select-option" value="pst|-8:00">(GMT -8) PST: Pacific Standard Time</option>
+                    <option class="item-select-option" value="pdt|-7:00">(GMT -7) PDT: Pacific Daylight Time</option>
+                    <option class="item-select-option" value="mst|-7:00">(GMT -7) MST: Mountain Standard Time</option>
+                    <option class="item-select-option" value="mdt|-6:00">(GMT -6) MDT: Mountain Daylight Time</option>
+                    <option class="item-select-option" value="cst|-6:00">(GMT -6) CST: Central Standard Time</option>
+                    <option class="item-select-option" value="cdt|-5:00">(GMT -5) CDT: Central Daylight Time</option>
+                    <option class="item-select-option" value="est|-5:00">(GMT -5) EST: Eastern Standard Time</option>
+                    <option class="item-select-option" value="pet|-5:00">(GMT -5) PET: Peru</option>
+                    <option class="item-select-option" value="act|-5:00">(GMT -5) ACT: Acre, Brazil</option>
+                    <option class="item-select-option" value="vet|-4:30">(GMT -4:30) VET: Venezuela</option>
+                    <option class="item-select-option" value="edt|-4:00">(GMT -4) EDT: Eastern Daylight Time</option>
+                    <option class="item-select-option" value="ast|-4:00">(GMT -4) AST: Atlantic Standard Time</option>
+                    <option class="item-select-option" value="adt|-3:00">(GMT -3) ADT: Atlantic Daylight Time</option>
+                    <option class="item-select-option" value="art|-3:00">(GMT -3) ART: Argentina</option>
+                    <option class="item-select-option" value="brt|-3:00">(GMT -3) BRT: Brazil</option>
+                    <option class="item-select-option" value="wgt|-3:00">(GMT -3) WGT: West Greenland</option>
+                    <option class="item-select-option" value="wgst|-2:00">(GMT -2) WGST: West Greenland Summer Time</option>
+                    <option class="item-select-option" value="brst|-2:00">(GMT -2) BRST: Brazil Summer Time</option>
+                    <option class="item-select-option" value="egt|-1:00">(GMT -1) EGT: East Greenland</option>
+                    <option class="item-select-option" value="azot|-1:00">(GMT -1) AZOT: Azores</option>
+                    <option class="item-select-option" value="azost|0:00">(GMT +0) AZOST: Azores Summer</option>
+                    <option class="item-select-option" value="egst|0:00">(GMT +0) EGST: East Greenland Summer</option>
+                    <option class="item-select-option" value="gmt|0:00">GMT: Greenwich Mean Time</option>
+                    <option class="item-select-option" value="wet|0:00">(GMT +0) WET: Western European Time</option>
+                    <option class="item-select-option" value="bst|1:00">(GMT +1) BST: British Summer Time</option>
+                    <option class="item-select-option" value="cet|1:00">(GMT +1) CET: Central European Time</option>
+                    <option class="item-select-option" value="ist|1:00">(GMT +1) IST: Irish Standard Time</option>
+                    <option class="item-select-option" value="cest|2:00">(GMT +2) CEST: Central European Summer Time</option>
+                    <option class="item-select-option" value="cat|2:00">(GMT +2) CAT: Central Africa Time</option>
+                    <option class="item-select-option" value="eet|2:00">(GMT +2) EET: Eastern European Time</option>
+                    <option class="item-select-option" value="sast|2:00">(GMT +2) SAST: South Africa Standard Time</option>
+                    <option class="item-select-option" value="eat|3:00">(GMT +3) EAT: East Africa Time</option>
+                    <option class="item-select-option" value="eest|3:00">(GMT +3) EEST: Eastern European Summer Time</option>
+                    <option class="item-select-option" value="msk|3:00">(GMT +3) MSK: Moscow Standard Time</option>
+                    <option class="item-select-option" value="irst|3:30">(GMT +3:30) IRST: Iran Standard Time</option>
+                    <option class="item-select-option" value="gst|4:00">(GMT +4) GST: Gulf Standard Time</option>
+                    <option class="item-select-option" value="mdk|4:00">(GMT +4) MDK: Moscow Daylight Time</option>
+                    <option class="item-select-option" value="irdt|4:30">(GMT +4:30) IRDT: Iran Daylight Time</option>
+                    <option class="item-select-option" value="mvt|5:00">(GMT +5) MVT: Maldives Time</option>
+                    <option class="item-select-option" value="ist|5:30">(GMT +5:30) IST: India Standard Time</option>
+                    <option class="item-select-option" value="bst|6:00">(GMT +6) BST: Bangladesh Standard Time</option>
+                    <option class="item-select-option" value="mmt|6:30">(GMT +6:30) MMT: Myanmar Time</option>
+                    <option class="item-select-option" value="wib|7:00">(GMT +7) WIB: Western Indonesian Time</option>
+                    <option class="item-select-option" value="wita|8:00">(GMT +8) WITA: Central Indonesian Time</option>
+                    <option class="item-select-option" value="awst|8:00">(GMT +8) AWST: Australia Western Standard Time</option>
+                    <option class="item-select-option" value="cst|8:00">(GMT +8) CST: China Standard Time</option>
+                    <option class="item-select-option" value="hkt|8:00">(GMT +8) HKT: Hong Kong Time</option>
+                    <option class="item-select-option" value="pyt|8:30">(GMT +8:30) PYT: Pyongyang Time</option>
+                    <option class="item-select-option" value="wit|9:00">(GMT +9) WIT: Eastern Indonesian Time</option>
+                    <option class="item-select-option" value="awdt|9:00">(GMT +9) AWDT: Australia Western Daylight Time</option>
+                    <option class="item-select-option" value="jst|9:00">(GMT +9) JST: Japan Standard Time</option>
+                    <option class="item-select-option" value="kst|9:00">(GMT +9) KST: Korea Standard Time</option>
+                    <option class="item-select-option" value="acst|9:30">(GMT +9:30) ACST: Australia Central Standard Time</option>
+                    <option class="item-select-option" value="aest|10:00">(GMT +10) AEST: Australia Eastern Standard Time</option>
+                    <option class="item-select-option" value="pgt|10:00">(GMT +10) PGT: Papua New Guinea Time</option>
+                    <option class="item-select-option" value="acdt|10:30">(GMT +10:30) ACDT: Australia Central Daylight Time</option>
+                    <option class="item-select-option" value="aedt|11:00">(GMT +11) AEDT: Australia Eastern Daylight Time</option>
+                    <option class="item-select-option" value="fjt|12:00">(GMT +12) FJT: Fiji Time</option>
+                    <option class="item-select-option" value="nzst|12:00">(GMT +12) NZST: New Zealand Standard Time</option>
+                    <option class="item-select-option" value="fjst|13:00">(GMT +13) FJST: Fiji Summer Time</option>
+                    <option class="item-select-option" value="nzdt|13:00">(GMT +13) NZDT: New Zealand Daylight Time</option>
+                    <option class="item-select-option" value="wst|14:00">(GMT +14) WST: Western Samoa Time</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Fonts</div>
+        <div class="item-container-content" id="fontType">
+            <label class="item blocko-font">
+                Blocko
+                <input type="radio" class="item-radio font-type" name="font-selection" value="0" checked>
+            </label>
+            <label class="item blocko-font">
+                Blocko (big)
+                <input type="radio" class="item-radio font-type" name="font-selection" value="1">
+            </label>
+            <label class="item system-font">
+                Pebble fonts
+                <input type="radio" class="item-radio font-type" name="font-selection" value="2">
+            </label>
+            <label class="item system-font">
+                Archivo
+                <input type="radio" class="item-radio font-type" name="font-selection" value="3">
+            </label>
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Colors</div>
+        <div class="item-container-content">
+            <label class="item">
+                Background
+                <input id="bgColor" class="item-color item-color-sunny" type="text" value="0x000000">
+            </label>
+            <label class="item">
+                Time
+                <input id="hoursColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+            </label>
+            <label class="item">
+                Advanced colors
+                <input id="enableAdvanced" class="item-toggle" type="checkbox">
+            </label>
+        </div>
+        <div class="item-container-footer">
+            Enables specific color configuration for watchface items. If disabled, all text will have the same color as the selection for 'Time' above.
+        </div>
+
+        <div id="advancedConfigs" class="hidden">
+            <div class="item-container-header">Advanced colors</div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Date
+                    <input id="dateColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Alternate time
+                    <input id="altHoursColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Battery
+                    <input id="batteryColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Battery (low power)
+                    <input id="batteryLowColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Bluetooth disconnected
+                    <input id="bluetoothColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Weather icon
+                    <input id="weatherColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Current temperature
+                    <input id="tempColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Low temperature
+                    <input id="minColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    High temperature
+                    <input id="maxColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Steps
+                    <input id="stepsColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Distance
+                    <input id="distColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+            </div>
+        </div>
+        <div class="item-container-footer">
+            Remember to save to apply settings.<br/>
+            Weather font used: <a href="https://erikflowers.github.io/weather-icons/">Erik Flower's Weather Icons</a>.<br/>
+            Font used: <a href="http://www.dafont.com/blocko.font">Blocko</a>.
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="button-container">
+            <input id="submit" class="item-button" type="button" value="SAVE">
+        </div>
+    </div>
+
+    <script src="../js/slate.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

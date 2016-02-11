@@ -38,6 +38,7 @@
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
 #define SYSTEM_FONT 2
+#define ARCHIVO_FONT 3
 
 static Window *watchface;
 static TextLayer *hours;
@@ -191,6 +192,13 @@ static void load_face_fonts() {
         base_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_28));
         loaded_font = SYSTEM_FONT;
+    } else if (selected_font == ARCHIVO_FONT) {
+        APP_LOG(APP_LOG_LEVEL_INFO, "Loading Archivo font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_56));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_28));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
+        weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
+        loaded_font = ARCHIVO_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
         APP_LOG(APP_LOG_LEVEL_INFO, "Loading Blocko font (big). %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
@@ -280,7 +288,7 @@ static void set_colors(void) {
 void bt_handler(bool connected) {
     if (connected) {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Phone is connected.");
-        text_layer_set_text(bluetooth, " !");
+        text_layer_set_text(bluetooth, "");
     } else {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Phone is not connected.");
         bool is_sleeping = false;
@@ -294,7 +302,7 @@ void bt_handler(bool connected) {
         if (bluetooth_disconnect_vibe && !is_sleeping) {
             vibes_long_pulse();
         }
-        text_layer_set_text(bluetooth, "!");
+        text_layer_set_text(bluetooth, " !");
     }
 }
 
@@ -565,6 +573,16 @@ static void create_text_layers() {
         temp_cur_top = PBL_IF_ROUND_ELSE(4, 3);
         temp_min_max_top = PBL_IF_ROUND_ELSE(22, 3);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
+    } else if (selected_font == ARCHIVO_FONT) {
+        hours_top = PBL_IF_ROUND_ELSE(50, 40);
+        date_left = PBL_IF_ROUND_ELSE(0, -2);
+        date_top = PBL_IF_ROUND_ELSE(102, 92);
+        alt_top = PBL_IF_ROUND_ELSE(44, 34);
+        battery_top = PBL_IF_ROUND_ELSE(128, 118);
+        bt_top = PBL_IF_ROUND_ELSE(76, 64);
+        temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
+        temp_min_max_top = PBL_IF_ROUND_ELSE(24, 2);
+        temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
     } else {
         hours_top = PBL_IF_ROUND_ELSE(54, 42);
         date_left = PBL_IF_ROUND_ELSE(0, -2);
@@ -605,11 +623,11 @@ static void create_text_layers() {
     text_layer_set_background_color(temp_cur, GColorClear);
     text_layer_set_text_alignment(temp_cur, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
-    temp_min = text_layer_create(GRect(PBL_IF_ROUND_ELSE(70, 78), temp_min_max_top, width, 50));
+    temp_min = text_layer_create(GRect(PBL_IF_ROUND_ELSE(70, 80), temp_min_max_top, width, 50));
     text_layer_set_background_color(temp_min, GColorClear);
     text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
 
-    min_icon = text_layer_create(GRect(PBL_IF_ROUND_ELSE(60, 68), temp_icon_min_max_top, width, 50));
+    min_icon = text_layer_create(GRect(PBL_IF_ROUND_ELSE(60, 70), temp_icon_min_max_top, width, 50));
     text_layer_set_background_color(min_icon, GColorClear);
     text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
 

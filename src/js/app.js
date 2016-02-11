@@ -2,7 +2,7 @@ Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
         if (localStorage['weatherEnabled'].toLowerCase() === 'true') {
-            getWeather(localStorage['weatherKey'], localStorage['useCelsius'], localStorage['overrideLocation']);
+            getWeather(localStorage['weatherKey'], localStorage['useCelsius'] === 'true', localStorage['overrideLocation']);
         } else {
             sendError();
         }
@@ -12,12 +12,12 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener('appmessage',
     function(e) {
         console.log('AppMessage received!');
-        getWeather(localStorage['weatherKey'], localStorage['useCelsius'], localStorage['overrideLocation']);
+        getWeather(localStorage['weatherKey'], localStorage['useCelsius'] === 'true', localStorage['overrideLocation']);
     }                     
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.0');
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.3');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -79,11 +79,11 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);
-            var temp = Math.round(useCelsius ? resp.current_observation.temp_c : resp.current_observation.temp_f);
+            var temp = Math.round((useCelsius ? resp.current_observation.temp_c : resp.current_observation.temp_f));
             var highTemp = resp.forecast.simpleforecast.forecastday[0].high;
             var lowTemp = resp.forecast.simpleforecast.forecastday[0].low;
-            var max = Math.round(useCelsius ? highTemp.celsius : highTemp.fahrenheit);
-            var min = Math.round(useCelsius ? lowTemp.celsius : lowTemp.fahrenheit);
+            var max = Math.round((useCelsius ? highTemp.celsius : highTemp.fahrenheit));
+            var min = Math.round((useCelsius ? lowTemp.celsius : lowTemp.fahrenheit));
             var icon = resp.current_observation.icon_url.match(/\/([^.\/]*)\.gif/)[1];
             var condition = wu_iconToId[icon];
             if (typeof(condition) === 'undefined') {
