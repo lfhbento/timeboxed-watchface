@@ -3,7 +3,7 @@
     "shortName": "timeboxed",
     "longName": "timeboxed",
     "companyName": "LFHB",
-    "versionLabel": "1.3",
+    "versionLabel": "1.4",
     "sdkVersion": "3",
     "targetPlatforms": ["aplite", "basalt", "chalk"],
     "enableMultiJS": true,
@@ -41,7 +41,9 @@
         "KEY_BLUETOOTHDISCONNECT": 29,
         "KEY_BLUETOOTHCOLOR": 30,
         "KEY_OVERRIDELOCATION": 31,
-        "KEY_ERROR": 32
+        "KEY_ERROR": 32,
+        "KEY_UPDATE": 33,
+        "KEY_UPDATECOLOR": 34
     },
     "resources": {
         "media": [
@@ -107,6 +109,13 @@
                 "file": "fonts/Blocko.ttf",
                 "compatibility":"2.7",
                 "characterRegex": "[0-9:a-z.+%!()/= -]"
+            },
+            {
+                "type": "font",
+                "name": "FONT_AWESOME_18",
+                "file": "fonts/fontawesome-webfont.ttf",
+                "compatibility":"2.7",
+                "characterRegex": "[]"
             },
             {
                 "type": "font",

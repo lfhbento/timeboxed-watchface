@@ -1,8 +1,10 @@
+var currentVersion = "1.4";
+
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
-        if (localStorage['weatherEnabled'].toLowerCase() === 'true') {
-            getWeather(localStorage['weatherKey'], localStorage['useCelsius'] === 'true', localStorage['overrideLocation']);
+        if (parse(localStorage['weatherEnabled'].toLowerCase())) {
+            getWeather(localStorage['weatherKey'], parse(localStorage['useCelsius'].toLowerCase()), localStorage['overrideLocation']);
         } else {
             sendError();
         }
@@ -12,12 +14,18 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener('appmessage',
     function(e) {
         console.log('AppMessage received!');
-        getWeather(localStorage['weatherKey'], localStorage['useCelsius'] === 'true', localStorage['overrideLocation']);
+        if (e.payload.KEY_UPDATE) {
+            console.log('Checking for updates...');
+            checkForUpdates();
+        } else {
+            console.log('Fetching weather info...');
+            getWeather(localStorage['weatherKey'], parse(localStorage['useCelsius'].toLowerCase()), localStorage['overrideLocation']);
+        }
     }                     
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.3');
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.4/index.html');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -55,6 +63,10 @@ Pebble.addEventListener('webviewclosed', function(e) {
 	console.log('Send failed!');
     }); 
 });
+
+function parse(type) {
+    return typeof type == 'string' ? JSON.parse(type) : type;
+};
 
 function locationSuccess(pos, weatherKey, useCelsius, overrideLocation) {
     console.log("Retrieving weather info");
@@ -129,6 +141,33 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             console.log(ex);
         }
     });
+}
+
+function checkForUpdates() {
+    var url = 'http://www.lbento.space/pebble-apps/timeboxed/version.json';
+    xhrRequest(url, 'GET', function(responseText) {
+        try {
+            var resp = JSON.parse(responseText);
+            var updateAvailable = resp.version !== currentVersion;
+            console.log('Current version: ' + currentVersion + ', Latest version: ' + resp.version);
+            sendUpdateData(updateAvailable);
+        } catch (ex) {
+            console.log(ex);
+            sendUpdateData(false);
+        }
+    });
+}
+
+function sendUpdateData(updateAvailable) {
+    console.log(updateAvailable ? 'Update available!' : 'No updates.');
+    Pebble.sendAppMessage({'KEY_UPDATE': updateAvailable},
+        function(e) {
+            console.log('Sent update data to Pebble successfully!');
+        },
+        function(e) {
+            console.log('Error sending update data to Pebble!');
+        }
+    );
 }
 
 function kelvinToCelsius(temp) {
@@ -272,3 +311,4 @@ var ow_iconToId = {
     '11n': 29,
     '50n': 32,
 };
+

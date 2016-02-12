@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="../manifest-file">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -95,6 +95,19 @@
         </div>
         <div class="item-container-footer">
             Emits a vibration notification when the watch is disconnected from the phone. Won't trigger if you're asleep (only on Time and Time Round).
+        </div>
+    </div>
+    
+    <div class="item-container">
+        <div class="item-container-header">Updates</div>
+        <div class="item-container-content">
+            <label class="item">
+                Check for updates
+                <input id="update" class="item-toggle" type="checkbox" checked>
+            </label>
+        </div>
+        <div class="item-container-footer">
+            Checks daily if there's a new version of the watchface available. If there's an update, you'll see a little arrow on the left side of the screen. To update, go to the Pebble app -> My Pebble -> Watchfaces, tap on the Timebox watchface and select 'About this app'.
         </div>
     </div>
 
@@ -243,6 +256,10 @@
                 <label class="item">
                     Bluetooth disconnected
                     <input id="bluetoothColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
+                    Update notification
+                    <input id="updateColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Weather icon

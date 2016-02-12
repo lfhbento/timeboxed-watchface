@@ -35,6 +35,9 @@
 #define KEY_BLUETOOTHCOLOR 30
 #define KEY_OVERRIDELOCATION 31
 #define KEY_ERROR 32
+#define KEY_UPDATE 33
+#define KEY_UPDATECOLOR 34
+
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
 #define SYSTEM_FONT 2
@@ -54,11 +57,13 @@ static TextLayer *dist_or_deep;
 static TextLayer *weather;
 static TextLayer *max_icon;
 static TextLayer *min_icon;
+static TextLayer *update;
 static GFont time_font;
 static GFont medium_font;
 static GFont base_font;
 static GFont weather_font;
 static GFont weather_big_font;
+static GFont awesome_font;
 
 static char hour_text[13];
 static char date_text[13];
@@ -127,7 +132,7 @@ static char* weather_conditions[] = {
 
 
 static void update_time() {
-    // Get a tm structuiire
+    // Get a tm structure
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
     struct tm *gmt_time = gmtime(&temp);
@@ -232,7 +237,8 @@ static void set_face_fonts() {
     text_layer_set_font(date, medium_font);
     text_layer_set_font(alt_time, base_font);
     text_layer_set_font(battery, base_font);
-    text_layer_set_font(bluetooth, medium_font);
+    text_layer_set_font(bluetooth, awesome_font);
+    text_layer_set_font(update, awesome_font);
     text_layer_set_font(weather, weather_font);
     text_layer_set_font(min_icon, weather_big_font);
     text_layer_set_font(max_icon, weather_big_font);
@@ -281,6 +287,9 @@ static void set_colors(void) {
     text_layer_set_text_color(bluetooth, 
         enableAdvanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
 
+    text_layer_set_text_color(update, 
+        enableAdvanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
+
     window_set_background_color(watchface, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
     APP_LOG(APP_LOG_LEVEL_INFO, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -302,7 +311,7 @@ void bt_handler(bool connected) {
         if (bluetooth_disconnect_vibe && !is_sleeping) {
             vibes_long_pulse();
         }
-        text_layer_set_text(bluetooth, " !");
+        text_layer_set_text(bluetooth, "\U0000F294");
     }
 }
 
@@ -530,6 +539,7 @@ static void load_screen(bool from_configs) {
     toggle_health(from_configs);
     toggle_weather(from_configs);
     battery_handler(battery_state_service_peek());
+    bt_handler(connection_service_peek_pebble_app_connection());
 }
 
 static void create_text_layers() {
@@ -552,6 +562,7 @@ static void create_text_layers() {
     int temp_cur_top;
     int temp_min_max_top;
     int temp_icon_min_max_top;
+    int update_top;
 
     if (selected_font == BLOCKO_FONT) {
         hours_top = PBL_IF_ROUND_ELSE(46, 38);
@@ -559,7 +570,8 @@ static void create_text_layers() {
         date_top = PBL_IF_ROUND_ELSE(98, 90);
         alt_top = PBL_IF_ROUND_ELSE(46, 38);
         battery_top = PBL_IF_ROUND_ELSE(120, 112);
-        bt_top = PBL_IF_ROUND_ELSE(78, 68);
+        bt_top = PBL_IF_ROUND_ELSE(70, 60);
+        update_top = PBL_IF_ROUND_ELSE(88, 78);
         temp_cur_top = PBL_IF_ROUND_ELSE(4, 4);
         temp_min_max_top = PBL_IF_ROUND_ELSE(22, 4);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(20, 0);
@@ -569,7 +581,8 @@ static void create_text_layers() {
         date_top = PBL_IF_ROUND_ELSE(96, 88);
         alt_top = PBL_IF_ROUND_ELSE(42, 34);
         battery_top = PBL_IF_ROUND_ELSE(124, 116);
-        bt_top = PBL_IF_ROUND_ELSE(76, 66);
+        bt_top = PBL_IF_ROUND_ELSE(64, 54);
+        update_top = PBL_IF_ROUND_ELSE(86, 76);
         temp_cur_top = PBL_IF_ROUND_ELSE(4, 3);
         temp_min_max_top = PBL_IF_ROUND_ELSE(22, 3);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
@@ -579,7 +592,8 @@ static void create_text_layers() {
         date_top = PBL_IF_ROUND_ELSE(102, 92);
         alt_top = PBL_IF_ROUND_ELSE(44, 34);
         battery_top = PBL_IF_ROUND_ELSE(128, 118);
-        bt_top = PBL_IF_ROUND_ELSE(76, 64);
+        bt_top = PBL_IF_ROUND_ELSE(68, 56);
+        update_top = PBL_IF_ROUND_ELSE(86, 74);
         temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
         temp_min_max_top = PBL_IF_ROUND_ELSE(24, 2);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
@@ -589,7 +603,8 @@ static void create_text_layers() {
         date_top = PBL_IF_ROUND_ELSE(98, 86);
         alt_top = PBL_IF_ROUND_ELSE(46, 34);
         battery_top = PBL_IF_ROUND_ELSE(124, 112);
-        bt_top = PBL_IF_ROUND_ELSE(76, 64);
+        bt_top = PBL_IF_ROUND_ELSE(68, 56);
+        update_top = PBL_IF_ROUND_ELSE(86, 74);
         temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
         temp_min_max_top = PBL_IF_ROUND_ELSE(20, 2);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
@@ -611,9 +626,13 @@ static void create_text_layers() {
     text_layer_set_background_color(battery, GColorClear);
     text_layer_set_text_alignment(battery, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
     
-    bluetooth = text_layer_create(GRect(0, bt_top, width, 50));
+    bluetooth = text_layer_create(GRect(PBL_IF_ROUND_ELSE(2, 0), bt_top, width, 50));
     text_layer_set_background_color(bluetooth, GColorClear);
     text_layer_set_text_alignment(bluetooth, GTextAlignmentLeft);
+
+    update = text_layer_create(GRect(GRect(PBL_IF_ROUND_ELSE(2, 0), update_top, width, 50));
+    text_layer_set_background_color(update, GColorClear);
+    text_layer_set_text_alignment(update, GTextAlignmentLeft);
 
     weather = text_layer_create(GRect(PBL_IF_ROUND_ELSE(-14, 4), 0, width, 50));
     text_layer_set_background_color(weather, GColorClear);
@@ -652,6 +671,7 @@ static void create_text_layers() {
     layer_add_child(window_layer, text_layer_get_layer(alt_time));
     layer_add_child(window_layer, text_layer_get_layer(battery));
     layer_add_child(window_layer, text_layer_get_layer(bluetooth));
+    layer_add_child(window_layer, text_layer_get_layer(update));
     layer_add_child(window_layer, text_layer_get_layer(weather));
     layer_add_child(window_layer, text_layer_get_layer(min_icon));
     layer_add_child(window_layer, text_layer_get_layer(max_icon));
@@ -670,6 +690,7 @@ static void destroy_text_layers() {
     text_layer_destroy(alt_time);
     text_layer_destroy(battery);
     text_layer_destroy(bluetooth);
+    text_layer_destroy(update);
     text_layer_destroy(weather);
     text_layer_destroy(min_icon);
     text_layer_destroy(max_icon);
@@ -680,6 +701,19 @@ static void destroy_text_layers() {
     text_layer_destroy(dist_or_deep);
 }
 
+static void check_for_updates() {
+    APP_LOG(APP_LOG_LEVEL_INFO, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_uint8(iter, KEY_UPDATE, 1); 
+    app_message_outbox_send();
+}
+
+static void notify_update(int update_available) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "Notifying user. (%d) %d%d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
+    text_layer_set_text(update, update_available ? "\U0000F102" : "");
+}
+
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     Tuple *error_tuple = dict_find(iterator, KEY_ERROR);
 
@@ -688,6 +722,13 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         get_health_data();
         #endif
         return;
+    }
+
+    Tuple *update_tuple = dict_find(iterator, KEY_UPDATE);
+    if (update_tuple) {
+        int update_val = update_tuple->value->int8;
+        persist_write_int(KEY_UPDATE, update_val);
+        notify_update(update_val);
     }
 
     Tuple *temp_tuple = dict_find(iterator, KEY_TEMP);
@@ -870,6 +911,18 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_string(KEY_OVERRIDELOCATION, loc);
     }
 
+    Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
+    if (updateAvailable) {
+        uint32_t update_a = updateAvailable->value->int32;
+        persist_write_int(KEY_UPDATE, update_a);
+    }
+
+    Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
+    if (updateColor) {
+        uint32_t update_c = updateColor->value->int32;
+        persist_write_int(KEY_UPDATECOLOR, update_c);
+    }
+
     APP_LOG(APP_LOG_LEVEL_INFO, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     destroy_text_layers();
     create_text_layers();
@@ -891,6 +944,7 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 static void watchface_load(Window *window) {
     APP_LOG(APP_LOG_LEVEL_INFO, "Watchface load start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
+    awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_AWESOME_18));
 
     create_text_layers();
 
@@ -907,6 +961,8 @@ static void watchface_load(Window *window) {
 static void watchface_unload(Window *window) {
     APP_LOG(APP_LOG_LEVEL_INFO, "Unload start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     fonts_unload_custom_font(weather_font);
+    fonts_unload_custom_font(weather_big_font);
+    fonts_unload_custom_font(awesome_font);
 
     unload_face_fonts();
 
@@ -941,6 +997,17 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
             }
         }
     #endif
+
+    
+    bool update_enabled = persist_exists(KEY_UPDATE) ? persist_read_int(KEY_UPDATE) : true;
+
+    if (!update_enabled) {
+        notify_update(false);
+    }
+
+    if (update_enabled && tick_time->tm_hour == 3) { // updates at 3am
+        check_for_updates();
+    }
 
     uint8_t tick_interval = is_sleeping ? 60 : 30;
 

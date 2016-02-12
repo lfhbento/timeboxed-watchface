@@ -65,7 +65,7 @@
     });
 
     var loadData = function() {
-        for (item in localStorage) {
+        for (var item in localStorage) {
             var itemValue = localStorage[item];
             var element = $('#' + item)[0];
             if (element) {
@@ -73,7 +73,7 @@
                     element.value = itemValue;
                 } else if (item === 'fontType') {
                     var elements = $(".font-type");
-                    for (id in elements) {
+                    for (var id in elements) {
                         elements[id].checked = elements[id].value === itemValue ? "checked" : "";
                     }
                 } else {
@@ -130,10 +130,12 @@
             fontType: $('.font-type[name="font-selection"]:checked').val(),
             bluetoothDisconnect: $('#bluetoothDisconnect')[0].checked,
             bluetoothColor: $('#bluetoothColor').val(),
-            overrideLocation: $('#overrideLocation').val()
+            overrideLocation: $('#overrideLocation').val(),
+            updateColor: $('#updateColor').val(),
+            update: $('#update')[0].checked
         };
 
-        for (item in data) {
+        for (var item in data) {
             localStorage[item] = data[item];
         }
 
