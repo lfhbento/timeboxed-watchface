@@ -43,7 +43,8 @@
         "KEY_OVERRIDELOCATION": 31,
         "KEY_ERROR": 32,
         "KEY_UPDATE": 33,
-        "KEY_UPDATECOLOR": 34
+        "KEY_UPDATECOLOR": 34,
+        "KEY_HASUPDATE": 35
     },
     "resources": {
         "media": [
@@ -122,7 +123,7 @@
                 "name": "FONT_WEATHER_24",
                 "file": "fonts/weathericons-regular-webfont.ttf",
                 "compatibility":"2.7",
-                "characterRegex": "[]"
+                "characterRegex": "[]"
             },
             {
                 "type": "font",

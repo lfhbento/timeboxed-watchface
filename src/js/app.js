@@ -14,7 +14,7 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener('appmessage',
     function(e) {
         console.log('AppMessage received!');
-        if (e.payload.KEY_UPDATE) {
+        if (e.payload.KEY_HASUPDATE) {
             console.log('Checking for updates...');
             checkForUpdates();
         } else {
@@ -25,7 +25,7 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.4/index.html');
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.4/index.html?v=' + currentVersion);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -160,7 +160,7 @@ function checkForUpdates() {
 
 function sendUpdateData(updateAvailable) {
     console.log(updateAvailable ? 'Update available!' : 'No updates.');
-    Pebble.sendAppMessage({'KEY_UPDATE': updateAvailable},
+    Pebble.sendAppMessage({'KEY_HASUPDATE': updateAvailable},
         function(e) {
             console.log('Sent update data to Pebble successfully!');
         },
@@ -281,6 +281,8 @@ var wu_iconToId = {
     'nt_chancesleat': 35,
     'nt_chancerain': 36,
     'nt_chanceflurries': 37,
+    'fog': 38,
+    'nt_fog': 39
 };
 
 var ow_iconToId = {

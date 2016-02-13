@@ -37,6 +37,7 @@
 #define KEY_ERROR 32
 #define KEY_UPDATE 33
 #define KEY_UPDATECOLOR 34
+#define KEY_HASUPDATE 35
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
@@ -128,6 +129,8 @@ static char* weather_conditions[] = {
     "\U0000F0B3", // 'nt_chancesleat': 35,
     "\U0000F036", // 'nt_chancerain': 36,
     "\U0000F038", // 'nt_chanceflurries': 37,
+    "\U0000F003", // 'fog': 38,
+    "\U0000F04A", // 'nt_fog': 39,
 };
 
 
@@ -630,7 +633,7 @@ static void create_text_layers() {
     text_layer_set_background_color(bluetooth, GColorClear);
     text_layer_set_text_alignment(bluetooth, GTextAlignmentLeft);
 
-    update = text_layer_create(GRect(GRect(PBL_IF_ROUND_ELSE(2, 0), update_top, width, 50));
+    update = text_layer_create(GRect(PBL_IF_ROUND_ELSE(2, 0), update_top, width, 50));
     text_layer_set_background_color(update, GColorClear);
     text_layer_set_text_alignment(update, GTextAlignmentLeft);
 
@@ -705,7 +708,7 @@ static void check_for_updates() {
     APP_LOG(APP_LOG_LEVEL_INFO, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, KEY_UPDATE, 1); 
+    dict_write_uint8(iter, KEY_HASUPDATE, 1); 
     app_message_outbox_send();
 }
 
@@ -724,11 +727,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         return;
     }
 
-    Tuple *update_tuple = dict_find(iterator, KEY_UPDATE);
+    Tuple *update_tuple = dict_find(iterator, KEY_HASUPDATE);
     if (update_tuple) {
         int update_val = update_tuple->value->int8;
-        persist_write_int(KEY_UPDATE, update_val);
+        persist_write_int(KEY_HASUPDATE, update_val);
         notify_update(update_val);
+        return;
     }
 
     Tuple *temp_tuple = dict_find(iterator, KEY_TEMP);
@@ -998,15 +1002,13 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         }
     #endif
 
-    
     bool update_enabled = persist_exists(KEY_UPDATE) ? persist_read_int(KEY_UPDATE) : true;
-
-    if (!update_enabled) {
-        notify_update(false);
-    }
 
     if (update_enabled && tick_time->tm_hour == 3) { // updates at 3am
         check_for_updates();
+    }
+    if (!update_enabled) {
+        notify_update(false);
     }
 
     uint8_t tick_interval = is_sleeping ? 60 : 30;
