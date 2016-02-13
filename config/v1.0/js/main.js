@@ -9,6 +9,50 @@
         $('#advancedConfigs').toggleClass('hidden');
     });
 
+    var getCurrentVersion = function() {
+        return '1.0';
+    };
+
+    var checkForUpdates = function() {
+        var url = 'http://www.lbento.space/pebble-apps/timeboxed/version.json';
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'text',
+            success: function(data, status, xhr) {
+                if (status === 'success') {
+                    try {
+                        var resp = JSON.parse(data);
+                        var latestVersion = resp.version;
+                        var currentVersion = getCurrentVersion();
+                        notifyUpdate(
+                            latestVersion && currentVersion && latestVersion !== currentVersion,
+                            currentVersion,
+                            latestVersion);
+                    } catch(ex) {
+                        console.log(ex);
+                        notifyUpdate(false)
+                    }
+                } else {
+                    console.log('Ajax fail. Status: ' + status);
+                    notifyUpdate(false);
+                }
+            },
+            error: function() {
+                console.log('Ajax error.');
+                notifyUpdate(false);
+            }
+        })
+    };
+
+    var notifyUpdate = function(hasUpdate, currentVersion, latestVersion) {
+        console.log('Notifying update: ' + hasUpdate);
+        if (hasUpdate) {
+            $('#versionContainer').removeClass('hidden');
+            $('#updateText').text('> New version ' + latestVersion + ' available! <').removeClass('hidden');
+        }
+    };
+
     var loadData = function() {
         for (item in localStorage) {
             var itemValue = localStorage[item];
@@ -88,5 +132,6 @@
     };
 
     loadData();
+    checkForUpdates();
 
 }(Zepto));

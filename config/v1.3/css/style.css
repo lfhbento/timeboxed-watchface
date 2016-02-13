@@ -10,3 +10,20 @@
 .hidden {
     display: none;
 }
+
+#versionContainer {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+#versionContainer .item {
+    padding: 3px;
+}
+
+#updateText {
+    font-weight: bold;
+}
+
+.item-container-header {
+    color: #888;
+}
