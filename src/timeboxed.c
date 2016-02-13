@@ -1004,7 +1004,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     bool update_enabled = persist_exists(KEY_UPDATE) ? persist_read_int(KEY_UPDATE) : true;
 
-    if (update_enabled && tick_time->tm_hour == 3) { // updates at 3am
+    if (update_enabled && tick_time->tm_hour == 4) { // updates at 4am
         check_for_updates();
     }
     if (!update_enabled) {
