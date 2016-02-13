@@ -78,8 +78,7 @@ static char s_battery_buffer[7];
 #if defined(PBL_HEALTH)
 static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
-static uint8_t woke_up_at_hour;
-static uint8_t woke_up_at_min;
+static uint8_t woke_up_at;
 #endif
 
 static bool weather_enabled;
@@ -360,7 +359,8 @@ static void update_steps_data(void) {
     }
     
     HealthActivityMask activities = health_service_peek_current_activities();
-    bool is_sleeping = activities & HealthActivityRestfulSleep || activities & HealthActivityRestfulSleep;
+    bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
+    APP_LOG(APP_LOG_LEVEL_INFO, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
     if (is_sleeping) {
         APP_LOG(APP_LOG_LEVEL_INFO, "We are asleep. %d", was_asleep);
         if (!was_asleep) {
@@ -410,12 +410,14 @@ static void update_sleep_data(void) {
 }
 
 static void get_health_data(void) {
-    if (!sleep_data_visible) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        update_steps_data();
-    } else {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        update_sleep_data();
+    if (health_enabled) {
+        if (!sleep_data_visible) {
+            APP_LOG(APP_LOG_LEVEL_INFO, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            update_steps_data();
+        } else {
+            APP_LOG(APP_LOG_LEVEL_INFO, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            update_sleep_data();
+        }
     }
 }
 
@@ -590,11 +592,11 @@ static void create_text_layers() {
         temp_min_max_top = PBL_IF_ROUND_ELSE(22, 3);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
     } else if (selected_font == ARCHIVO_FONT) {
-        hours_top = PBL_IF_ROUND_ELSE(50, 40);
+        hours_top = PBL_IF_ROUND_ELSE(48, 40);
         date_left = PBL_IF_ROUND_ELSE(0, -2);
-        date_top = PBL_IF_ROUND_ELSE(102, 92);
+        date_top = PBL_IF_ROUND_ELSE(100, 92);
         alt_top = PBL_IF_ROUND_ELSE(44, 34);
-        battery_top = PBL_IF_ROUND_ELSE(128, 118);
+        battery_top = PBL_IF_ROUND_ELSE(126, 118);
         bt_top = PBL_IF_ROUND_ELSE(68, 56);
         update_top = PBL_IF_ROUND_ELSE(86, 74);
         temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
@@ -771,7 +773,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);
     if (showSleep) {
         bool sleep = showSleep->value->int8;
-        persist_write_int(KEY_SHOWSLEEP, false);
+        persist_write_int(KEY_SHOWSLEEP, sleep);
     }
 
     Tuple *enableWeather = dict_find(iterator, KEY_ENABLEWEATHER);
@@ -983,20 +985,19 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         if (health_enabled) {
             HealthActivityMask activities = health_service_peek_current_activities();
             is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
-    
+            APP_LOG(APP_LOG_LEVEL_INFO, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
             bool sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
             
-            if (!is_sleeping && was_asleep && sleep_data_enabled) {
+            if (!is_sleeping && was_asleep) {
                 APP_LOG(APP_LOG_LEVEL_INFO, "We woke up!");
                 sleep_data_visible = true;
-                woke_up_at_hour = tick_time->tm_hour;
-                woke_up_at_min = tick_time->tm_min;
+                woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 1; //half an hour
                 was_asleep = false;
                 get_health_data();
             }
 
-            if (sleep_data_visible && tick_time->tm_hour >= (woke_up_at_hour + 1) % 24 && tick_time->tm_min >= woke_up_at_min) {
-                APP_LOG(APP_LOG_LEVEL_INFO, "Past an hour after wake up!");
+            if (sleep_data_visible && time(NULL) > woke_up_at) {
+                APP_LOG(APP_LOG_LEVEL_INFO, "Past half an hour after wake up!");
                 sleep_data_visible = false;
             }
         }

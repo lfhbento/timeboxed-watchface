@@ -3,7 +3,7 @@ var currentVersion = "1.4";
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
-        if (parse(localStorage['weatherEnabled'].toLowerCase())) {
+        if (localStorage['weatherEnabled'] && parse(localStorage['weatherEnabled'].toLowerCase())) {
             getWeather(localStorage['weatherKey'], parse(localStorage['useCelsius'].toLowerCase()), localStorage['overrideLocation']);
         } else {
             sendError();
