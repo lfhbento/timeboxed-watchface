@@ -78,7 +78,7 @@ static char s_battery_buffer[7];
 #if defined(PBL_HEALTH)
 static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
-static uint8_t woke_up_at;
+static int woke_up_at;
 #endif
 
 static bool weather_enabled;
@@ -193,28 +193,28 @@ static void load_face_fonts() {
     }
 
     if (selected_font == SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Loading system fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading system fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
         medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
         base_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_28));
         loaded_font = SYSTEM_FONT;
     } else if (selected_font == ARCHIVO_FONT) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Loading Archivo font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Archivo font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_28));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = ARCHIVO_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Loading Blocko font (big). %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_32));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_28));
         loaded_font = BLOCKO_BIG_FONT;
     } else {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Loading Blocko font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_16));
@@ -226,7 +226,7 @@ static void load_face_fonts() {
 
 static void unload_face_fonts() {
     if (loaded_font != SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Unloading custom fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading custom fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         fonts_unload_custom_font(time_font);
         fonts_unload_custom_font(medium_font);
         fonts_unload_custom_font(base_font);
@@ -234,7 +234,7 @@ static void unload_face_fonts() {
 }
 
 static void set_face_fonts() {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Setting fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_set_font(hours, time_font);
     text_layer_set_font(date, medium_font);
     text_layer_set_font(alt_time, base_font);
@@ -255,7 +255,7 @@ static void set_colors(void) {
     GColor base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
     bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
-    APP_LOG(APP_LOG_LEVEL_INFO, "Advanced colors %d", enableAdvanced);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enableAdvanced);
     text_layer_set_text_color(date, 
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time, 
@@ -293,15 +293,15 @@ static void set_colors(void) {
         enableAdvanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
 
     window_set_background_color(watchface, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void bt_handler(bool connected) {
     if (connected) {
-	APP_LOG(APP_LOG_LEVEL_INFO, "Phone is connected.");
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is connected.");
         text_layer_set_text(bluetooth, "");
     } else {
-	APP_LOG(APP_LOG_LEVEL_INFO, "Phone is not connected.");
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is not connected.");
         bool is_sleeping = false;
         bool bluetooth_disconnect_vibe = persist_exists(KEY_BLUETOOTHDISCONNECT) && persist_read_int(KEY_BLUETOOTHDISCONNECT);
 
@@ -360,12 +360,12 @@ static void update_steps_data(void) {
     
     HealthActivityMask activities = health_service_peek_current_activities();
     bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
-    APP_LOG(APP_LOG_LEVEL_INFO, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
     if (is_sleeping) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "We are asleep. %d", was_asleep);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "We are asleep. %d", was_asleep);
         if (!was_asleep) {
             was_asleep = true;
-            APP_LOG(APP_LOG_LEVEL_INFO, "Just went to sleep. %d", was_asleep);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
         }
     }
     persist_write_string(KEY_STEPS, steps_or_sleep_text);
@@ -412,10 +412,10 @@ static void update_sleep_data(void) {
 static void get_health_data(void) {
     if (health_enabled) {
         if (!sleep_data_visible) {
-            APP_LOG(APP_LOG_LEVEL_INFO, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_steps_data();
         } else {
-            APP_LOG(APP_LOG_LEVEL_INFO, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_sleep_data();
         }
     }
@@ -438,7 +438,7 @@ static void toggle_health(bool from_configs) {
     #if defined(PBL_HEALTH)
         health_enabled = persist_read_int(KEY_ENABLEHEALTH);
         if (health_enabled) {
-            APP_LOG(APP_LOG_LEVEL_INFO, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
             text_layer_set_text(steps_or_sleep, "0");
             text_layer_set_text(dist_or_deep, "0");
@@ -449,7 +449,7 @@ static void toggle_health(bool from_configs) {
     #endif
 
     if (!health_enabled || !has_health) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         text_layer_set_text(steps_or_sleep, "");
         text_layer_set_text(dist_or_deep, "");
     }
@@ -466,7 +466,7 @@ static void update_weather(void) {
         weather_key_buffer[0] = '\0';
     }
 
-    APP_LOG(APP_LOG_LEVEL_INFO, "Requesting weather with key (%s) %d", weather_key_buffer, (int)time(NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather with key (%s) %d", weather_key_buffer, (int)time(NULL));
     dict_write_uint8(iter, KEY_USECELSIUS, 
         persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS) ? persist_read_int(KEY_USECELSIUS) : 0);
     dict_write_cstring(iter, KEY_WEATHERKEY, weather_key_buffer);
@@ -505,14 +505,14 @@ static void update_weather_values(int temp_val, int max_val, int min_val, int we
 static void toggle_weather(bool from_configs) {
     weather_enabled = persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER);
     if (weather_enabled) {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Weather is enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         update_weather_values(0, 0, 0, 0);
         if (from_configs) {
-            APP_LOG(APP_LOG_LEVEL_INFO, "Updating weather from configs. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather();
         }
     } else {
-        APP_LOG(APP_LOG_LEVEL_INFO, "Weather disabled, clearing up. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather disabled, clearing up. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         text_layer_set_text(temp_cur, "");
         text_layer_set_text(temp_max, "");
         text_layer_set_text(temp_min, "");
@@ -548,7 +548,7 @@ static void load_screen(bool from_configs) {
 }
 
 static void create_text_layers() {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Creating text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     Layer *window_layer = window_get_root_layer(watchface);
     GRect bounds = layer_get_bounds(window_layer);
     int selected_font = BLOCKO_FONT;
@@ -689,7 +689,7 @@ static void create_text_layers() {
 }
 
 static void destroy_text_layers() {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Destroying text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Destroying text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_destroy(hours);
     text_layer_destroy(date);
     text_layer_destroy(alt_time);
@@ -707,7 +707,7 @@ static void destroy_text_layers() {
 }
 
 static void check_for_updates() {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_uint8(iter, KEY_HASUPDATE, 1); 
@@ -715,7 +715,7 @@ static void check_for_updates() {
 }
 
 static void notify_update(int update_available) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Notifying user. (%d) %d%d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_set_text(update, update_available ? "\U0000F102" : "");
 }
 
@@ -754,7 +754,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         get_health_data();
         #endif
 
-        APP_LOG(APP_LOG_LEVEL_INFO, "Weather data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         return;
     }
 
@@ -929,7 +929,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_UPDATECOLOR, update_c);
     }
 
-    APP_LOG(APP_LOG_LEVEL_INFO, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     destroy_text_layers();
     create_text_layers();
     load_screen(true);
@@ -944,11 +944,11 @@ static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResul
 }
 
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Outbox send success!");
 }
 
 static void watchface_load(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Watchface load start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
     awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_AWESOME_18));
 
@@ -961,11 +961,11 @@ static void watchface_load(Window *window) {
     } else {
         tz_name[0] = '#';
     }
-    APP_LOG(APP_LOG_LEVEL_INFO, "Watchface load end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void watchface_unload(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Unload start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     fonts_unload_custom_font(weather_font);
     fonts_unload_custom_font(weather_big_font);
     fonts_unload_custom_font(awesome_font);
@@ -974,7 +974,7 @@ static void watchface_unload(Window *window) {
 
     destroy_text_layers();
 
-    APP_LOG(APP_LOG_LEVEL_INFO, "Unload end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -982,23 +982,24 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     bool is_sleeping = false;
 
     #if defined(PBL_HEALTH)
-        if (health_enabled) {
+        bool sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
+        if (health_enabled && sleep_data_enabled) {
             HealthActivityMask activities = health_service_peek_current_activities();
             is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
-            APP_LOG(APP_LOG_LEVEL_INFO, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
-            bool sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
             
             if (!is_sleeping && was_asleep) {
-                APP_LOG(APP_LOG_LEVEL_INFO, "We woke up!");
                 sleep_data_visible = true;
-                woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 1; //half an hour
+                woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 30; //half an hour
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "We woke up! %d", (int) woke_up_at);
                 was_asleep = false;
                 get_health_data();
             }
 
             if (sleep_data_visible && time(NULL) > woke_up_at) {
-                APP_LOG(APP_LOG_LEVEL_INFO, "Past half an hour after wake up!");
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "Past half an hour after wake up! %d - %d", (int) time(NULL), (int) woke_up_at);
                 sleep_data_visible = false;
+                get_health_data();
             }
         }
     #endif
@@ -1021,7 +1022,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 
 static void init(void) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Init start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
     was_asleep = false;
@@ -1050,19 +1051,19 @@ static void init(void) {
 
     load_screen(false);
 
-    APP_LOG(APP_LOG_LEVEL_INFO, "Init end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void deinit(void) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Deinit start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     window_destroy(watchface);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Deinit end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 int main(void) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "App start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     init();
     app_event_loop();
     deinit();
-    APP_LOG(APP_LOG_LEVEL_INFO, "App end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
