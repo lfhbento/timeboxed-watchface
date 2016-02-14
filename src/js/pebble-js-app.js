@@ -1,4 +1,4 @@
-var currentVersion = "1.5";
+var currentVersion = "1.6";
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -25,8 +25,7 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    //Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.4/index.html?v=' + currentVersion);
-    Pebble.openURL('http://ff6f2aa8.ngrok.io/v1.5/index.html?v=' + currentVersion);
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.5/index.html?v=' + currentVersion);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -146,7 +145,6 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
 
 function checkForUpdates() {
     var url = 'http://www.lbento.space/pebble-apps/timeboxed/version.json';
-    var url = 'http://ff6f2aa8.ngrok.io/version.json';
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);

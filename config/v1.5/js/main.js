@@ -33,6 +33,7 @@
         $.ajax({
             type: 'GET',
             url: url,
+            dataType: 'text',
             success: function(data, status, xhr) {
                 if (status === 'success') {
                     try {
