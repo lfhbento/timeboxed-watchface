@@ -37,10 +37,29 @@
 #define KEY_UPDATE 33
 #define KEY_UPDATECOLOR 34
 #define KEY_HASUPDATE 35
+#define KEY_LOCALE 36
+#define KEY_DATEFORMAT 37
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
 #define SYSTEM_FONT 2
 #define ARCHIVO_FONT 3
+
+#define LC_ENGLISH 0
+#define LC_PORTUGUESE 1
+#define LC_FRENCH 2
+#define LC_GERMAN 3
+#define LC_SPANISH 4
+#define LC_ITALIAN 5
+#define LC_DUTCH 6
+#define LC_DANISH 7
+#define LC_TURKISH 8
+#define LC_CZECH 9
+#define LC_POLISH 10
+#define LC_SWEDISH 11
+#define LC_FINNISH 12
+
+#define FORMAT_WMD 0
+#define FORMAT_WDM 1
 
 #endif

@@ -1,4 +1,4 @@
-var currentVersion = "1.7";
+var currentVersion = "1.8";
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -25,7 +25,7 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.5/index.html?v=' + currentVersion);
+    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v1.8/index.html?v=' + currentVersion);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -46,7 +46,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
             dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
             value = parseInt(newValue, 10);
         }
-        if (key === 'KEY_FONTTYPE') {
+        if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE') {
             value = parseInt(value, 10);
         }
         dict[key] = value;

@@ -28,7 +28,6 @@ static void update_time() {
 
     // Write the current hours and minutes into a buffer
     strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
-    strftime(date_text, sizeof(date_text), "%a.%b.%d", tick_time);
 
     if (tz_name[0] != '#') {
         strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
@@ -60,11 +59,8 @@ static void update_time() {
         set_alt_time_layer_text("");
     }
 
-
-    for (unsigned char i = 0; date_text[i]; ++i) {
-        date_text[i] = tolower((unsigned char)date_text[i]);
-    }
     set_hours_layer_text(hour_text);
+    get_current_date(tick_time, date_text, sizeof(date_text));
     set_date_layer_text(date_text);
 }
 
@@ -103,6 +99,7 @@ static void load_screen(bool from_configs) {
     load_face_fonts();
     set_face_fonts();
     set_colors(watchface);
+    load_locale();
     update_time();
     toggle_health(from_configs);
     toggle_weather(from_configs);
@@ -327,6 +324,18 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (updateColor) {
         uint32_t update_c = updateColor->value->int32;
         persist_write_int(KEY_UPDATECOLOR, update_c);
+    }
+
+    Tuple *locale = dict_find(iterator, KEY_LOCALE);
+    if (locale) {
+        uint8_t locale_v = locale->value->int8;
+        persist_write_int(KEY_LOCALE, locale_v);
+    }
+
+    Tuple *dateFormat = dict_find(iterator, KEY_DATEFORMAT);
+    if (dateFormat) {
+        uint8_t dateformat_v = dateFormat->value->int8;
+        persist_write_int(KEY_DATEFORMAT, dateformat_v);
     }
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));

@@ -7,6 +7,7 @@
         "KEY_BLUETOOTHCOLOR": 30,
         "KEY_BLUETOOTHDISCONNECT": 29,
         "KEY_DATECOLOR": 14,
+        "KEY_DATEFORMAT": 37,
         "KEY_DISTCOLOR": 23,
         "KEY_ENABLEADVANCED": 13,
         "KEY_ENABLEHEALTH": 4,
@@ -15,6 +16,7 @@
         "KEY_FONTTYPE": 26,
         "KEY_HASUPDATE": 35,
         "KEY_HOURSCOLOR": 12,
+        "KEY_LOCALE": 36,
         "KEY_MAX": 1,
         "KEY_MAXCOLOR": 21,
         "KEY_MIN": 2,
@@ -140,7 +142,7 @@
         "chalk"
     ],
     "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
-    "versionLabel": "1.7",
+    "versionLabel": "1.8",
     "watchapp": {
         "watchface": true
     }
