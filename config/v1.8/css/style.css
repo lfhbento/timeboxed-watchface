@@ -27,3 +27,7 @@
 .item-container-header {
     color: #888;
 }
+
+.item-select {
+    width: 90%;
+}

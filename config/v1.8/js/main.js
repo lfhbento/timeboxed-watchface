@@ -12,7 +12,13 @@
     });
 
     var parse = function (type) {
-        return typeof type == 'string' ? JSON.parse(type) : type;
+        var value;
+        try {
+            value = typeof(type) === 'string' ? JSON.parse(type) : type;
+        } catch (ex) {
+            console.log(ex);
+        }
+        return value;
     };
 
     var getCurrentVersion = function() {
@@ -127,20 +133,11 @@
             var itemValue = localStorage[item];
             var element = $('#' + item)[0];
             if (element) {
-                if (item.indexOf('Color') !== -1 || item === 'weatherKey' || item === 'timezones' || item == 'overrideLocation' || item === 'locale') {
+                if (item.indexOf('Color') !== -1 || item === 'weatherKey' || item === 'timezones' ||
+                    item == 'overrideLocation' || item === 'fontType' || item === 'dateFormat' || item === 'locale') {
                     element.value = itemValue;
-                } else if (item === 'fontType') {
-                    var elements = $(".font-type");
-                    for (var i = 0; i < elements.length; ++i) {
-                        elements[i].checked = elements[i].value === itemValue ? "checked" : "";
-                    }
-                } else if (item === 'dateFormat') {
-                    var elements = $(".date-format");
-                    for (var i = 0; i < elements.length; ++i) {
-                        elements[i].checked = elements[i].value === itemValue ? "checked" : "";
-                    }
                 } else {
-                    element.checked = parse(itemValue);
+                    element.checked = parse(itemValue) || false;
                     if (item.indexOf('enable') !== -1 && element.checked) {
                         var containerId = '#' + item.match(/enable(.*)/)[1].toLowerCase() + 'Configs';
                         $(containerId).toggleClass('hidden');
@@ -190,14 +187,14 @@
             maxColor: $('#maxColor').val(),
             stepsColor: $('#stepsColor').val(),
             distColor: $('#distColor').val(),
-            fontType: $('.font-type[name="font-selection"]:checked').val(),
+            fontType: $('#fontType')[0].selectedOptions[0].value,
             bluetoothDisconnect: $('#bluetoothDisconnect')[0].checked,
             bluetoothColor: $('#bluetoothColor').val(),
             overrideLocation: $('#overrideLocation').val(),
             updateColor: $('#updateColor').val(),
             update: $('#update')[0].checked,
             locale: $('#locale')[0].selectedOptions[0].value,
-            dateFormat: $('.date-format[name="date-format-selection"]:checked').val()
+            dateFormat: $('#dateFormat')[0].selectedOptions[0].value
         };
 
         for (var item in data) {

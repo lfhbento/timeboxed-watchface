@@ -120,14 +120,12 @@
     
     <div class="item-container">
         <div class="item-container-header">Date format</div>
-        <div class="item-container-content" id="dateFormat">
-            <label class="item">
-                Day of week/Month/Day
-                <input type="radio" class="item-radio date-format" name="date-format-selection" value="0" checked>
-            </label>
-            <label class="item">
-                Day of week/Day/Month
-                <input type="radio" class="item-radio date-format" name="date-format-selection" value="1">
+        <div class="item-container-content">
+            <label class="item">&nbsp;
+                <select name="date-format" id="dateFormat" class="item-select">
+                    <option class="item-select-option" selected value="0">Day of week/Month/Day</option>
+                    <option class="item-select-option" value="1">Day of week/Day/Month</option>
+                </select>
             </label>
         </div>
     </div>
@@ -161,8 +159,7 @@
     <div class="item-container">
         <div class="item-container-header">Timezones</div>
         <div class="item-container-content">
-            <label class="item">
-                Alternate timezone
+            <label class="item">&nbsp;
                 <select name="timezones" id="timezones" class="item-select">
                     <option class="item-select-option" selected value="#|0:00">None</option>
                     <option class="item-select-option" value="aoe|-12:00">(GMT -12) Int. Date Line</option>
@@ -240,22 +237,14 @@
 
     <div class="item-container">
         <div class="item-container-header">Fonts</div>
-        <div class="item-container-content" id="fontType">
-            <label class="item">
-                Blocko
-                <input type="radio" class="item-radio font-type" name="font-selection" value="0" checked>
-            </label>
-            <label class="item">
-                Blocko (big)
-                <input type="radio" class="item-radio font-type" name="font-selection" value="1">
-            </label>
-            <label class="item">
-                Pebble fonts
-                <input type="radio" class="item-radio font-type" name="font-selection" value="2">
-            </label>
-            <label class="item">
-                Archivo
-                <input type="radio" class="item-radio font-type" name="font-selection" value="3">
+        <div class="item-container-content">
+            <label class="item">&nbsp;
+                <select name="font-type" id="fontType" class="item-select">
+                    <option class="item-select-option" selected value="0">Blocko</option>
+                    <option class="item-select-option" value="1">Blocko (Large)</option>
+                    <option class="item-select-option" value="2">Pebble default fonts</option>
+                    <option class="item-select-option" value="3">Archivo</option>
+                </select>
             </label>
         </div>
     </div>
