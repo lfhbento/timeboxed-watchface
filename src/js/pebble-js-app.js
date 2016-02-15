@@ -206,13 +206,17 @@ function getWeather(weatherKey, useCelsius, overrideLocation) {
     weatherKey = weatherKey || '';
     useCelsius = useCelsius || false;
     overrideLocation = overrideLocation || '';
-    navigator.geolocation.getCurrentPosition(
-        function(pos) {
-            locationSuccess(pos, weatherKey, useCelsius, overrideLocation);   
-        },
-        locationError,
-        {timeout: 15000, maximumAge: 60000}
-    );
+    if (overrideLocation) {
+        locationSuccess(null, weatherKey, useCelsius, overrideLocation);
+    } else {
+        navigator.geolocation.getCurrentPosition(
+            function(pos) {
+                locationSuccess(pos, weatherKey, useCelsius, overrideLocation);
+            },
+            locationError,
+            {timeout: 15000, maximumAge: 60000}
+        );
+    }
 }
 
 
