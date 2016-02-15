@@ -1,4 +1,4 @@
-var currentVersion = "1.6";
+var currentVersion = "1.7";
 
 Pebble.addEventListener("ready",
     function(e) {
