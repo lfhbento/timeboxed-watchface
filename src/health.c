@@ -1,3 +1,5 @@
+#include <pebble.h>
+#include "keys.h"
 #include "health.h"
 #include "text.h"
 

@@ -41,6 +41,10 @@ static char dist_or_deep_text[16];
 
 static uint8_t loaded_font;
 
+uint8_t get_loaded_font() {
+    return loaded_font;
+}
+
 void create_text_layers(Window* window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     Layer *window_layer = window_get_root_layer(window);

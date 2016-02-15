@@ -1,9 +1,6 @@
 #ifndef __TIMEBOXED_HEALTH_
 #define __TIMEBOXED_HEALTH_
 
-#include <pebble.h>
-#include "keys.h"
-
 void toggle_health(bool);
 
 bool is_user_sleeping();
