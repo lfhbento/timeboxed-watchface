@@ -89,8 +89,43 @@
             </div>
             <div class="item-container-footer">
                 If you define a manual location, we won't try to use your current location for weather info. (max. length 64 characters)<br/>
-                <b>Notice</b>: If you're not sure the city you entered is working, use the "Verify" button to check if it's a valid location, as sometimes you need to fiddle a little bit with the location string to get the correct result, e.g., adding or removing the state.
+                <b>Notice</b>: If you're not sure the city you entered is working, use the "Verify" button to check if it's a valid location, as sometimes you need to fiddle a little bit with the location string to get the correct result, e.g., adding or removing the state. This will also return 'Invalid location' if the city you entered is ambiguous for the weather provider (e.g., 'Halifax, NS, CA' returns a list of Halifax cities, so that's considered invalid for our purposes. 'Halifax, Canada' works instead ;D).
             </div>
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Locale</div>
+        <div class="item-container-content">
+            <label class="item">&nbsp;
+                <select name="locale" id="locale" class="item-select">
+                    <option class="item-select-option" selected value="0">English</option>
+                    <option class="item-select-option" value="1">Portuguese</option>
+                    <option class="item-select-option" value="2">French</option>
+                    <option class="item-select-option" value="3">German</option>
+                    <option class="item-select-option" value="4">Spanish</option>
+                    <option class="item-select-option" value="5">Italian</option>
+                    <option class="item-select-option" value="6">Dutch</option>
+                    <option class="item-select-option" value="7">Danish</option>
+                    <option class="item-select-option" value="8">Turkish</option>
+                    <option class="item-select-option" value="9">Czech</option>
+                    <option class="item-select-option" value="10">Polish</option>
+                    <option class="item-select-option" value="11">Swedish</option>
+                    <option class="item-select-option" value="12">Finnish</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <div class="item-container">
+        <div class="item-container-header">Date format</div>
+        <div class="item-container-content">
+            <label class="item">&nbsp;
+                <select name="date-format" id="dateFormat" class="item-select">
+                    <option class="item-select-option" selected value="0">Day of week/Month/Day</option>
+                    <option class="item-select-option" value="1">Day of week/Day/Month</option>
+                </select>
+            </label>
         </div>
     </div>
 
@@ -123,8 +158,7 @@
     <div class="item-container">
         <div class="item-container-header">Timezones</div>
         <div class="item-container-content">
-            <label class="item">
-                Alternate timezone
+            <label class="item">&nbsp;
                 <select name="timezones" id="timezones" class="item-select">
                     <option class="item-select-option" selected value="#|0:00">None</option>
                     <option class="item-select-option" value="aoe|-12:00">(GMT -12) Int. Date Line</option>
@@ -202,22 +236,14 @@
 
     <div class="item-container">
         <div class="item-container-header">Fonts</div>
-        <div class="item-container-content" id="fontType">
-            <label class="item blocko-font">
-                Blocko
-                <input type="radio" class="item-radio font-type" name="font-selection" value="0" checked>
-            </label>
-            <label class="item blocko-font">
-                Blocko (big)
-                <input type="radio" class="item-radio font-type" name="font-selection" value="1">
-            </label>
-            <label class="item system-font">
-                Pebble fonts
-                <input type="radio" class="item-radio font-type" name="font-selection" value="2">
-            </label>
-            <label class="item system-font">
-                Archivo
-                <input type="radio" class="item-radio font-type" name="font-selection" value="3">
+        <div class="item-container-content">
+            <label class="item">&nbsp;
+                <select name="font-type" id="fontType" class="item-select">
+                    <option class="item-select-option" selected value="0">Blocko</option>
+                    <option class="item-select-option" value="1">Blocko (Large)</option>
+                    <option class="item-select-option" value="2">Pebble default fonts</option>
+                    <option class="item-select-option" value="3">Archivo</option>
+                </select>
             </label>
         </div>
     </div>
@@ -227,11 +253,11 @@
         <div class="item-container-content">
             <label class="item">
                 Background
-                <input id="bgColor" class="item-color item-color-sunny" type="text" value="0x000000">
+                <input id="bgColor" class="item-color item-color-normal" type="text" value="0x000000">
             </label>
             <label class="item">
                 Time
-                <input id="hoursColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                <input id="hoursColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
             </label>
             <label class="item">
                 Advanced colors
@@ -248,51 +274,51 @@
             <div class="item-container-content">
                 <label class="item">
                     Date
-                    <input id="dateColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="dateColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Alternate time
-                    <input id="altHoursColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="altHoursColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Battery
-                    <input id="batteryColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="batteryColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Battery (low power)
-                    <input id="batteryLowColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="batteryLowColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Bluetooth disconnected
-                    <input id="bluetoothColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="bluetoothColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Update notification
-                    <input id="updateColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="updateColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Weather icon
-                    <input id="weatherColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="weatherColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Current temperature
-                    <input id="tempColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="tempColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Low temperature
-                    <input id="minColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="minColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     High temperature
-                    <input id="maxColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="maxColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Steps
-                    <input id="stepsColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="stepsColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
                     Distance
-                    <input id="distColor" class="item-color item-color-sunny" type="text" value="0xFFFFFF">
+                    <input id="distColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
             </div>
         </div>
@@ -309,7 +335,16 @@
         </div>
     </div>
 
-    <script src="../js/slate.min.js"></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-74048301-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <script src="../js/slate.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

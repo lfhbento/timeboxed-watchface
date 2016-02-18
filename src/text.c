@@ -50,7 +50,7 @@ void create_text_layers(Window* window) {
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
     int selected_font = BLOCKO_FONT;
-    
+
     if (persist_exists(KEY_FONTTYPE)) {
         selected_font = persist_read_int(KEY_FONTTYPE);
     }
@@ -120,7 +120,7 @@ void create_text_layers(Window* window) {
     date = text_layer_create(GRect(date_left, date_top, width, 50));
     text_layer_set_background_color(date, GColorClear);
     text_layer_set_text_alignment(date, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
-    
+
     alt_time = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -2), alt_top, width, 50));
     text_layer_set_background_color(alt_time, GColorClear);
     text_layer_set_text_alignment(alt_time, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
@@ -128,7 +128,7 @@ void create_text_layers(Window* window) {
     battery = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -4), battery_top, width, 50));
     text_layer_set_background_color(battery, GColorClear);
     text_layer_set_text_alignment(battery, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
-    
+
     bluetooth = text_layer_create(GRect(PBL_IF_ROUND_ELSE(2, 0), bt_top, width, 50));
     text_layer_set_background_color(bluetooth, GColorClear);
     text_layer_set_text_alignment(bluetooth, GTextAlignmentLeft);
@@ -168,7 +168,7 @@ void create_text_layers(Window* window) {
     dist_or_deep = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148), width, 50));
     text_layer_set_background_color(dist_or_deep, GColorClear);
     text_layer_set_text_alignment(dist_or_deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
-    
+
     layer_add_child(window_layer, text_layer_get_layer(hours));
     layer_add_child(window_layer, text_layer_get_layer(date));
     layer_add_child(window_layer, text_layer_get_layer(alt_time));
@@ -183,7 +183,7 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(temp_max));
     layer_add_child(window_layer, text_layer_get_layer(steps_or_sleep));
     layer_add_child(window_layer, text_layer_get_layer(dist_or_deep));
-    
+
 }
 
 void destroy_text_layers() {
@@ -206,7 +206,7 @@ void destroy_text_layers() {
 
 void load_face_fonts() {
     int selected_font = BLOCKO_FONT;
-    
+
     if (persist_exists(KEY_FONTTYPE)) {
         selected_font = persist_read_int(KEY_FONTTYPE);
     }
@@ -240,7 +240,7 @@ void load_face_fonts() {
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = BLOCKO_FONT;
     }
-    
+
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
     awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_AWESOME_18));
 }
@@ -280,40 +280,40 @@ void set_colors(Window *window) {
     text_layer_set_text_color(hours, base_color);
     bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enableAdvanced);
-    text_layer_set_text_color(date, 
+    text_layer_set_text_color(date,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
-    text_layer_set_text_color(alt_time, 
+    text_layer_set_text_color(alt_time,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
-    text_layer_set_text_color(weather, 
+    text_layer_set_text_color(weather,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
-    text_layer_set_text_color(temp_cur, 
+    text_layer_set_text_color(temp_cur,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
-    text_layer_set_text_color(temp_min, 
+    text_layer_set_text_color(temp_min,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
-    text_layer_set_text_color(min_icon, 
+    text_layer_set_text_color(min_icon,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
-    text_layer_set_text_color(temp_max, 
+    text_layer_set_text_color(temp_max,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
-    text_layer_set_text_color(max_icon, 
+    text_layer_set_text_color(max_icon,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
-    text_layer_set_text_color(steps_or_sleep, 
+    text_layer_set_text_color(steps_or_sleep,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
-    text_layer_set_text_color(dist_or_deep, 
+    text_layer_set_text_color(dist_or_deep,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
 
     BatteryChargeState charge_state = battery_state_service_peek();
     if (charge_state.charge_percent > 20) {
-        text_layer_set_text_color(battery, 
+        text_layer_set_text_color(battery,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
     } else {
-        text_layer_set_text_color(battery, 
+        text_layer_set_text_color(battery,
             enableAdvanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
     }
-    
-    text_layer_set_text_color(bluetooth, 
+
+    text_layer_set_text_color(bluetooth,
         enableAdvanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
 
-    text_layer_set_text_color(update, 
+    text_layer_set_text_color(update,
         enableAdvanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);

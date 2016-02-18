@@ -28,7 +28,7 @@ static void update_steps_data() {
         health_service_metric_accessible(metric_steps, start, end);
     HealthServiceAccessibilityMask mask_dist =
         health_service_metric_accessible(metric_dist, start, end);
-    
+
     if (mask_steps & HealthServiceAccessibilityMaskAvailable) {
         current_steps = (int)health_service_sum_today(metric_steps);
 
@@ -47,10 +47,10 @@ static void update_steps_data() {
         current_dist_dec = (current_dist%1000)/100;
 
         snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), (useKm ? "%d.%dkm" : "%d.%dmi"), current_dist_int, current_dist_dec);
-        
+
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
-    
+
     HealthActivityMask activities = health_service_peek_current_activities();
     bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
@@ -68,7 +68,7 @@ static void update_steps_data() {
 static void update_sleep_data() {
     HealthMetric metric_sleep = HealthMetricSleepSeconds;
     HealthMetric metric_deep = HealthMetricSleepRestfulSeconds;
-    
+
     time_t start = time_start_of_today();
     time_t end = time(NULL);
 
@@ -76,7 +76,7 @@ static void update_sleep_data() {
     uint16_t current_deep = 0;
     char steps_or_sleep_text[16];
     char dist_or_deep_text[16];
-    
+
     HealthServiceAccessibilityMask mask_sleep =
         health_service_metric_accessible(metric_sleep, start, end);
     HealthServiceAccessibilityMask mask_deep =
@@ -86,9 +86,9 @@ static void update_sleep_data() {
         current_sleep = (int)health_service_sum(metric_sleep, start, end);
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
         int current_sleep_minutes = (current_sleep - (current_sleep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
-        
+
         snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), "%dh%dm", current_sleep_hours, current_sleep_minutes);
-        
+
         set_steps_or_sleep_layer_text(steps_or_sleep_text);
     }
 
@@ -96,9 +96,9 @@ static void update_sleep_data() {
         current_deep = (int)health_service_sum(metric_deep, start, end);
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
         int current_deep_minutes = (current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
-        
+
         snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dh%dm", current_deep_hours, current_deep_minutes);
-        
+
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
@@ -134,7 +134,7 @@ void toggle_health(bool from_configs) {
         has_health = health_service_events_subscribe(health_handler, NULL);
         set_steps_or_sleep_layer_text("0");
         set_dist_or_deep_layer_text("0");
-        
+
     } else {
         has_health = false;
         health_service_events_unsubscribe();
@@ -149,7 +149,7 @@ void toggle_health(bool from_configs) {
 
 bool is_user_sleeping() {
     HealthActivityMask activities = health_service_peek_current_activities();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, 
+    APP_LOG(APP_LOG_LEVEL_DEBUG,
         "Sleeping data. %d %d %d",
         (int)activities & HealthActivitySleep,
         (int)activities & HealthActivityRestfulSleep,
@@ -161,7 +161,7 @@ void show_sleep_data_if_visible() {
     bool sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
     if (health_enabled && sleep_data_enabled) {
         bool is_sleeping = is_user_sleeping();
-        
+
         if (!is_sleeping && was_asleep) {
             sleep_data_visible = true;
             woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 30; //half an hour

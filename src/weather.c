@@ -59,7 +59,7 @@ void update_weather(void) {
     }
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather with key (%s) %d", weather_key_buffer, (int)time(NULL));
-    dict_write_uint8(iter, KEY_USECELSIUS, 
+    dict_write_uint8(iter, KEY_USECELSIUS,
         persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS) ? persist_read_int(KEY_USECELSIUS) : 0);
     dict_write_cstring(iter, KEY_WEATHERKEY, weather_key_buffer);
     app_message_outbox_send();
@@ -80,12 +80,12 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
     } else {
         strcpy(temp_pattern, useCelsius ? "%dC" : "%dF");
     }
-        
+
     snprintf(temp_text, sizeof(temp_text), temp_pattern, temp_val);
     snprintf(max_text, sizeof(max_text), "%d", max_val);
     snprintf(min_text, sizeof(min_text), "%d", min_val);
     snprintf(weather_text, sizeof(weather_text), "%s", weather_conditions[weather_val]);
-    
+
     persist_write_int(KEY_TEMP, temp_val);
     persist_write_int(KEY_MAX, max_val);
     persist_write_int(KEY_MIN, min_val);

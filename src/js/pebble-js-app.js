@@ -1,10 +1,14 @@
+/*globals Pebble*/
+/*jshint node: true*/
+'use strict';
+
 var currentVersion = "1.8";
 
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
-        if (localStorage['weatherEnabled'] && parse(localStorage['weatherEnabled'].toLowerCase())) {
-            getWeather(localStorage['weatherKey'], parse(localStorage['useCelsius'].toLowerCase()), localStorage['overrideLocation']);
+        if (localStorage.weatherEnabled && parse(localStorage.weatherEnabled.toLowerCase())) {
+            getWeather(localStorage.weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
         } else {
             sendError();
         }
@@ -19,9 +23,9 @@ Pebble.addEventListener('appmessage',
             checkForUpdates();
         } else {
             console.log('Fetching weather info...');
-            getWeather(localStorage['weatherKey'], parse(localStorage['useCelsius'].toLowerCase()), localStorage['overrideLocation']);
+            getWeather(localStorage.weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
         }
-    }                     
+    }
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
@@ -34,14 +38,14 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
     var dict = {};
 
-    for (item in configData) {
+    for (var item in configData) {
         var key = 'KEY_' + item.toUpperCase();
         var value = configData[item];
         if (String(value).indexOf('0x') !== -1) {
             value = parseInt(value, 16);
         }
         if (String(value).indexOf('|') !== -1) {
-            newValue = value.split('|')[1].split(':')[0];
+            var newValue = value.split('|')[1].split(':')[0];
             dict[key + 'CODE'] = value.split('|')[0];
             dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
             value = parseInt(newValue, 10);
@@ -52,21 +56,21 @@ Pebble.addEventListener('webviewclosed', function(e) {
         dict[key] = value;
     }
 
-    localStorage['weatherEnabled'] = dict['KEY_ENABLEWEATHER'];
-    localStorage['useCelsius'] = dict['KEY_USECELSIUS'];
-    localStorage['weatherKey'] = dict['KEY_WEATHERKEY'];
-    localStorage['overrideLocation'] = dict['KEY_OVERRIDELOCATION'];
+    localStorage.weatherEnabled = dict.KEY_ENABLEWEATHER;
+    localStorage.useCelsius = dict.KEY_USECELSIUS;
+    localStorage.weatherKey = dict.KEY_WEATHERKEY;
+    localStorage.overrideLocation = dict.KEY_OVERRIDELOCATION;
 
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
     }, function() {
 	console.log('Send failed!');
-    }); 
+    });
 });
 
 function parse(type) {
     return typeof type == 'string' ? JSON.parse(type) : type;
-};
+}
 
 function locationSuccess(pos, weatherKey, useCelsius, overrideLocation) {
     console.log("Retrieving weather info");
@@ -79,7 +83,7 @@ function locationSuccess(pos, weatherKey, useCelsius, overrideLocation) {
 }
 
 function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation) {
-    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/'
+    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/';
     if (!overrideLocation) {
         url += pos.coords.latitude + ',' + pos.coords.longitude + '.json';
     } else {
@@ -101,7 +105,7 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
-            
+
             sendData(temp, max, min, condition);
 
         } catch(ex) {
@@ -114,7 +118,7 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
 
 function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
     var url = 'http://api.openweathermap.org/data/2.5/weather?appid=979cbf006bf67bc368a54af240d15cf3';
-    
+
     if (!overrideLocation) {
         url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
     } else {
@@ -134,7 +138,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
-            
+
             sendData(temp, max, min, condition);
 
         } catch (ex) {
@@ -184,7 +188,7 @@ function sendData(temp, max, min, condition) {
         'KEY_MAX': max,
         'KEY_MIN': min,
         'KEY_WEATHER': condition
-    }
+    };
 
     console.log(JSON.stringify(data));
 
@@ -244,7 +248,7 @@ var sendError = function() {
             console.log('Error sending empty state to Pebble!');
         }
     );
-}
+};
 
 var wu_iconToId = {
     'unknown': 0,
@@ -291,11 +295,7 @@ var wu_iconToId = {
 
 var ow_iconToId = {
     '01d': 1,
-    '01d': 2,
     '02d': 3,
-    '02d': 4,
-    '02d': 5,
-    '02d': 6,
     '03d': 7,
     '04d': 7,
     '09d': 8,
@@ -304,11 +304,7 @@ var ow_iconToId = {
     '11d': 10,
     '50d': 13,
     '01n': 20,
-    '01n': 21,
     '02n': 22,
-    '02n': 23,
-    '02n': 24,
-    '02n': 25,
     '03n': 26,
     '04n': 26,
     '09n': 27,

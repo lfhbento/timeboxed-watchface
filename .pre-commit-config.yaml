@@ -1,0 +1,14 @@
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  sha: '97b88d9610bcc03982ddac33caba98bb2b751f5f'
+  hooks:
+    - id: trailing-whitespace
+- repo: git://github.com/pre-commit/mirrors-jshint
+  sha: 'c62c18f8ed2a43ef47483a1e0677fc532d228d73'
+  hooks:
+    - id: jshint
+- repo: git://github.com/pre-commit/mirrors-fixmyjs
+  sha: 'a85f43b8e3ccc30438770cc0b1c4f9809a10afb4'
+  hooks:
+    - id: fixmyjs
+      args: ['-l', '-c', '.jshintrc']
+      exclude: '(config\/js\/slate.*|config\/v1.*)'

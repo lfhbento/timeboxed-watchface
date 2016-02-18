@@ -213,6 +213,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
 
           var value = $(this).data('value');
           $color.val(value);
+          $color.trigger('change');
           $valueDisplay.css('background-color', value.replace(/^0x/, '#'));
           $item.find('.color-box-wrap').removeClass('show');
         })

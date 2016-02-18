@@ -41,7 +41,7 @@ static char* MONTHS[13][12] = {
 void get_current_date(struct tm* tick_time, char* buffer, int buf_size) {
     char* weekday = WEEKDAYS[selected_locale][tick_time->tm_wday];
     char* month = MONTHS[selected_locale][tick_time->tm_mon];
-    
+
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting date: %s %s %d.  %d%d", weekday, month, tick_time->tm_mday, (int)time(NULL), (int)time_ms(NULL, NULL));
     switch(selected_format) {
         case FORMAT_WMD:

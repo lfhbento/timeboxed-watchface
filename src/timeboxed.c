@@ -45,7 +45,7 @@ static void update_time() {
         }
 
         strcat(tz_text, ".");
-        strcat(tz_text, tz_name); 
+        strcat(tz_text, tz_name);
 
         for (unsigned char i = 0; tz_text[i]; ++i) {
             if (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_BIG_FONT) {
@@ -111,7 +111,7 @@ static void check_for_updates() {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, KEY_HASUPDATE, 1); 
+    dict_write_uint8(iter, KEY_HASUPDATE, 1);
     app_message_outbox_send();
 }
 
@@ -373,7 +373,7 @@ static void watchface_load(Window *window) {
 
 static void watchface_unload(Window *window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
-    
+
     unload_face_fonts();
 
     destroy_text_layers();
