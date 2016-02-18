@@ -6,22 +6,6 @@
 uint8_t selected_locale;
 uint8_t selected_format;
 
-/*static char* LOCALE_NAMES[13] = {
-    "English",
-    "Portuguese",
-    "French",
-    "German",
-    "Spanish",
-    "Italian",
-    "Dutch",
-    "Danish",
-    "Turkish",
-    "Czech",
-    "Polish",
-    "Swedish",
-    "Finnish"
-};*/ // Not in use right now
-
 static char* WEEKDAYS[13][7] = {
     {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}, // en_US
     {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"}, // pt_BR
