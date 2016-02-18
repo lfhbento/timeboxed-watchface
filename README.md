@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/hussin/timeboxed-watchface/master/assets/banner_basalt.png)
 
-A simple, clean and customizable watchface for the Pebble Watch.
+A simple, clean and customizable watchface for the Pebble smartwatch.
 
 ## Key features
 
