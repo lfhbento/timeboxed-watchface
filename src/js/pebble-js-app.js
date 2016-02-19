@@ -29,7 +29,10 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL('http://www.lbento.space/pebble-apps/timeboxed/v2.0/index.html?v=' + currentVersion + '&p=' + Pebble.getActiveWatchInfo().platform);
+    Pebble.openURL(
+        'http://www.lbento.space/pebble-apps/timeboxed/v2.0/index.html?v=' + currentVersion +
+        '&p=' + Pebble.getActiveWatchInfo().platform +
+        '&l=' + Pebble.getActiveWatchInfo().language);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {

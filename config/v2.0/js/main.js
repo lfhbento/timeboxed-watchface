@@ -50,6 +50,7 @@
         ga('set', 'dimension2', localStorage.locale || 0);
         ga('set', 'dimension3', localStorage.fontType || 0);
         ga('set', 'dimension4', getCurrentVersion());
+        ga('set', 'dimension5', getUserLanguage());
 
         ga('send', 'pageview');
     };
@@ -93,6 +94,10 @@
 
     var getPlatform = function() {
         return getUrlParam('p');
+    };
+
+    var getUserLanguage = function() {
+        return getUrlParam('l');
     };
 
     var checkForUpdates = function() {
