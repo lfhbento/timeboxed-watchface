@@ -305,12 +305,10 @@
 
     };
 
-    $(function() {
-        toggleFieldsByPlatform();
-        initGA();
-        loadData();
-        initEvents();
-        checkForUpdates();
-    });
+    toggleFieldsByPlatform();
+    initGA();
+    loadData();
+    initEvents();
+    checkForUpdates();
 
 }(Zepto));

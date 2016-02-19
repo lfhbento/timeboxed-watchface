@@ -101,16 +101,55 @@ static void get_text_positions_blocko(GTextAlignment align, struct TextPositions
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, -40, 0, -40), -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
-static void get_text_positions_blocko_big(GTextAlignment alignment, struct TextPositions* positions) {
-    get_text_positions_blocko(alignment, positions);
+static void get_text_positions_blocko_big(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(40, 32));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(96, 88));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(42, 34));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(124, 116));
+    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(64, 54));
+    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(86, 76));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), PBL_IF_ROUND_ELSE(4, 3));
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 3));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 3));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, 40, 0, 40), 4), PBL_IF_ROUND_ELSE(144, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, -40, 0, -40), -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
-static void get_text_positions_system(GTextAlignment alignment, struct TextPositions* positions) {
-    get_text_positions_blocko(alignment, positions);
+static void get_text_positions_system(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(54, 42));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, 86));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, 34));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(124, 112));
+    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(68, 56));
+    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(86, 74));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 2);
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(20, 2));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(20, 2));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, 40, 0, 40), 4), PBL_IF_ROUND_ELSE(144, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, -40, 0, -40), -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
-static void get_text_positions_archivo(GTextAlignment alignment, struct TextPositions* positions) {
-    get_text_positions_blocko(alignment, positions);
+static void get_text_positions_archivo(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, 40));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(100, 92));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(44, 34));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(126, 118));
+    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(68, 56));
+    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(86, 74));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 2);
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(24, 2));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(24, 2));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, 40, 0, 40), 4), PBL_IF_ROUND_ELSE(144, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, -40, 0, -40), -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 
@@ -159,59 +198,6 @@ void create_text_layers(Window* window) {
     get_text_positions(selected_font, text_align, &text_positions);
 
     int width = bounds.size.w;
-
-    /*
-    int hours_top;
-    int date_top;
-    int alt_top;
-    int battery_top;
-    int bt_top;
-    int temp_cur_top;
-    int temp_min_max_top;
-    int temp_icon_min_max_top;
-    int update_top;
-
-    if (selected_font == BLOCKO_FONT) {
-        hours_top = PBL_IF_ROUND_ELSE(46, 38);
-        date_top = PBL_IF_ROUND_ELSE(98, 90);
-        alt_top = PBL_IF_ROUND_ELSE(46, 38);
-        battery_top = PBL_IF_ROUND_ELSE(120, 112);
-        bt_top = PBL_IF_ROUND_ELSE(70, 60);
-        update_top = PBL_IF_ROUND_ELSE(88, 78);
-        temp_cur_top = PBL_IF_ROUND_ELSE(4, 4);
-        temp_min_max_top = PBL_IF_ROUND_ELSE(22, 4);
-        temp_icon_min_max_top = PBL_IF_ROUND_ELSE(20, 0);
-    } else if (selected_font == BLOCKO_BIG_FONT) {
-        hours_top = PBL_IF_ROUND_ELSE(40, 32);
-        date_top = PBL_IF_ROUND_ELSE(96, 88);
-        alt_top = PBL_IF_ROUND_ELSE(42, 34);
-        battery_top = PBL_IF_ROUND_ELSE(124, 116);
-        bt_top = PBL_IF_ROUND_ELSE(64, 54);
-        update_top = PBL_IF_ROUND_ELSE(86, 76);
-        temp_cur_top = PBL_IF_ROUND_ELSE(4, 3);
-        temp_min_max_top = PBL_IF_ROUND_ELSE(22, 3);
-        temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
-    } else if (selected_font == ARCHIVO_FONT) {
-        hours_top = PBL_IF_ROUND_ELSE(48, 40);
-        date_top = PBL_IF_ROUND_ELSE(100, 92);
-        alt_top = PBL_IF_ROUND_ELSE(44, 34);
-        battery_top = PBL_IF_ROUND_ELSE(126, 118);
-        bt_top = PBL_IF_ROUND_ELSE(68, 56);
-        update_top = PBL_IF_ROUND_ELSE(86, 74);
-        temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
-        temp_min_max_top = PBL_IF_ROUND_ELSE(24, 2);
-        temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
-    } else {
-        hours_top = PBL_IF_ROUND_ELSE(54, 42);
-        date_top = PBL_IF_ROUND_ELSE(98, 86);
-        alt_top = PBL_IF_ROUND_ELSE(46, 34);
-        battery_top = PBL_IF_ROUND_ELSE(124, 112);
-        bt_top = PBL_IF_ROUND_ELSE(68, 56);
-        update_top = PBL_IF_ROUND_ELSE(86, 74);
-        temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
-        temp_min_max_top = PBL_IF_ROUND_ELSE(20, 2);
-        temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
-    }*/
 
     hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
     text_layer_set_background_color(hours, GColorClear);
