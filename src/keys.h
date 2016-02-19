@@ -39,11 +39,16 @@
 #define KEY_HASUPDATE 35
 #define KEY_LOCALE 36
 #define KEY_DATEFORMAT 37
+#define KEY_TEXTALIGN 38
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
 #define SYSTEM_FONT 2
 #define ARCHIVO_FONT 3
+
+#define ALIGN_LEFT 0
+#define ALIGN_CENTER 1
+#define ALIGN_RIGHT 2
 
 #define LC_ENGLISH 0
 #define LC_PORTUGUESE 1

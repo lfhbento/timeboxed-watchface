@@ -41,23 +41,127 @@ static char dist_or_deep_text[16];
 
 static uint8_t loaded_font;
 
+struct TextPositions {
+    GPoint hours;
+    GPoint date;
+    GPoint alt_time;
+    GPoint battery;
+    GPoint bluetooth;
+    GPoint updates;
+    GPoint weather;
+    GPoint temp_cur;
+    GPoint temp_max;
+    GPoint temp_min;
+    GPoint icon_max;
+    GPoint icon_min;
+    GPoint steps_or_sleep;
+    GPoint dist_or_deep;
+};
+
 uint8_t get_loaded_font() {
     return loaded_font;
 }
+
+static GPoint create_point(int x, int y) {
+    struct GPoint point;
+    point.x = x;
+    point.y = y;
+    return point;
+}
+
+static int get_pos(int alignment, int left_pos, int center_pos, int right_pos) {
+    switch (alignment) {
+        case GTextAlignmentLeft:
+            return left_pos;
+            break;
+        case GTextAlignmentCenter:
+            return center_pos;
+            break;
+        case GTextAlignmentRight:
+            return right_pos;
+            break;
+    }
+    return right_pos;
+}
+
+static void get_text_positions_blocko(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(46, 38));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, 90));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, 38));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, 112));
+    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(70, 60));
+    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(88, 78));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 4);
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 4));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 4));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, 40, 0, 40), 4), PBL_IF_ROUND_ELSE(144, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(get_pos(align, -40, 0, -40), -4), PBL_IF_ROUND_ELSE(158, 148));
+}
+
+static void get_text_positions_blocko_big(GTextAlignment alignment, struct TextPositions* positions) {
+    get_text_positions_blocko(alignment, positions);
+}
+
+static void get_text_positions_system(GTextAlignment alignment, struct TextPositions* positions) {
+    get_text_positions_blocko(alignment, positions);
+}
+
+static void get_text_positions_archivo(GTextAlignment alignment, struct TextPositions* positions) {
+    get_text_positions_blocko(alignment, positions);
+}
+
+
+static void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions) {
+    switch(selected_font) {
+        case BLOCKO_FONT:
+            get_text_positions_blocko(alignment, positions);
+            break;
+        case BLOCKO_BIG_FONT:
+            get_text_positions_blocko_big(alignment, positions);
+            break;
+        case SYSTEM_FONT:
+            get_text_positions_system(alignment, positions);
+            break;
+        case ARCHIVO_FONT:
+            get_text_positions_archivo(alignment, positions);
+            break;
+        default:
+            get_text_positions_blocko(alignment, positions);
+    }
+};
 
 void create_text_layers(Window* window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
-    int selected_font = BLOCKO_FONT;
 
-    if (persist_exists(KEY_FONTTYPE)) {
-        selected_font = persist_read_int(KEY_FONTTYPE);
+    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
+    int alignment = PBL_IF_ROUND_ELSE(ALIGN_CENTER, persist_exists(KEY_TEXTALIGN) ? persist_read_int(KEY_TEXTALIGN) : ALIGN_RIGHT);
+
+    GTextAlignment text_align = GTextAlignmentRight;
+    switch (alignment) {
+        case ALIGN_LEFT:
+            text_align = GTextAlignmentLeft;
+            break;
+        case ALIGN_CENTER:
+            text_align = GTextAlignmentCenter;
+            break;
+        case ALIGN_RIGHT:
+            text_align = GTextAlignmentRight;
+            break;
     }
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Alignment set: %d. %d%d", text_align, (int)time(NULL), (int)time_ms(NULL, NULL));
+
+    struct TextPositions text_positions;
+    get_text_positions(selected_font, text_align, &text_positions);
+
     int width = bounds.size.w;
 
+    /*
     int hours_top;
-    int date_left;
     int date_top;
     int alt_top;
     int battery_top;
@@ -69,7 +173,6 @@ void create_text_layers(Window* window) {
 
     if (selected_font == BLOCKO_FONT) {
         hours_top = PBL_IF_ROUND_ELSE(46, 38);
-        date_left = PBL_IF_ROUND_ELSE(0, -2);
         date_top = PBL_IF_ROUND_ELSE(98, 90);
         alt_top = PBL_IF_ROUND_ELSE(46, 38);
         battery_top = PBL_IF_ROUND_ELSE(120, 112);
@@ -80,7 +183,6 @@ void create_text_layers(Window* window) {
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(20, 0);
     } else if (selected_font == BLOCKO_BIG_FONT) {
         hours_top = PBL_IF_ROUND_ELSE(40, 32);
-        date_left = PBL_IF_ROUND_ELSE(0, -2);
         date_top = PBL_IF_ROUND_ELSE(96, 88);
         alt_top = PBL_IF_ROUND_ELSE(42, 34);
         battery_top = PBL_IF_ROUND_ELSE(124, 116);
@@ -91,7 +193,6 @@ void create_text_layers(Window* window) {
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
     } else if (selected_font == ARCHIVO_FONT) {
         hours_top = PBL_IF_ROUND_ELSE(48, 40);
-        date_left = PBL_IF_ROUND_ELSE(0, -2);
         date_top = PBL_IF_ROUND_ELSE(100, 92);
         alt_top = PBL_IF_ROUND_ELSE(44, 34);
         battery_top = PBL_IF_ROUND_ELSE(126, 118);
@@ -102,7 +203,6 @@ void create_text_layers(Window* window) {
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
     } else {
         hours_top = PBL_IF_ROUND_ELSE(54, 42);
-        date_left = PBL_IF_ROUND_ELSE(0, -2);
         date_top = PBL_IF_ROUND_ELSE(98, 86);
         alt_top = PBL_IF_ROUND_ELSE(46, 34);
         battery_top = PBL_IF_ROUND_ELSE(124, 112);
@@ -111,61 +211,61 @@ void create_text_layers(Window* window) {
         temp_cur_top = PBL_IF_ROUND_ELSE(2, 2);
         temp_min_max_top = PBL_IF_ROUND_ELSE(20, 2);
         temp_icon_min_max_top = PBL_IF_ROUND_ELSE(18, -2);
-    }
+    }*/
 
-    hours = text_layer_create(GRect(0, hours_top, width, 100));
+    hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
     text_layer_set_background_color(hours, GColorClear);
-    text_layer_set_text_alignment(hours, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(hours, text_align);
 
-    date = text_layer_create(GRect(date_left, date_top, width, 50));
+    date = text_layer_create(GRect(text_positions.date.x, text_positions.date.y, width, 50));
     text_layer_set_background_color(date, GColorClear);
-    text_layer_set_text_alignment(date, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(date, text_align);
 
-    alt_time = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -2), alt_top, width, 50));
+    alt_time = text_layer_create(GRect(text_positions.alt_time.x, text_positions.alt_time.y, width, 50));
     text_layer_set_background_color(alt_time, GColorClear);
-    text_layer_set_text_alignment(alt_time, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(alt_time, text_align);
 
-    battery = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -4), battery_top, width, 50));
+    battery = text_layer_create(GRect(text_positions.battery.x, text_positions.battery.y, width, 50));
     text_layer_set_background_color(battery, GColorClear);
-    text_layer_set_text_alignment(battery, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(battery, text_align);
 
-    bluetooth = text_layer_create(GRect(PBL_IF_ROUND_ELSE(2, 0), bt_top, width, 50));
+    bluetooth = text_layer_create(GRect(text_positions.bluetooth.x, text_positions.bluetooth.y, width, 50));
     text_layer_set_background_color(bluetooth, GColorClear);
-    text_layer_set_text_alignment(bluetooth, GTextAlignmentLeft);
+    text_layer_set_text_alignment(bluetooth, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
 
-    update = text_layer_create(GRect(PBL_IF_ROUND_ELSE(2, 0), update_top, width, 50));
+    update = text_layer_create(GRect(text_positions.updates.x, text_positions.updates.y, width, 50));
     text_layer_set_background_color(update, GColorClear);
-    text_layer_set_text_alignment(update, GTextAlignmentLeft);
+    text_layer_set_text_alignment(update, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
 
-    weather = text_layer_create(GRect(PBL_IF_ROUND_ELSE(-14, 4), 0, width, 50));
+    weather = text_layer_create(GRect(text_positions.weather.x, text_positions.weather.y, width, 50));
     text_layer_set_background_color(weather, GColorClear);
     text_layer_set_text_alignment(weather, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
-    temp_cur = text_layer_create(GRect(PBL_IF_ROUND_ELSE(16, 38), temp_cur_top, width, 50));
+    temp_cur = text_layer_create(GRect(text_positions.temp_cur.x, text_positions.temp_cur.y, width, 50));
     text_layer_set_background_color(temp_cur, GColorClear);
     text_layer_set_text_alignment(temp_cur, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
-    temp_min = text_layer_create(GRect(PBL_IF_ROUND_ELSE(70, 80), temp_min_max_top, width, 50));
+    temp_min = text_layer_create(GRect(text_positions.temp_min.x, text_positions.temp_min.y, width, 50));
     text_layer_set_background_color(temp_min, GColorClear);
     text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
 
-    min_icon = text_layer_create(GRect(PBL_IF_ROUND_ELSE(60, 70), temp_icon_min_max_top, width, 50));
+    min_icon = text_layer_create(GRect(text_positions.icon_min.x, text_positions.icon_min.y, width, 50));
     text_layer_set_background_color(min_icon, GColorClear);
     text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
 
-    temp_max = text_layer_create(GRect(PBL_IF_ROUND_ELSE(105, 113), temp_min_max_top, width, 50));
+    temp_max = text_layer_create(GRect(text_positions.temp_max.x, text_positions.temp_max.y, width, 50));
     text_layer_set_background_color(temp_max, GColorClear);
     text_layer_set_text_alignment(temp_max, GTextAlignmentLeft);
 
-    max_icon = text_layer_create(GRect(PBL_IF_ROUND_ELSE(95, 103), temp_icon_min_max_top, width, 50));
+    max_icon = text_layer_create(GRect(text_positions.icon_max.x, text_positions.icon_max.y, width, 50));
     text_layer_set_background_color(max_icon, GColorClear);
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
-    steps_or_sleep = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148), width, 50));
+    steps_or_sleep = text_layer_create(GRect(text_positions.steps_or_sleep.x, text_positions.steps_or_sleep.y, width, 50));
     text_layer_set_background_color(steps_or_sleep, GColorClear);
     text_layer_set_text_alignment(steps_or_sleep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
-    dist_or_deep = text_layer_create(GRect(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148), width, 50));
+    dist_or_deep = text_layer_create(GRect(text_positions.dist_or_deep.x, text_positions.dist_or_deep.y, width, 50));
     text_layer_set_background_color(dist_or_deep, GColorClear);
     text_layer_set_text_alignment(dist_or_deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
 

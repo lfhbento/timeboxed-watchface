@@ -26,6 +26,7 @@
         "KEY_STEPSCOLOR": 22,
         "KEY_TEMP": 0,
         "KEY_TEMPCOLOR": 19,
+        "KEY_TEXTALIGN": 38,
         "KEY_TIMEZONES": 10,
         "KEY_TIMEZONESCODE": 24,
         "KEY_TIMEZONESMINUTES": 25,

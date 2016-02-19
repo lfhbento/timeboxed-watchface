@@ -157,38 +157,32 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *enableHealth = dict_find(iterator, KEY_ENABLEHEALTH);
     if (enableHealth) {
-        bool health = enableHealth->value->int32;
-        persist_write_int(KEY_ENABLEHEALTH, health);
+        persist_write_int(KEY_ENABLEHEALTH, enableHealth->value->int32);
     }
 
     Tuple *useKm = dict_find(iterator, KEY_USEKM);
     if (useKm) {
-        bool km = useKm->value->int8;
-        persist_write_int(KEY_USEKM, km);
+        persist_write_int(KEY_USEKM, useKm->value->int8);
     }
 
     Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);
     if (showSleep) {
-        bool sleep = showSleep->value->int8;
-        persist_write_int(KEY_SHOWSLEEP, sleep);
+        persist_write_int(KEY_SHOWSLEEP, showSleep->value->int8);
     }
 
     Tuple *enableWeather = dict_find(iterator, KEY_ENABLEWEATHER);
     if (enableWeather) {
-        bool weather = enableWeather->value->int8;
-        persist_write_int(KEY_ENABLEWEATHER, weather);
+        persist_write_int(KEY_ENABLEWEATHER, enableWeather->value->int8);
     }
 
     Tuple *weatherKey = dict_find(iterator, KEY_WEATHERKEY);
     if (weatherKey) {
-        char* key = weatherKey->value->cstring;
-        persist_write_string(KEY_WEATHERKEY, key);
+        persist_write_string(KEY_WEATHERKEY, weatherKey->value->cstring);
     }
 
     Tuple *useCelsius = dict_find(iterator, KEY_USECELSIUS);
     if (useCelsius) {
-        bool celsius = useCelsius->value->int8;
-        persist_write_int(KEY_USECELSIUS, celsius);
+        persist_write_int(KEY_USECELSIUS, useCelsius->value->int8);
     }
 
     Tuple *timezones = dict_find(iterator, KEY_TIMEZONES);
@@ -214,128 +208,112 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *bgColor = dict_find(iterator, KEY_BGCOLOR);
     if (bgColor) {
-        uint32_t bg_c = bgColor->value->int32;
-        persist_write_int(KEY_BGCOLOR, bg_c);
+        persist_write_int(KEY_BGCOLOR, bgColor->value->int32);
     }
 
     Tuple *hoursColor = dict_find(iterator, KEY_HOURSCOLOR);
     if (hoursColor) {
-        uint32_t time_c = hoursColor->value->int32;
-        persist_write_int(KEY_HOURSCOLOR, time_c);
+        persist_write_int(KEY_HOURSCOLOR, hoursColor->value->int32);
     }
 
     Tuple *enableAdvanced = dict_find(iterator, KEY_ENABLEADVANCED);
     if (enableAdvanced) {
-        bool adv = enableAdvanced->value->int8;
-        persist_write_int(KEY_ENABLEADVANCED, adv);
+        persist_write_int(KEY_ENABLEADVANCED, enableAdvanced->value->int8);
     }
 
     Tuple *dateColor = dict_find(iterator, KEY_DATECOLOR);
     if (dateColor) {
-        uint32_t date_c = dateColor->value->int32;
-        persist_write_int(KEY_DATECOLOR, date_c);
+        persist_write_int(KEY_DATECOLOR, dateColor->value->int32);
     }
 
     Tuple *altHoursColor = dict_find(iterator, KEY_ALTHOURSCOLOR);
     if (altHoursColor) {
-        uint32_t alt_c = altHoursColor->value->int32;
-        persist_write_int(KEY_ALTHOURSCOLOR, alt_c);
+        persist_write_int(KEY_ALTHOURSCOLOR, altHoursColor->value->int32);
     }
 
     Tuple *batteryColor = dict_find(iterator, KEY_BATTERYCOLOR);
     if (batteryColor) {
-        uint32_t bat_c = batteryColor->value->int32;
-        persist_write_int(KEY_BATTERYCOLOR, bat_c);
+        persist_write_int(KEY_BATTERYCOLOR, batteryColor->value->int32);
     }
 
     Tuple *batteryLowColor = dict_find(iterator, KEY_BATTERYLOWCOLOR);
     if (batteryLowColor) {
-        uint32_t batl_c = batteryLowColor->value->int32;
-        persist_write_int(KEY_BATTERYLOWCOLOR, batl_c);
+        persist_write_int(KEY_BATTERYLOWCOLOR, batteryLowColor->value->int32);
     }
 
     Tuple *weatherColor = dict_find(iterator, KEY_WEATHERCOLOR);
     if (weatherColor) {
-        uint32_t weather_c = weatherColor->value->int32;
-        persist_write_int(KEY_WEATHERCOLOR, weather_c);
+        persist_write_int(KEY_WEATHERCOLOR, weatherColor->value->int32);
     }
 
     Tuple *tempColor = dict_find(iterator, KEY_TEMPCOLOR);
     if (tempColor) {
-        uint32_t temp_c = tempColor->value->int32;
-        persist_write_int(KEY_TEMPCOLOR, temp_c);
+        persist_write_int(KEY_TEMPCOLOR, tempColor->value->int32);
     }
 
     Tuple *minColor = dict_find(iterator, KEY_MINCOLOR);
     if (minColor) {
-        uint32_t min_c = minColor->value->int32;
-        persist_write_int(KEY_MINCOLOR, min_c);
+        persist_write_int(KEY_MINCOLOR, minColor->value->int32);
     }
 
     Tuple *maxColor = dict_find(iterator, KEY_MAXCOLOR);
     if (maxColor) {
-        uint32_t max_c = maxColor->value->int32;
-        persist_write_int(KEY_MAXCOLOR, max_c);
+        persist_write_int(KEY_MAXCOLOR, maxColor->value->int32);
     }
 
     Tuple *stepsColor = dict_find(iterator, KEY_STEPSCOLOR);
     if (stepsColor) {
-        uint32_t steps_c = stepsColor->value->int32;
-        persist_write_int(KEY_STEPSCOLOR, steps_c);
+        persist_write_int(KEY_STEPSCOLOR, stepsColor->value->int32);
     }
 
     Tuple *distColor = dict_find(iterator, KEY_DISTCOLOR);
     if (distColor) {
-        uint32_t dist_c = distColor->value->int32;
-        persist_write_int(KEY_DISTCOLOR, dist_c);
+        persist_write_int(KEY_DISTCOLOR, distColor->value->int32);
     }
 
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
     if (fontType) {
-        uint8_t font = fontType->value->int8;
-        persist_write_int(KEY_FONTTYPE, font);
+        persist_write_int(KEY_FONTTYPE, fontType->value->int8);
     }
 
     Tuple *bluetoothDisconnect = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
     if (bluetoothDisconnect) {
-        uint8_t btd = bluetoothDisconnect->value->int8;
-        persist_write_int(KEY_BLUETOOTHDISCONNECT, btd);
+        persist_write_int(KEY_BLUETOOTHDISCONNECT, bluetoothDisconnect->value->int8);
     }
 
     Tuple *bluetoothColor = dict_find(iterator, KEY_BLUETOOTHCOLOR);
     if (bluetoothColor) {
-        uint32_t bluetooth_c = bluetoothColor->value->int32;
-        persist_write_int(KEY_BLUETOOTHCOLOR, bluetooth_c);
+        persist_write_int(KEY_BLUETOOTHCOLOR, bluetoothColor->value->int32);
     }
 
     Tuple *overrideLocation = dict_find(iterator, KEY_OVERRIDELOCATION);
     if (overrideLocation) {
-        char* loc = overrideLocation->value->cstring;
-        persist_write_string(KEY_OVERRIDELOCATION, loc);
+        persist_write_string(KEY_OVERRIDELOCATION, overrideLocation->value->cstring);
     }
 
     Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
     if (updateAvailable) {
-        uint32_t update_a = updateAvailable->value->int32;
-        persist_write_int(KEY_UPDATE, update_a);
+        persist_write_int(KEY_UPDATE, updateAvailable->value->int32);
     }
 
     Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
     if (updateColor) {
-        uint32_t update_c = updateColor->value->int32;
-        persist_write_int(KEY_UPDATECOLOR, update_c);
+        persist_write_int(KEY_UPDATECOLOR, updateColor->value->int32);
     }
 
     Tuple *locale = dict_find(iterator, KEY_LOCALE);
     if (locale) {
-        uint8_t locale_v = locale->value->int8;
-        persist_write_int(KEY_LOCALE, locale_v);
+        persist_write_int(KEY_LOCALE, locale->value->int8);
     }
 
     Tuple *dateFormat = dict_find(iterator, KEY_DATEFORMAT);
     if (dateFormat) {
-        uint8_t dateformat_v = dateFormat->value->int8;
-        persist_write_int(KEY_DATEFORMAT, dateformat_v);
+        persist_write_int(KEY_DATEFORMAT, dateFormat->value->int8);
+    }
+
+    Tuple *textAlign = dict_find(iterator, KEY_TEXTALIGN);
+    if (textAlign) {
+        persist_write_int(KEY_TEXTALIGN, textAlign->value->int8);
     }
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));

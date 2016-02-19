@@ -1,47 +1,68 @@
 (function($) {
     'use strict';
 
-    var loadedData = false;
-
     var trackEvent = function(category, action, label, value) {
-        if (loadedData) {
-            ga('send', 'event', category, action, label, value);
-        }
+        ga('send', 'event', category, action, label, value);
     };
 
-    $('#enableHealth').change(function() {
-        $('#healthConfigs').toggleClass('hidden');
-    });
+    var initEvents = function() {
+        $('#enableHealth').change(function() {
+            $('#healthConfigs').toggleClass('hidden');
+        });
 
-    $('#enableWeather').change(function() {
-        $('#weatherConfigs').toggleClass('hidden');
-    });
+        $('#enableWeather').change(function() {
+            $('#weatherConfigs').toggleClass('hidden');
+        });
 
-    $('#enableAdvanced').change(function() {
-        $('#advancedConfigs').toggleClass('hidden');
-    });
+        $('#enableAdvanced').change(function() {
+            $('#advancedConfigs').toggleClass('hidden');
+        });
 
-    $('.item-color').click(function(e) {
-        trackEvent('color', e.currentTarget.id, 'click');
-    });
-    $('.item-color').change(function(e) {
-        trackEvent('color', e.currentTarget.id, e.currentTarget.value);
-    });
+        $('.item-color').click(function(e) {
+            trackEvent('color', e.currentTarget.id, 'click');
+        });
+        $('.item-color').change(function(e) {
+            trackEvent('color', e.currentTarget.id, e.currentTarget.value);
+        });
 
-    $('.item-select').click(function(e) {
-        trackEvent(e.currentTarget.id, 'click');
-    });
-    $('.item-select').change(function(e) {
-        trackEvent(e.currentTarget.id, 'select', e.currentTarget.selectedOptions[0].value);
-    });
+        $('.item-select').click(function(e) {
+            trackEvent(e.currentTarget.id, 'click');
+        });
+        $('.item-select').change(function(e) {
+            trackEvent(e.currentTarget.id, 'select', e.currentTarget.selectedOptions[0].value);
+        });
 
-    $('.item-toggle').change(function(e) {
-        trackEvent(e.currentTarget.id, 'click', e.currentTarget.checked);
-    });
+        $('.item-toggle').change(function(e) {
+            trackEvent(e.currentTarget.id, 'click', e.currentTarget.checked);
+        });
 
-    $('.item-input').change(function(e) {
-        trackEvent(e.currentTarget.id, e.currentTarget.value ? 'used' : 'not used');
-    });
+        $('.item-input').change(function(e) {
+            trackEvent(e.currentTarget.id, e.currentTarget.value ? 'used' : 'not used');
+        });
+
+        $('.tab-align').click(function(e) {
+            trackEvent('align', e.currentTarget.getAttribute('data-value'));
+        });
+    };
+
+    var initGA = function() {
+        ga('set', 'dimension1', getPlatform());
+        ga('set', 'dimension2', localStorage.locale || 0);
+        ga('set', 'dimension3', localStorage.fontType || 0);
+        ga('set', 'dimension4', getCurrentVersion());
+
+        ga('send', 'pageview');
+    };
+
+    var toggleFieldsByPlatform = function() {
+        var platform = getPlatform();
+
+        if (platform === 'aplite') {
+            $('#healthContainer').addClass('hidden');
+        } else if (platform === 'chalk') {
+            $('#alignContainer').addClass('hidden');
+        }
+    };
 
     var parse = function (type) {
         var value;
@@ -53,17 +74,25 @@
         return value;
     };
 
-    var getCurrentVersion = function() {
+    var getUrlParam = function(param) {
         var urlParamList = window.location.search.substring(1);
         var urlParams = urlParamList.split('&');
         for (var item in urlParams) {
             var elem = urlParams[item];
             var keyValue = elem.split('=');
-            if (keyValue[0] === 'v') {
+            if (keyValue[0] === param) {
                 return keyValue[1];
             }
         }
         return '';
+    };
+
+    var getCurrentVersion = function() {
+        return getUrlParam('v');
+    };
+
+    var getPlatform = function() {
+        return getUrlParam('p');
     };
 
     var checkForUpdates = function() {
@@ -83,22 +112,22 @@
                             hasUpdate,
                             currentVersion,
                             latestVersion);
-                        trackEvent('updates', 'success', getCurrentVersion(), hasUpdate);
+                        trackEvent('updates', 'success', hasUpdate);
                     } catch(ex) {
                         console.log(ex);
                         notifyUpdate(false);
-                        trackEvent('updates', 'error', getCurrentVersion());
+                        trackEvent('updates', 'error');
                     }
                 } else {
                     console.log('Ajax fail. Status: ' + status);
                     notifyUpdate(false);
-                    trackEvent('updates', 'ajax fail', getCurrentVersion(), status);
+                    trackEvent('updates', 'ajax fail', status);
                 }
             },
             error: function() {
                 console.log('Ajax error.');
                 notifyUpdate(false);
-                trackEvent('updates', 'ajax error', getCurrentVersion());
+                trackEvent('updates', 'ajax error');
             }
         });
     };
@@ -188,6 +217,15 @@
                     if (item.indexOf('Color') !== -1 || item === 'weatherKey' || item === 'timezones' ||
                         item == 'overrideLocation' || item === 'fontType' || item === 'dateFormat' || item === 'locale') {
                         element.value = itemValue;
+                    } else if (item.indexOf('textAlign') !== -1) {
+                        var tabAligns = $('.tab-align');
+                        for (var i = 0; i < tabAligns.length; ++i) {
+                            if (tabAligns[i].getAttribute('data-value') === itemValue) {
+                                $(tabAligns[i]).addClass('active');
+                            } else {
+                                $(tabAligns[i]).removeClass('active');
+                            }
+                        }
                     } else {
                         element.checked = parse(itemValue) || false;
                         if (item.indexOf('enable') !== -1 && element.checked) {
@@ -197,13 +235,12 @@
                     }
                 }
             }
-            loadedData = true;
             trackEvent('data', 'loaded', hasData);
         } catch (ex) {
             console.log(ex);
-            loadedData = true;
             trackEvent('data', 'loaded', 'error');
         }
+
 
     };
 
@@ -255,7 +292,8 @@
             updateColor: $('#updateColor').val(),
             update: $('#update')[0].checked,
             locale: $('#locale')[0].selectedOptions[0].value,
-            dateFormat: $('#dateFormat')[0].selectedOptions[0].value
+            dateFormat: $('#dateFormat')[0].selectedOptions[0].value,
+            textAlign: $('.tab-align.active')[0].getAttribute('data-value')
         };
 
         for (var item in data) {
@@ -268,7 +306,10 @@
     };
 
     $(function() {
+        toggleFieldsByPlatform();
+        initGA();
         loadData();
+        initEvents();
         checkForUpdates();
     });
 

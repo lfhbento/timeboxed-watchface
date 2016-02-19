@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="item-container">
+    <div class="item-container" id="healthContainer">
         <div class="item-container-header">Pebble Health</div>
         <div class="item-container-content">
             <label class="item">
@@ -139,6 +139,17 @@
         </div>
         <div class="item-container-footer">
             Emits a vibration notification when the watch is disconnected from the phone. Won't trigger if you're asleep (only on Time and Time Round).
+        </div>
+    </div>
+
+    <div class="item-container" id="alignContainer">
+        <div class="item-container-header">Text alignment</div>
+        <div class="item-container-content">
+            <div class="item tab-buttons" id="textAlign">
+                <a name="tab-align" class="tab-button tab-align" data-value="0">Left</a>
+                <a name="tab-align" class="tab-button tab-align" data-value="1">Center</a>
+                <a name="tab-align" class="tab-button tab-align active" data-value="2">Right</a>
+            </div>
         </div>
     </div>
 
@@ -342,7 +353,6 @@
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
         ga('create', 'UA-74048301-1', 'auto');
-        ga('send', 'pageview');
     </script>
     <script src="../js/slate.js"></script>
     <script src="js/main.js"></script>
