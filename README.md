@@ -13,7 +13,7 @@ A simple, clean and customizable watchface for the Pebble smartwatch.
  * Display additional timezone
  * Bluetooth disconnect icon and vibration alert
  * See in the watch when there's an update available
- * Support for 12 languages (English, Portuguese, French, German, Spanish, Italian, Dutch, Danish, Turkish, Czech, Polish, Swedish and Finnish)
+ * Support for 14 languages (English, Portuguese, French, German, Spanish, Italian, Dutch, Danish, Turkish, Czech, Polish, Swedish, Finnish and Slovak)
  * Choice between two date formats: Day of the week/month/day and Day of the week/day/month.
 
 ## License
