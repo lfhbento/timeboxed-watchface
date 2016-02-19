@@ -82,7 +82,7 @@
             <div class="item-container-content">
                 <label class="item">
                     <div class="item-input-wrapper item-input-wrapper-button">
-                        <input id="overrideLocation" class="item-input" type="text" placeholder="City, State, Country" maxlength="64">
+                        <input id="overrideLocation" class="item-input" type="text" placeholder="City, Country" maxlength="64">
                     </div>
                     <input type="button" id="verifyLocation" class="item-button item-input-button" value="Verify">
                 </label>
@@ -140,17 +140,6 @@
         </div>
         <div class="item-container-footer">
             Emits a vibration notification when the watch is disconnected from the phone. Won't trigger if you're asleep (only on Time and Time Round).
-        </div>
-    </div>
-
-    <div class="item-container" id="alignContainer">
-        <div class="item-container-header">Text alignment</div>
-        <div class="item-container-content">
-            <div class="item tab-buttons" id="textAlign">
-                <a name="tab-align" class="tab-button tab-align" data-value="0">Left</a>
-                <a name="tab-align" class="tab-button tab-align" data-value="1">Center</a>
-                <a name="tab-align" class="tab-button tab-align active" data-value="2">Right</a>
-            </div>
         </div>
     </div>
 
@@ -260,6 +249,17 @@
         </div>
     </div>
 
+    <div class="item-container" id="alignContainer">
+        <div class="item-container-header">Text alignment</div>
+        <div class="item-container-content">
+            <div class="item tab-buttons" id="textAlign">
+                <a name="tab-align" class="tab-button tab-align" data-value="0">Left</a>
+                <a name="tab-align" class="tab-button tab-align" data-value="1">Center</a>
+                <a name="tab-align" class="tab-button tab-align active" data-value="2">Right</a>
+            </div>
+        </div>
+    </div>
+
     <div class="item-container">
         <div class="item-container-header">Colors</div>
         <div class="item-container-content">
@@ -329,13 +329,26 @@
                     <input id="stepsColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
                 <label class="item">
+                    Steps (falling behind)
+                    <input id="stepsBehindColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
+                </label>
+                <label class="item">
                     Distance
                     <input id="distColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
                 </label>
+                <label class="item">
+                    Distance (falling behind)
+                    <input id="distBehindColor" class="item-color item-color-normal" type="text" value="0xFFFFFF">
+                </label>
+            </div>
+            <div class="item-container-header">Saved presets</div>
+            <div class="item-container-content">
+                <div class="item-dynamic-list confirm-delete" id="presetList" data-add-text="Save as new color preset...">
+                </div>
             </div>
         </div>
         <div class="item-container-footer">
-            Remember to save to apply settings.<br/>
+            Remember to save to apply settings.<br/><br/>
             Weather font used: <a href="https://erikflowers.github.io/weather-icons/">Erik Flower's Weather Icons</a>.<br/>
             Font used: <a href="http://www.dafont.com/blocko.font">Blocko</a>.
         </div>
@@ -343,7 +356,7 @@
 
     <div class="item-container">
         <div class="button-container">
-            <input id="submit" class="item-button" type="button" value="SAVE">
+            <input id="submit" class="item-button" type="button" value="SAVE SETTINGS">
         </div>
     </div>
 

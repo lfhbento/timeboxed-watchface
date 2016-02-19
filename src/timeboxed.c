@@ -271,6 +271,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_DISTCOLOR, distColor->value->int32);
     }
 
+    Tuple *stepsBehindColor = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
+    if (stepsBehindColor) {
+        persist_write_int(KEY_STEPSBEHINDCOLOR, stepsBehindColor->value->int32);
+    }
+
+    Tuple *distBehindColor = dict_find(iterator, KEY_DISTBEHINDCOLOR);
+    if (distBehindColor) {
+        persist_write_int(KEY_DISTBEHINDCOLOR, distBehindColor->value->int32);
+    }
+
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
     if (fontType) {
         persist_write_int(KEY_FONTTYPE, fontType->value->int8);

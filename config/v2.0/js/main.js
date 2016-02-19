@@ -43,6 +43,53 @@
         $('.tab-align').click(function(e) {
             trackEvent('align', e.currentTarget.getAttribute('data-value'));
         });
+
+        $('#presetList').on('itemRemoved', function(e, item) {
+            trackEvent('presets', 'remove');
+            if (localStorage['preset-' + item]) {
+                delete localStorage['preset-' + item];
+            }
+        });
+        $('#presetList').on('itemAdded', function(e, item) {
+            trackEvent('presets', 'add');
+            var colors = getColorValues();
+            if (localStorage['preset-' + item]) {
+                trackEvent('presets', 'already exists');
+                alert('Preset with that name already exists. Replacing.');
+                var elems = $('#presetList .item');
+
+                $(elems[elems.length - 2]).remove();
+            }
+            localStorage['preset-' + item] = JSON.stringify(colors);
+        });
+        $('#presetList').on('click', '.item', function(e) {
+            if (!$(e.currentTarget).hasClass('add-item')) {
+                trackEvent('presets', 'load', 'click');
+                var text = $(e.currentTarget).text();
+                if (confirm('Load the preset "' + text + '" ?')) {
+                    trackEvent('presets', 'load', 'execute');
+                    var colors = JSON.parse(localStorage['preset-' + text]);
+                    console.log(localStorage['preset-' + text]);
+                    for (var item in colors) {
+                        var elem = $('#' + item);
+                        var value = colors[item];
+                        console.log(item + ': ' + value);
+                        elem.val(value);
+                        elem.parent().find('.item-styled-color .value').css('background-color', value.replace(/^0x/, '#'));
+                    }
+                } else {
+                    trackEvent('presets', 'load', 'dismiss');
+                }
+            }
+        });
+    };
+
+    var loadPresets = function() {
+        for (var item in localStorage) {
+            if (item.indexOf('preset-') !== -1) {
+                $('#presetList').append('<label class="item">' + item.substring(7) + '</label>');
+            }
+        }
     };
 
     var initGA = function() {
@@ -268,18 +315,10 @@
         return defaultValue || false;
     };
 
-    var getAndStoreConfigData = function() {
-        var data = {
-            enableHealth: $('#enableHealth')[0].checked,
-            useKm: $('#useKm')[0].checked,
-            showSleep: $('#showSleep')[0].checked,
-            enableWeather: $('#enableWeather')[0].checked,
-            weatherKey: $('#weatherKey').val(),
-            useCelsius: $('#useCelsius')[0].checked,
-            timezones: $('#timezones')[0].selectedOptions[0].value,
+    var getColorValues = function() {
+        return {
             bgColor: $('#bgColor').val(),
             hoursColor: $('#hoursColor').val(),
-            enableAdvanced: $('#enableAdvanced')[0].checked,
             dateColor: $('#dateColor').val(),
             altHoursColor: $('#altHoursColor').val(),
             batteryColor: $('#batteryColor').val(),
@@ -290,16 +329,33 @@
             maxColor: $('#maxColor').val(),
             stepsColor: $('#stepsColor').val(),
             distColor: $('#distColor').val(),
+            stepsBehindColor: $('#stepsBehindColor').val(),
+            distBehindColor: $('#distBehindColor').val(),
+            updateColor: $('#updateColor').val(),
+            bluetoothColor: $('#bluetoothColor').val()
+        };
+    };
+
+    var getAndStoreConfigData = function() {
+        var data = {
+            enableHealth: $('#enableHealth')[0].checked,
+            useKm: $('#useKm')[0].checked,
+            showSleep: $('#showSleep')[0].checked,
+            enableWeather: $('#enableWeather')[0].checked,
+            weatherKey: $('#weatherKey').val(),
+            useCelsius: $('#useCelsius')[0].checked,
+            timezones: $('#timezones')[0].selectedOptions[0].value,
             fontType: $('#fontType')[0].selectedOptions[0].value,
             bluetoothDisconnect: $('#bluetoothDisconnect')[0].checked,
-            bluetoothColor: $('#bluetoothColor').val(),
             overrideLocation: $('#overrideLocation').val(),
-            updateColor: $('#updateColor').val(),
+            enableAdvanced: $('#enableAdvanced')[0].checked,
             update: $('#update')[0].checked,
             locale: $('#locale')[0].selectedOptions[0].value,
             dateFormat: $('#dateFormat')[0].selectedOptions[0].value,
             textAlign: $('.tab-align.active')[0].getAttribute('data-value')
         };
+
+        $.extend(data, getColorValues());
 
         for (var item in data) {
             localStorage[item] = data[item];
@@ -311,6 +367,7 @@
     };
 
     toggleFieldsByPlatform();
+    loadPresets();
     initGA();
     loadData();
     initEvents();

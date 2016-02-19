@@ -406,6 +406,15 @@ void set_colors(Window *window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
+void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
+    GColor base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
+    bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
+    text_layer_set_text_color(steps_or_sleep,
+            enableAdvanced ? (falling_behind_steps ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_STEPSCOLOR))) : base_color);
+    text_layer_set_text_color(dist_or_deep,
+            enableAdvanced ? (falling_behind_dist ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_DISTCOLOR))) : base_color);
+}
+
 void set_hours_layer_text(char* text) {
     strcpy(hour_text, text);
     text_layer_set_text(hours, hour_text);

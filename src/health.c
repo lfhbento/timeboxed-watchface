@@ -16,9 +16,12 @@ static void update_steps_data() {
     HealthMetric metric_dist = HealthMetricWalkedDistanceMeters;
     time_t start = time_start_of_today();
     time_t end = time(NULL);
+    int one_day = 24 * SECONDS_PER_HOUR;
 
     uint16_t current_steps = 0;
+    uint16_t steps_last_week = 0;
     uint16_t current_dist = 0;
+    uint16_t dist_last_week = 0;
     uint16_t current_dist_int = 0;
     uint16_t current_dist_dec = 0;
     char steps_or_sleep_text[16];
@@ -32,6 +35,13 @@ static void update_steps_data() {
     if (mask_steps & HealthServiceAccessibilityMaskAvailable) {
         current_steps = (int)health_service_sum_today(metric_steps);
 
+        steps_last_week = 0;
+        for (int i = 7; i <= 28; i = i+7) {
+            steps_last_week += (int)health_service_sum(metric_steps, start - i*one_day, end - i*one_day);
+        }
+        steps_last_week /= 4;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data: %d / %d", current_steps, steps_last_week);
+
         snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), "%d", current_steps);
 
         set_steps_or_sleep_layer_text(steps_or_sleep_text);
@@ -40,6 +50,14 @@ static void update_steps_data() {
     if (mask_dist & HealthServiceAccessibilityMaskAvailable) {
         bool useKm = persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
         current_dist = (int)health_service_sum_today(metric_dist);
+
+        dist_last_week = 0;
+        for (int i = 7; i <= 28; i = i+7) {
+            dist_last_week += (int)health_service_sum(metric_dist, start - i*one_day, end - i*one_day);
+        }
+        dist_last_week /= 4;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Dist data: %d / %d", current_dist, dist_last_week);
+
         if (!useKm) {
             current_dist /= 1.6;
         }
@@ -61,8 +79,7 @@ static void update_steps_data() {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
         }
     }
-    persist_write_string(KEY_STEPS, steps_or_sleep_text);
-    persist_write_string(KEY_DIST, dist_or_deep_text);
+    set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
 }
 
 static void update_sleep_data() {
@@ -71,9 +88,12 @@ static void update_sleep_data() {
 
     time_t start = time_start_of_today();
     time_t end = time(NULL);
+    int one_day = 24 * SECONDS_PER_HOUR;
 
     uint16_t current_sleep = 0;
     uint16_t current_deep = 0;
+    uint16_t sleep_last_week = 0;
+    uint16_t deep_last_week = 0;
     char steps_or_sleep_text[16];
     char dist_or_deep_text[16];
 
@@ -84,6 +104,14 @@ static void update_sleep_data() {
 
     if (mask_sleep & HealthServiceAccessibilityMaskAvailable) {
         current_sleep = (int)health_service_sum(metric_sleep, start, end);
+
+        sleep_last_week = 0;
+        for (int i = 7; i <= 28; i = i+7) {
+            sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, end - i*one_day);
+        }
+        sleep_last_week /= 4;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_sleep, sleep_last_week);
+
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
         int current_sleep_minutes = (current_sleep - (current_sleep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
 
@@ -94,6 +122,14 @@ static void update_sleep_data() {
 
     if (mask_deep & HealthServiceAccessibilityMaskAvailable) {
         current_deep = (int)health_service_sum(metric_deep, start, end);
+
+        deep_last_week = 0;
+        for (int i = 7; i <= 28; i = i+7) {
+            deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, end - i*one_day);
+        }
+        deep_last_week /= 4;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_deep, deep_last_week);
+
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
         int current_deep_minutes = (current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
 
@@ -101,6 +137,8 @@ static void update_sleep_data() {
 
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
+
+    set_steps_dist_color(current_sleep < sleep_last_week, current_deep < deep_last_week);
 
 }
 

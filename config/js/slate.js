@@ -276,17 +276,30 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
       this.each(function() {
         var $list = $(this);
 
+        var deleteFn = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if ($(this).parent().parent().hasClass('confirm-delete')) {
+                if (confirm('Delete?')) {
+                    $(this).parent().parent().trigger('itemRemoved', [$(this).parent().text()]);
+                    $(this).parent().remove();
+                }
+            } else {
+                $(this).parent().parent().trigger('itemRemoved', [$(this).parent().text()]);
+                $(this).parent().remove();
+            }
+        };
+
         $list.children('label').each(function() {
           var $deleteButton = $('<div class="delete-item"></div>');
 
-          $deleteButton.click(function() {
-            $(this).parent().remove();
-          });
+          $deleteButton.click(deleteFn.bind($deleteButton));
 
           $(this).append($deleteButton);
         });
 
-        var $addButton = $('<div class="item add-item">Add one more...</div>');
+        var btnText = $list.data('add-text') || 'Add one more...'
+        var $addButton = $('<div class="item add-item">' + btnText + '</div>');
 
         $list.append($addButton);
 
@@ -305,7 +318,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           $input.keypress(function(e) {
             var key = e.which;
             if (key === 13) {
-              stopEditing($input, $inbox);
+              $input.trigger('blur');
             }
           });
 
@@ -314,16 +327,19 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           });
 
           function stopEditing(input, inbox) {
-            var text = input.val();
+            var text = input.val().trim();
+            if (!text) {
+                inbox.remove();
+                return;
+            }
             inbox.text(text);
 
             var deletebutton = $('<div class="delete-item"></div>');
 
-            deletebutton.click(function(){
-              $(this).parent().remove();
-            });
+            deletebutton.click(deleteFn.bind(deletebutton));
 
             inbox.append(deletebutton);
+            inbox.parent().trigger('itemAdded', [inbox.text()]);
           }
         });
       });
