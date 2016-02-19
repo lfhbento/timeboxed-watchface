@@ -24,6 +24,8 @@ static GFont weather_font;
 static GFont weather_big_font;
 static GFont awesome_font;
 
+static GColor base_color;
+
 static char hour_text[13];
 static char date_text[13];
 static char temp_cur_text[8];
@@ -40,6 +42,7 @@ static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
 
 static uint8_t loaded_font;
+static bool enable_advanced;
 
 struct TextPositions {
     GPoint hours;
@@ -362,57 +365,55 @@ void set_face_fonts() {
 }
 
 void set_colors(Window *window) {
-    GColor base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
+    base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
-    bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enableAdvanced);
+    enable_advanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enable_advanced);
     text_layer_set_text_color(date,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
     text_layer_set_text_color(weather,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
     text_layer_set_text_color(temp_cur,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
     text_layer_set_text_color(temp_min,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
     text_layer_set_text_color(min_icon,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
     text_layer_set_text_color(temp_max,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
     text_layer_set_text_color(max_icon,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
     text_layer_set_text_color(steps_or_sleep,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
     text_layer_set_text_color(dist_or_deep,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
 
     BatteryChargeState charge_state = battery_state_service_peek();
     if (charge_state.charge_percent > 20) {
         text_layer_set_text_color(battery,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
     } else {
         text_layer_set_text_color(battery,
-            enableAdvanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
     }
 
     text_layer_set_text_color(bluetooth,
-        enableAdvanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
+        enable_advanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
 
     text_layer_set_text_color(update,
-        enableAdvanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
+        enable_advanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
-    GColor base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
-    bool enableAdvanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
     text_layer_set_text_color(steps_or_sleep,
-            enableAdvanced ? (falling_behind_steps ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_STEPSCOLOR))) : base_color);
+            enable_advanced ? (falling_behind_steps ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_STEPSCOLOR))) : base_color);
     text_layer_set_text_color(dist_or_deep,
-            enableAdvanced ? (falling_behind_dist ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_DISTCOLOR))) : base_color);
+            enable_advanced ? (falling_behind_dist ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_DISTCOLOR))) : base_color);
 }
 
 void set_hours_layer_text(char* text) {

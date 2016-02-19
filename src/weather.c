@@ -3,6 +3,8 @@
 #include "text.h"
 
 static bool weather_enabled;
+static char weather_key_buffer[20];
+static bool use_celsius;
 
 static char* weather_conditions[] = {
     "\U0000F07B", // 'unknown': 0,
@@ -51,22 +53,13 @@ void update_weather(void) {
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
 
-    char weather_key_buffer[20];
-    if (persist_exists(KEY_WEATHERKEY)) {
-        persist_read_string(KEY_WEATHERKEY, weather_key_buffer, sizeof(weather_key_buffer));
-    } else {
-        weather_key_buffer[0] = '\0';
-    }
-
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather with key (%s) %d", weather_key_buffer, (int)time(NULL));
-    dict_write_uint8(iter, KEY_USECELSIUS,
-        persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS) ? persist_read_int(KEY_USECELSIUS) : 0);
+    dict_write_uint8(iter, KEY_USECELSIUS, use_celsius);
     dict_write_cstring(iter, KEY_WEATHERKEY, weather_key_buffer);
     app_message_outbox_send();
 }
 
 void update_weather_values(int temp_val, int max_val, int min_val, int weather_val) {
-    bool useCelsius = persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS);
     char temp_pattern[4];
     char temp_text[8];
     char max_text[8];
@@ -74,11 +67,11 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
     char weather_text[4];
 
     if (get_loaded_font() == BLOCKO_BIG_FONT) {
-        strcpy(temp_pattern, useCelsius ? "%dc" : "%df");
+        strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
     } else if (get_loaded_font() == BLOCKO_FONT) {
-        strcpy(temp_pattern, useCelsius ? "%dc" : "%df");
+        strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
     } else {
-        strcpy(temp_pattern, useCelsius ? "%dC" : "%dF");
+        strcpy(temp_pattern, use_celsius ? "%dC" : "%dF");
     }
 
     snprintf(temp_text, sizeof(temp_text), temp_pattern, temp_val);
@@ -102,6 +95,14 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
 void toggle_weather(bool from_configs) {
     weather_enabled = persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER);
     if (weather_enabled) {
+
+        if (persist_exists(KEY_WEATHERKEY)) {
+            persist_read_string(KEY_WEATHERKEY, weather_key_buffer, sizeof(weather_key_buffer));
+        } else {
+            weather_key_buffer[0] = '\0';
+        }
+        use_celsius = persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS);
+
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         update_weather_values(0, 0, 0, 0);
         if (from_configs) {

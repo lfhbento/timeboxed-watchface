@@ -9,6 +9,8 @@ static bool health_enabled;
 static int woke_up_at;
 static bool was_asleep;
 static bool sleep_data_visible;
+static bool sleep_data_enabled;
+static bool useKm;
 
 static void update_steps_data() {
 
@@ -48,7 +50,6 @@ static void update_steps_data() {
     }
 
     if (mask_dist & HealthServiceAccessibilityMaskAvailable) {
-        bool useKm = persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
         current_dist = (int)health_service_sum_today(metric_dist);
 
         dist_last_week = 0;
@@ -167,6 +168,8 @@ void health_handler(HealthEventType event, void *context) {
 void toggle_health(bool from_configs) {
     bool has_health = false;
     health_enabled = persist_read_int(KEY_ENABLEHEALTH);
+    sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
+    useKm = persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
     if (health_enabled) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         has_health = health_service_events_subscribe(health_handler, NULL);
@@ -196,7 +199,6 @@ bool is_user_sleeping() {
 }
 
 void show_sleep_data_if_visible() {
-    bool sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
     if (health_enabled && sleep_data_enabled) {
         bool is_sleeping = is_user_sleeping();
 
