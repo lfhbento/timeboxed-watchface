@@ -6,7 +6,7 @@
 uint8_t selected_locale;
 uint8_t selected_format;
 
-static char* WEEKDAYS[13][7] = {
+static char* WEEKDAYS[14][7] = {
     {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}, // en_US
     {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"}, // pt_BR
     {"DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"}, // fr_FR
@@ -19,10 +19,11 @@ static char* WEEKDAYS[13][7] = {
     {"NE", "PO", "UT", "ST", "CT", "PA", "SO"}, // cs_CZ
     {"NDZ", "PON", "WTO", "SRO", "CZW", "PTK", "SOB"}, // pl_PL
     {"SON", "MAN", "TIS", "ONS", "TOR", "FRE", "LOR"}, // sv_SE
-    {"SU", "MA", "TI", "KE", "TO", "PE", "LA"} // fi_FI
+    {"SU", "MA", "TI", "KE", "TO", "PE", "LA"}, // fi_FI
+    {"NE", "PO", "UT", "ST", "ST", "PI", "SO"}, // sk_SK
 };
 
-static char* MONTHS[13][12] = {
+static char* MONTHS[14][12] = {
     {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"}, // en_US
     {"JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"}, // pt_BR
     {"JAN", "FEV", "MAR", "AVR", "MAI", "JUI", "JUL", "AOU", "SEP", "OCT", "NOV", "DEC"}, // fr_FR
@@ -36,6 +37,7 @@ static char* MONTHS[13][12] = {
     {"STY", "LUT", "MAR", "KWI", "MAJ", "CZE", "LIP", "SIE", "WRZ", "PAZ", "LIS", "GRU"}, // pl_PL
     {"JAN", "FEB", "MAR", "APR", "MAJ", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // sv_SE
     {"TAM", "HEL", "MAA", "HUH", "TOU", "KES", "HEI", "ELO", "SYY", "LOK", "MAR", "JOU"}, // fi_FI
+    {"JAN", "FEB", "MAR", "APR", "MAJ", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // sk_SK
 };
 
 void get_current_date(struct tm* tick_time, char* buffer, int buf_size) {
