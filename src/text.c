@@ -92,8 +92,8 @@ static void get_text_positions_blocko(GTextAlignment align, struct TextPositions
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, 90));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, 38));
     positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, 112));
-    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(70, 60));
-    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(88, 78));
+    positions->bluetooth = create_point(get_pos(align, -4, 0, 2), PBL_IF_ROUND_ELSE(70, 60));
+    positions->updates = create_point(get_pos(align, -4, 0, 2), PBL_IF_ROUND_ELSE(88, 78));
     positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
     positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 4);
     positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 4));
@@ -105,12 +105,12 @@ static void get_text_positions_blocko(GTextAlignment align, struct TextPositions
 }
 
 static void get_text_positions_blocko_big(GTextAlignment align, struct TextPositions* positions) {
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(40, 32));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(96, 88));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(42, 34));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(124, 116));
-    positions->bluetooth = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(64, 54));
-    positions->updates = create_point(get_pos(align, -4, 2, 2), PBL_IF_ROUND_ELSE(86, 76));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 2, 0)), PBL_IF_ROUND_ELSE(40, 32));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(96, 88));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(42, 34));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -4)), PBL_IF_ROUND_ELSE(124, 116));
+    positions->bluetooth = create_point(get_pos(align, -4, 0, 2), PBL_IF_ROUND_ELSE(64, 54));
+    positions->updates = create_point(get_pos(align, -4, 0, 2), PBL_IF_ROUND_ELSE(86, 76));
     positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
     positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), PBL_IF_ROUND_ELSE(4, 3));
     positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 3));

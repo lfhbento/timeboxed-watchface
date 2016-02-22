@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.0";
+var currentVersion = "2.1";
 
 Pebble.addEventListener("ready",
     function(e) {
