@@ -273,6 +273,7 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(steps_or_sleep));
     layer_add_child(window_layer, text_layer_get_layer(dist_or_deep));
 
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void destroy_text_layers() {
@@ -332,6 +333,7 @@ void load_face_fonts() {
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
     awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_AWESOME_18));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts loaded. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void unload_face_fonts() {
@@ -362,13 +364,17 @@ void set_face_fonts() {
     text_layer_set_font(temp_max, base_font);
     text_layer_set_font(steps_or_sleep, base_font);
     text_layer_set_font(dist_or_deep, base_font);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void set_colors(Window *window) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defining colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
     enable_advanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enable_advanced);
+    GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
+    GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;
     text_layer_set_text_color(date,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time,
@@ -377,14 +383,10 @@ void set_colors(Window *window) {
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
     text_layer_set_text_color(temp_cur,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
-    text_layer_set_text_color(temp_min,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
-    text_layer_set_text_color(min_icon,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color);
-    text_layer_set_text_color(temp_max,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
-    text_layer_set_text_color(max_icon,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color);
+    text_layer_set_text_color(temp_min, min_color);
+    text_layer_set_text_color(min_icon, min_color);
+    text_layer_set_text_color(temp_max, max_color);
+    text_layer_set_text_color(max_icon, max_color);
     text_layer_set_text_color(steps_or_sleep,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color);
     text_layer_set_text_color(dist_or_deep,

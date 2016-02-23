@@ -82,6 +82,8 @@ static void update_steps_data() {
         }
     }
     set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
+    persist_write_string(KEY_STEPS, steps_or_sleep_text);
+    persist_write_string(KEY_DIST, dist_or_deep_text);
 }
 
 static void update_sleep_data() {
@@ -155,6 +157,7 @@ void get_health_data() {
         if (!sleep_data_visible) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_steps_data();
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_sleep_data();
@@ -181,9 +184,19 @@ void toggle_health(bool from_configs) {
     if (health_enabled) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         has_health = health_service_events_subscribe(health_handler, NULL);
-        set_steps_or_sleep_layer_text("0");
-        set_dist_or_deep_layer_text("0");
-        get_health_data();
+        set_steps_or_sleep_layer_text("");
+        set_dist_or_deep_layer_text("");
+        queue_health_update();
+        if (from_configs) {
+            get_health_data();
+        } else if (persist_exists(KEY_STEPS)){
+            char steps[10];
+            char dist[10];
+            persist_read_string(KEY_STEPS, steps, sizeof(steps));
+            persist_read_string(KEY_DIST, dist, sizeof(dist));
+            set_steps_or_sleep_layer_text(steps);
+            set_dist_or_deep_layer_text(dist);
+        }
     } else {
         has_health = false;
         health_service_events_unsubscribe();

@@ -65,6 +65,7 @@
 #define LC_POLISH 10
 #define LC_SWEDISH 11
 #define LC_FINNISH 12
+#define LC_SLOVAK 13
 
 #define FORMAT_WMD 0
 #define FORMAT_WDM 1

@@ -99,9 +99,9 @@ static void load_screen(bool from_configs) {
     }
     load_face_fonts();
     set_face_fonts();
-    set_colors(watchface);
     load_locale();
     update_time();
+    set_colors(watchface);
     toggle_health(from_configs);
     toggle_weather(from_configs);
     battery_handler(battery_state_service_peek());
@@ -440,7 +440,9 @@ static void deinit(void) {
 int main(void) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     init();
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_event_loop();
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     deinit();
     APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
