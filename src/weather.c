@@ -79,11 +79,6 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
     snprintf(min_text, sizeof(min_text), "%d", min_val);
     snprintf(weather_text, sizeof(weather_text), "%s", weather_conditions[weather_val]);
 
-    persist_write_int(KEY_TEMP, temp_val);
-    persist_write_int(KEY_MAX, max_val);
-    persist_write_int(KEY_MIN, min_val);
-    persist_write_int(KEY_WEATHER, weather_val);
-
     set_temp_cur_layer_text(temp_text);
     set_temp_max_layer_text(max_text);
     set_temp_min_layer_text(min_text);
@@ -104,9 +99,21 @@ void toggle_weather(bool from_configs) {
         use_celsius = persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS);
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        update_weather_values(0, 0, 0, 0);
         if (from_configs) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            update_weather_values(0, 0, 0, 0);
+            update_weather();
+        } else if (persist_exists(KEY_TEMP)) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            int temp = persist_read_int(KEY_TEMP);
+            int min = persist_read_int(KEY_MIN);
+            int max = persist_read_int(KEY_MAX);
+            int weather = persist_read_int(KEY_WEATHER);
+
+            update_weather_values(temp, max, min, weather);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            update_weather_values(0, 0, 0, 0);
             update_weather();
         }
     } else {
@@ -118,6 +125,14 @@ void toggle_weather(bool from_configs) {
         set_max_icon_layer_text("");
         set_min_icon_layer_text("");
     }
+}
+
+void store_weather_values(int temp, int max, int min, int weather) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
+    persist_write_int(KEY_TEMP, temp);
+    persist_write_int(KEY_MAX, max);
+    persist_write_int(KEY_MIN, min);
+    persist_write_int(KEY_WEATHER, weather);
 }
 
 bool is_weather_enabled() {

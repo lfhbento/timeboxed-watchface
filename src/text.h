@@ -15,6 +15,9 @@ void set_colors(Window*);
 uint8_t get_loaded_font();
 
 void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist);
+void set_bluetooth_color();
+void set_update_color();
+void set_battery_color();
 
 void set_hours_layer_text(char*);
 void set_date_layer_text(char*);

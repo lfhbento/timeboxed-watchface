@@ -76,6 +76,7 @@ void bt_handler(bool connected) {
         if (bluetooth_disconnect_vibe && !is_sleeping) {
             vibes_long_pulse();
         }
+        set_bluetooth_color();
         set_bluetooth_layer_text("\U0000F294");
     }
 }
@@ -88,7 +89,7 @@ static void battery_handler(BatteryChargeState charge_state) {
     } else {
         snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent <= 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
     }
-
+    set_battery_color(charge_state.charge_percent);
     set_battery_layer_text(s_battery_buffer);
 }
 
@@ -117,6 +118,9 @@ static void check_for_updates() {
 
 static void notify_update(int update_available) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
+    if (update_available) {
+        set_update_color();
+    }
     set_update_layer_text(update_available ? "\U0000F102" : "");
 }
 
@@ -149,7 +153,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
         update_weather_values(temp_val, max_val, min_val, weather_val);
 
-        get_health_data();
+        store_weather_values(temp_val, max_val, min_val, weather_val);
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         return;
@@ -389,6 +393,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     if((tick_time->tm_min % tick_interval == 0) && is_weather_enabled()) {
         update_weather();
     }
+    get_health_data();
 }
 
 

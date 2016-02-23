@@ -2,16 +2,11 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.1";
+var currentVersion = "2.2";
 
 Pebble.addEventListener("ready",
     function(e) {
         console.log("Pebble Ready!");
-        if (localStorage.weatherEnabled && parse(localStorage.weatherEnabled.toLowerCase())) {
-            getWeather(localStorage.weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
-        } else {
-            sendError();
-        }
     }
 );
 

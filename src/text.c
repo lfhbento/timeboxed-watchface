@@ -390,21 +390,6 @@ void set_colors(Window *window) {
     text_layer_set_text_color(dist_or_deep,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
 
-    BatteryChargeState charge_state = battery_state_service_peek();
-    if (charge_state.charge_percent > 20) {
-        text_layer_set_text_color(battery,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
-    } else {
-        text_layer_set_text_color(battery,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
-    }
-
-    text_layer_set_text_color(bluetooth,
-        enable_advanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
-
-    text_layer_set_text_color(update,
-        enable_advanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
-
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -414,6 +399,26 @@ void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
             enable_advanced ? (falling_behind_steps ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_STEPSCOLOR))) : base_color);
     text_layer_set_text_color(dist_or_deep,
             enable_advanced ? (falling_behind_dist ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_DISTCOLOR))) : base_color);
+}
+
+void set_bluetooth_color() {
+    text_layer_set_text_color(bluetooth,
+        enable_advanced && persist_exists(KEY_BLUETOOTHCOLOR) ? GColorFromHEX(persist_read_int(KEY_BLUETOOTHCOLOR)) : base_color);
+}
+
+void set_update_color() {
+    text_layer_set_text_color(update,
+        enable_advanced && persist_exists(KEY_UPDATECOLOR) ? GColorFromHEX(persist_read_int(KEY_UPDATECOLOR)) : base_color);
+}
+
+void set_battery_color(int percentage) {
+    if (percentage > 20) {
+        text_layer_set_text_color(battery,
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
+    } else {
+        text_layer_set_text_color(battery,
+            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
+    }
 }
 
 void set_hours_layer_text(char* text) {

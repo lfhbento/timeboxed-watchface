@@ -11,6 +11,7 @@ static bool was_asleep;
 static bool sleep_data_visible;
 static bool sleep_data_enabled;
 static bool useKm;
+static bool update_queued;
 
 static void update_steps_data() {
 
@@ -143,8 +144,13 @@ static void update_sleep_data() {
 
 }
 
+static void queue_health_update() {
+    update_queued = true;
+}
+
 void get_health_data() {
-    if (health_enabled) {
+    if (health_enabled && update_queued) {
+        update_queued = false;
         if (!sleep_data_visible) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_steps_data();
@@ -160,7 +166,8 @@ void health_handler(HealthEventType event, void *context) {
         case HealthEventSignificantUpdate:
         case HealthEventMovementUpdate:
         case HealthEventSleepUpdate:
-            get_health_data(context);
+            //get_health_data();
+            queue_health_update();
             break;
     }
 }
@@ -175,7 +182,7 @@ void toggle_health(bool from_configs) {
         has_health = health_service_events_subscribe(health_handler, NULL);
         set_steps_or_sleep_layer_text("0");
         set_dist_or_deep_layer_text("0");
-
+        get_health_data();
     } else {
         has_health = false;
         health_service_events_unsubscribe();
