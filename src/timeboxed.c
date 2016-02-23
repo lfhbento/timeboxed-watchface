@@ -393,6 +393,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     if((tick_time->tm_min % tick_interval == 0) && is_weather_enabled()) {
         update_weather();
     }
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     get_health_data();
 }
 
@@ -402,6 +403,7 @@ static void init(void) {
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
     init_sleep_data();
+    queue_health_update();
 
     watchface = window_create();
 

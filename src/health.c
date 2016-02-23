@@ -144,7 +144,8 @@ static void update_sleep_data() {
 
 }
 
-static void queue_health_update() {
+void queue_health_update() {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     update_queued = true;
 }
 
@@ -166,7 +167,7 @@ void health_handler(HealthEventType event, void *context) {
         case HealthEventSignificantUpdate:
         case HealthEventMovementUpdate:
         case HealthEventSleepUpdate:
-            //get_health_data();
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
             queue_health_update();
             break;
     }
@@ -251,6 +252,10 @@ void show_sleep_data_if_visible() {
 }
 
 void init_sleep_data() {
+    return;
+}
+
+void queue_health_update() {
     return;
 }
 
