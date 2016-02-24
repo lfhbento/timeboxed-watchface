@@ -81,6 +81,7 @@ static void update_steps_data() {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
         }
     }
+    set_health_icon_text("");
     set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
     persist_write_string(KEY_STEPS, steps_or_sleep_text);
     persist_write_string(KEY_DIST, dist_or_deep_text);
@@ -110,10 +111,10 @@ static void update_sleep_data() {
         current_sleep = (int)health_service_sum(metric_sleep, start, end);
 
         sleep_last_week = 0;
-        for (int i = 7; i <= 28; i = i+7) {
+        for (int i = 1; i <= 7; i++) {
             sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, end - i*one_day);
         }
-        sleep_last_week /= 4;
+        sleep_last_week /= 7;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_sleep, sleep_last_week);
 
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
@@ -128,10 +129,10 @@ static void update_sleep_data() {
         current_deep = (int)health_service_sum(metric_deep, start, end);
 
         deep_last_week = 0;
-        for (int i = 7; i <= 28; i = i+7) {
+        for (int i = 1; i <= 7; i++) {
             deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, end - i*one_day);
         }
-        deep_last_week /= 4;
+        deep_last_week /= 7;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_deep, deep_last_week);
 
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
@@ -142,8 +143,10 @@ static void update_sleep_data() {
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
+    set_health_icon_text("");
     set_steps_dist_color(current_sleep < sleep_last_week, current_deep < deep_last_week);
-
+    persist_write_string(KEY_SLEEP, steps_or_sleep_text);
+    persist_write_string(KEY_DEEP, dist_or_deep_text);
 }
 
 void queue_health_update() {
@@ -176,6 +179,30 @@ void health_handler(HealthEventType event, void *context) {
     }
 }
 
+static void load_steps_from_storage() {
+    if (persist_exists(KEY_STEPS)) {
+        char steps[10];
+        char dist[10];
+        persist_read_string(KEY_STEPS, steps, sizeof(steps));
+        persist_read_string(KEY_DIST, dist, sizeof(dist));
+        set_steps_or_sleep_layer_text(steps);
+        set_dist_or_deep_layer_text(dist);
+        set_health_icon_text("");
+    }
+}
+
+static void load_sleep_from_storage() {
+    if (persist_exists(KEY_SLEEP)) {
+        char sleep[14];
+        char deep[14];
+        persist_read_string(KEY_SLEEP, sleep, sizeof(sleep));
+        persist_read_string(KEY_DEEP, deep, sizeof(deep));
+        set_steps_or_sleep_layer_text(sleep);
+        set_dist_or_deep_layer_text(deep);
+        set_health_icon_text("");
+    }
+}
+
 void toggle_health(bool from_configs) {
     bool has_health = false;
     health_enabled = persist_read_int(KEY_ENABLEHEALTH);
@@ -186,16 +213,16 @@ void toggle_health(bool from_configs) {
         has_health = health_service_events_subscribe(health_handler, NULL);
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
+        set_health_icon_text("");
         queue_health_update();
         if (from_configs) {
             get_health_data();
-        } else if (persist_exists(KEY_STEPS)){
-            char steps[10];
-            char dist[10];
-            persist_read_string(KEY_STEPS, steps, sizeof(steps));
-            persist_read_string(KEY_DIST, dist, sizeof(dist));
-            set_steps_or_sleep_layer_text(steps);
-            set_dist_or_deep_layer_text(dist);
+        } else {
+            if (!sleep_data_visible) {
+                load_steps_from_storage();
+            } else {
+                load_sleep_from_storage();
+            }
         }
     } else {
         has_health = false;
@@ -206,6 +233,7 @@ void toggle_health(bool from_configs) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
+        set_health_icon_text("");
     }
 }
 
@@ -225,7 +253,7 @@ void show_sleep_data_if_visible() {
 
         if (!is_sleeping && was_asleep) {
             sleep_data_visible = true;
-            woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 30; //half an hour
+            woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 45; // 45 minutes
             APP_LOG(APP_LOG_LEVEL_DEBUG, "We woke up! %d", (int) woke_up_at);
             was_asleep = false;
             get_health_data();
@@ -250,6 +278,7 @@ void toggle_health(bool from_configs) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     set_steps_or_sleep_layer_text("");
     set_dist_or_deep_layer_text("");
+    set_health_icon_text("");
 }
 
 bool is_user_sleeping() {

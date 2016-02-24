@@ -66,10 +66,10 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[\uf294\uf102]",
+                "characterRegex": "[a-n]",
                 "compatibility": "2.7",
-                "file": "fonts/fontawesome-webfont.ttf",
-                "name": "FONT_AWESOME_18",
+                "file": "fonts/custom-icons.ttf",
+                "name": "FONT_ICONS_20",
                 "type": "font"
             },
             {

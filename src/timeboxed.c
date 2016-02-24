@@ -77,7 +77,7 @@ void bt_handler(bool connected) {
             vibes_long_pulse();
         }
         set_bluetooth_color();
-        set_bluetooth_layer_text("\U0000F294");
+        set_bluetooth_layer_text("a");
     }
 }
 
@@ -121,7 +121,7 @@ static void notify_update(int update_available) {
     if (update_available) {
         set_update_color();
     }
-    set_update_layer_text(update_available ? "\U0000F102" : "");
+    set_update_layer_text(update_available ? "f" : "");
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
