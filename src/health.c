@@ -13,6 +13,16 @@ static bool sleep_data_enabled;
 static bool useKm;
 static bool update_queued;
 
+static bool health_permission_granted() {
+    HealthMetric metric_steps = HealthMetricStepCount;
+    time_t start = time_start_of_today();
+    time_t end = time(NULL);
+    HealthServiceAccessibilityMask mask_steps =
+        health_service_metric_accessible(metric_steps, start, end);
+
+    return !(mask_steps & HealthServiceAccessibilityMaskNoPermission);
+}
+
 static void update_steps_data() {
 
     HealthMetric metric_steps = HealthMetricStepCount;
@@ -210,23 +220,26 @@ void toggle_health(bool from_configs) {
     useKm = persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
     if (health_enabled) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        has_health = health_service_events_subscribe(health_handler, NULL);
-        set_steps_or_sleep_layer_text("");
-        set_dist_or_deep_layer_text("");
-        set_health_icon_text("");
-        queue_health_update();
-        if (from_configs) {
-            get_health_data();
-        } else {
-            if (!sleep_data_visible) {
-                load_steps_from_storage();
+        if (health_permission_granted()) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            has_health = health_service_events_subscribe(health_handler, NULL);
+            set_steps_or_sleep_layer_text("");
+            set_dist_or_deep_layer_text("");
+            set_health_icon_text("");
+            queue_health_update();
+            if (from_configs) {
+                get_health_data();
             } else {
-                load_sleep_from_storage();
+                if (!sleep_data_visible) {
+                    load_steps_from_storage();
+                } else {
+                    load_sleep_from_storage();
+                }
             }
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            health_enabled = false;
         }
-    } else {
-        has_health = false;
-        health_service_events_unsubscribe();
     }
 
     if (!health_enabled || !has_health) {
@@ -234,6 +247,7 @@ void toggle_health(bool from_configs) {
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
         set_health_icon_text("");
+        health_service_events_unsubscribe();
     }
 }
 
