@@ -162,6 +162,23 @@ static void get_text_positions_archivo(GTextAlignment align, struct TextPosition
     positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
 }
 
+static void get_text_positions_din(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(47, 39));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, 92));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(42, 32));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(122, 116));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(68, get_pos(align, 56, 124, 56)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(86, get_pos(align, 74, 124, 74)));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 2);
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 2));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 2));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(145, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(160, 148));
+    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
+}
 
 static void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions) {
     switch(selected_font) {
@@ -176,6 +193,9 @@ static void get_text_positions(int selected_font, GTextAlignment alignment, stru
             break;
         case ARCHIVO_FONT:
             get_text_positions_archivo(alignment, positions);
+            break;
+        case DIN_FONT:
+            get_text_positions_din(alignment, positions);
             break;
         default:
             get_text_positions_blocko(alignment, positions);
@@ -328,6 +348,13 @@ void load_face_fonts() {
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = ARCHIVO_FONT;
+    } else if (selected_font == DIN_FONT) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading DIN font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_58));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_26));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_20));
+        weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
+        loaded_font = DIN_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));

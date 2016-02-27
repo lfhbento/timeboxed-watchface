@@ -81,16 +81,6 @@ static void update_steps_data() {
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
-    HealthActivityMask activities = health_service_peek_current_activities();
-    bool is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleeping data. %d %d %d", (int)activities & HealthActivitySleep, (int)activities & HealthActivityRestfulSleep, (int)is_sleeping);
-    if (is_sleeping) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "We are asleep. %d", was_asleep);
-        if (!was_asleep) {
-            was_asleep = true;
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
-        }
-    }
     set_health_icon_text("");
     set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
     persist_write_string(KEY_STEPS, steps_or_sleep_text);
@@ -265,18 +255,29 @@ void show_sleep_data_if_visible() {
     if (health_enabled && sleep_data_enabled) {
         bool is_sleeping = is_user_sleeping();
 
-        if (!is_sleeping && was_asleep) {
+        if (is_sleeping) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "We are asleep. %d", was_asleep);
             sleep_data_visible = true;
-            woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 45; // 45 minutes
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "We woke up! %d", (int) woke_up_at);
-            was_asleep = false;
-            get_health_data();
+            if (!was_asleep) {
+                was_asleep = true;
+                woke_up_at = 0;
+                queue_health_update();
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
+            }
         }
 
-        if (sleep_data_visible && time(NULL) > woke_up_at) {
+        if (!is_sleeping && was_asleep) {
+            sleep_data_visible = true;
+            woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 30; // 30 minutes
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "We woke up! %d", (int) woke_up_at);
+            was_asleep = false;
+            queue_health_update();
+        }
+
+        if (sleep_data_visible && woke_up_at > 0 && time(NULL) > woke_up_at) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Past half an hour after wake up! %d - %d", (int) time(NULL), (int) woke_up_at);
             sleep_data_visible = false;
-            get_health_data();
+            queue_health_update();
         }
     }
 }

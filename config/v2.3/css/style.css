@@ -1,0 +1,33 @@
+.title {
+    text-transform: uppercase;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #888;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+#versionContainer {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+#versionContainer .item {
+    padding: 3px;
+}
+
+#updateText {
+    font-weight: bold;
+}
+
+.item-container-header {
+    color: #888;
+}
+
+.item-select {
+    width: 90%;
+}

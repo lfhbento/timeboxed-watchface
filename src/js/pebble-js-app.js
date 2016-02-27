@@ -2,7 +2,11 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.2";
+var currentVersion = "2.3";
+
+var OPEN_WEATHER = 0;
+var WUNDERGROUND = 1;
+var YAHOO = 2;
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -18,19 +22,36 @@ Pebble.addEventListener('appmessage',
             checkForUpdates();
         } else {
             console.log('Fetching weather info...');
-            getWeather(localStorage.weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
+            var weatherKey = localStorage.weatherKey;
+            var provider = weatherKey ? 1 : 0;
+            if (localStorage.weatherProvider) {
+                provider = parseInt(localStorage.weatherProvider, 10);
+                switch (provider) {
+                    case WUNDERGROUND:
+                        weatherKey = localStorage.weatherKey;
+                        break;
+                    default:
+                        weatherKey = '';
+                }
+            }
+            getWeather(provider, weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
         }
     }
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
-        'http://www.lbento.space/pebble-apps/timeboxed/v2.0/index.html?v=' + currentVersion +
+        'http://www.lbento.space/pebble-apps/timeboxed/v2.3/index.html?v=' + currentVersion +
+        //'http://f07284ec.ngrok.io/v2.3/index.html?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
-        '&l=' + Pebble.getActiveWatchInfo().language);
+        '&l=' + Pebble.getActiveWatchInfo().language +
+        '&nonce=' + new Date().getTime());
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
+    if (!e.response) {
+        return;
+    }
     var configData = JSON.parse(decodeURIComponent(e.response));
     console.log(JSON.stringify(configData));
 
@@ -48,7 +69,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
             dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
             value = parseInt(newValue, 10);
         }
-        if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' || key === 'KEY_TEXTALIGN') {
+        if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' || key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER') {
             value = parseInt(value, 10);
         }
         dict[key] = value;
@@ -58,6 +79,12 @@ Pebble.addEventListener('webviewclosed', function(e) {
     localStorage.useCelsius = dict.KEY_USECELSIUS;
     localStorage.weatherKey = dict.KEY_WEATHERKEY;
     localStorage.overrideLocation = dict.KEY_OVERRIDELOCATION;
+    localStorage.weatherProvider = dict.KEY_WEATHERPROVIDER;
+    localStorage.yahooKey = dict.KEY_YAHOOKEY;
+    delete dict.KEY_WEATHERKEY;
+    delete dict.KEY_WEATHERPROVIDER;
+    delete dict.KEY_OVERRIDELOCATION;
+    delete dict.KEY_YAHOOKEY;
 
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
@@ -70,14 +97,107 @@ function parse(type) {
     return typeof type == 'string' ? JSON.parse(type) : type;
 }
 
-function locationSuccess(pos, weatherKey, useCelsius, overrideLocation) {
+function locationSuccess(pos, provider, weatherKey, useCelsius, overrideLocation) {
     console.log("Retrieving weather info");
 
-    if (weatherKey) {
-        fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation);
+    switch (provider) {
+        case OPEN_WEATHER:
+            fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
+            break;
+        case WUNDERGROUND:
+            fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation);
+            break;
+        case YAHOO:
+            fetchYahooData(pos, useCelsius, overrideLocation);
+            break;
+    }
+}
+
+function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
+    var url = 'https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
+    var woeidQuery = '';
+    if (overrideLocation) {
+        woeidQuery = 'select woeid from geo.places where text="' + overrideLocation + '"';
     } else {
+        woeidQuery = '' + woeid;
+    }
+
+    if (woeidQuery) {
+        var query = 'select * from weather.forecast where woeid in (' + woeidQuery + ')';
+        url += encodeURIComponent(query);
+        console.log(url);
+
+        xhrRequest(url, 'GET', function(responseText) {
+            try {
+                var resp = JSON.parse(responseText);
+                var results = resp.query.results.channel.item;
+                var temp = Math.round(useCelsius ? fahrenheitToCelsius(results.condition.temp) : results.condition.temp);
+                var min = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast['1'].low) : results.forecast['1'].low);
+                var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast['1'].high) : results.forecast['1'].high);
+                var condition = y_iconToId[results.condition.code];
+
+                if (typeof(condition) === 'undefined') {
+                    condition = 0;
+                }
+
+                sendData(temp, max, min, condition);
+            } catch (ex) {
+                console.log(ex);
+                console.log('Yahoo weather failed, falling back to open weather');
+                fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
+            }
+        });
+    } else {
+        console.log('No woeid found, falling back to open weather');
         fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
     }
+}
+
+function fetchYahooData(pos, useCelsius, overrideLocation) {
+    if (!overrideLocation) {
+        getWoeidAndExecuteQuery(pos, useCelsius);
+    } else {
+        executeYahooQuery(pos, useCelsius, '', overrideLocation);
+    }
+
+}
+
+function fahrenheitToCelsius(temp) {
+    return (temp - 32)/1.8;
+}
+
+function getWoeidAndExecuteQuery(pos, useCelsius) {
+    var truncLat = pos.coords.latitude.toFixed(4);
+    var truncLng = pos.coords.longitude.toFixed(4);
+    var latLng = truncLat + ',' + truncLng;
+
+    if (localStorage[latLng]) {
+        console.log('Got woeid from storage. ' + latLng + ': ' + localStorage[latLng]);
+        executeYahooQuery(pos, useCelsius, localStorage[latLng]);
+        return;
+    }
+
+    var url = 'http://gws2.maps.yahoo.com/findlocation?pf=1&locale=en_US&offset=15&flags=J&q=' + truncLat + '%2c' + truncLng + '&gflags=R&start=0&count=100';
+
+    console.log(url);
+    xhrRequest(url, 'GET', function(responseText) {
+        try {
+            var resp = JSON.parse(responseText);
+            if (resp.ResultSet.Error === 0) {
+                var woeid = resp.ResultSet.Results[0].woeid;
+                console.log('Got woeid from API. ' + latLng + ': ' + woeid);
+                localStorage[latLng] = woeid;
+                executeYahooQuery(pos, useCelsius, woeid);
+            } else {
+                console.log('woeid query failed: ' + resp.ResultSet.Error);
+                executeYahooQuery(pos, useCelsius, '');
+            }
+        } catch (ex) {
+            console.log(ex.stack);
+            console.log('woeid query failed');
+            executeYahooQuery(pos, useCelsius, '');
+        }
+    });
 }
 
 function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation) {
@@ -107,9 +227,9 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             sendData(temp, max, min, condition);
 
         } catch(ex) {
-            console.log(ex);
-            console.log('Falling back to OpenWeatherMap');
-            fetchOpenWeatherMapData(pos, useCelsius);
+            console.log(ex.stack);
+            console.log('Falling back to Yahoo');
+            fetchYahooData(pos, useCelsius, overrideLocation);
         }
     });
 }
@@ -140,7 +260,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             sendData(temp, max, min, condition);
 
         } catch (ex) {
-            console.log(ex);
+            console.log(ex.stack);
         }
     });
 }
@@ -204,16 +324,18 @@ function locationError(err) {
     console.log('Error requesting location!');
 }
 
-function getWeather(weatherKey, useCelsius, overrideLocation) {
+function getWeather(provider, weatherKey, useCelsius, overrideLocation) {
+    console.log('Requesting weather: ' + provider + ', ' + weatherKey + ', ' + useCelsius + ', ' + overrideLocation);
+    provider = provider || 0;
     weatherKey = weatherKey || '';
     useCelsius = useCelsius || false;
     overrideLocation = overrideLocation || '';
     if (overrideLocation) {
-        locationSuccess(null, weatherKey, useCelsius, overrideLocation);
+        locationSuccess(null, provider, weatherKey, useCelsius, overrideLocation);
     } else {
         navigator.geolocation.getCurrentPosition(
             function(pos) {
-                locationSuccess(pos, weatherKey, useCelsius, overrideLocation);
+                locationSuccess(pos, provider, weatherKey, useCelsius, overrideLocation);
             },
             locationError,
             {timeout: 15000, maximumAge: 60000}
@@ -312,3 +434,53 @@ var ow_iconToId = {
     '50n': 32,
 };
 
+var y_iconToId = {
+    '3200': 0,
+    '32': 1,
+    '34': 1,
+    '30': 5,
+    '28': 4,
+    '26': 7,
+    '44': 7,
+    '10': 8,
+    '11': 8,
+    '12': 8,
+    '40': 8,
+    '13': 9,
+    '14': 9,
+    '15': 9,
+    '16': 9,
+    '41': 9,
+    '42': 9,
+    '43': 9,
+    '46': 9,
+    '1': 10,
+    '3': 10,
+    '4': 10,
+    '37': 10,
+    '38': 10,
+    '39': 10,
+    '45': 10,
+    '47': 10,
+    '5': 11,
+    '6': 11,
+    '7': 11,
+    '8': 40,
+    '9': 40,
+    '18': 11,
+    '17': 41,
+    '35': 41,
+    '21': 13,
+    '19': 13,
+    '31': 20,
+    '33': 20,
+    '27': 23,
+    '29': 24,
+    '20': 38,
+    '25': 42,
+    '36': 43,
+    '23': 44,
+    '24': 44,
+    '0': 45,
+    '2': 46
+};

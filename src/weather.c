@@ -47,15 +47,21 @@ static char* weather_conditions[] = {
     "\U0000F038", // 'nt_chanceflurries': 37,
     "\U0000F003", // 'fog': 38,
     "\U0000F04A", // 'nt_fog': 39,
+    "\U0000F04e", // drizzle: 40
+    "\U0000F015", // hail: 41
+    "\U0000F076", // cold: 42
+    "\U0000F072", // hot: 43
+    "\U0000F050", // windy: 44
+    "\U0000F056", // tornado: 45
+    "\U0000F073", // hurricane: 46
 };
 
 void update_weather(void) {
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather with key (%s) %d", weather_key_buffer, (int)time(NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     dict_write_uint8(iter, KEY_USECELSIUS, use_celsius);
-    dict_write_cstring(iter, KEY_WEATHERKEY, weather_key_buffer);
     app_message_outbox_send();
 }
 

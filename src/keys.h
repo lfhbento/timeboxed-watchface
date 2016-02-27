@@ -44,11 +44,14 @@
 #define KEY_DISTBEHINDCOLOR 40
 #define KEY_SLEEP 41
 #define KEY_DEEP 42
+#define KEY_WEATHERPROVIDER 43
+#define KEY_YAHOOKEY 44
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
 #define SYSTEM_FONT 2
 #define ARCHIVO_FONT 3
+#define DIN_FONT 4
 
 #define ALIGN_LEFT 0
 #define ALIGN_CENTER 1

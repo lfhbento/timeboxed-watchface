@@ -377,7 +377,6 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
     bool is_sleeping = is_user_sleeping();
 
-    show_sleep_data_if_visible();
 
     bool update_enabled = persist_exists(KEY_UPDATE) ? persist_read_int(KEY_UPDATE) : true;
 
@@ -390,8 +389,15 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     uint8_t tick_interval = is_sleeping ? 60 : 30;
 
-    if((tick_time->tm_min % tick_interval == 0) && is_weather_enabled()) {
-        update_weather();
+    show_sleep_data_if_visible();
+
+    if((tick_time->tm_min % tick_interval == 0)) {
+        if (is_weather_enabled()) {
+            update_weather();
+        }
+        if (is_sleeping) {
+            queue_health_update();
+        }
     }
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
     get_health_data();
