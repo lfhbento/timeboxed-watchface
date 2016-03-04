@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.3";
+var currentVersion = "2.5";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -117,7 +117,7 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
     var woeidQuery = '';
     if (overrideLocation) {
-        woeidQuery = 'select woeid from geo.places where text="' + overrideLocation + '"';
+        woeidQuery = 'select woeid from geo.places(1) where text="' + overrideLocation + '"';
     } else {
         woeidQuery = '' + woeid;
     }
@@ -130,10 +130,16 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
         xhrRequest(url, 'GET', function(responseText) {
             try {
                 var resp = JSON.parse(responseText);
+                var now = new Date();
+                var day = now.getDate();
+                var dayUTC = now.getUTCDate();
+
+                var resultIndex = (now.getDate() === now.getUTCDate() ? 1 : (now.getTimezoneOffset() > 0 ? 0 : 2));
                 var results = resp.query.results.channel.item;
+                console.log(JSON.stringify(results.forecast[resultIndex]));
                 var temp = Math.round(useCelsius ? fahrenheitToCelsius(results.condition.temp) : results.condition.temp);
-                var min = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast['1'].low) : results.forecast['1'].low);
-                var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast['1'].high) : results.forecast['1'].high);
+                var min = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].low) : results.forecast[resultIndex].low);
+                var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].high) : results.forecast[resultIndex].high);
                 var condition = y_iconToId[results.condition.code];
 
                 if (typeof(condition) === 'undefined') {
@@ -236,30 +242,56 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
 
 function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
     var url = 'http://api.openweathermap.org/data/2.5/weather?appid=979cbf006bf67bc368a54af240d15cf3';
+    var urlForecast = 'http://api.openweathermap.org/data/2.5/forecast/daily?appid=979cbf006bf67bc368a54af240d15cf3&format=json&cnt=3';
 
     if (!overrideLocation) {
         url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
+        urlForecast += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
     } else {
         url += '&q=' + encodeURIComponent(overrideLocation);
+        urlForecast += '&q=' + encodeURIComponent(overrideLocation);
     }
 
     console.log(url);
+    console.log(urlForecast);
 
     xhrRequest(url, 'GET', function(responseText) {
         try {
+            console.log('Retrieving current weather from OpenWeatherMap');
             var resp = JSON.parse(responseText);
             var temp = useCelsius ? kelvinToCelsius(resp.main.temp) : kelvinToFahrenheit(resp.main.temp);
-            var max = useCelsius ? kelvinToCelsius(resp.main.temp_max) : kelvinToFahrenheit(resp.main.temp_max);
-            var min = useCelsius ? kelvinToCelsius(resp.main.temp_min) : kelvinToFahrenheit(resp.main.temp_min);
             var condition = ow_iconToId[resp.weather[0].icon];
-
+            var day = new Date(resp.dt * 1000);
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
 
-            sendData(temp, max, min, condition);
+            xhrRequest(urlForecast, 'GET', function(forecastRespText) {
+                try {
+                    console.log('Retrieving forecast data from OpenWeatherMap');
+                    var fResp = JSON.parse(forecastRespText);
+
+                    var max = useCelsius ? kelvinToCelsius(fResp.list[0].temp.max) : kelvinToFahrenheit(fResp.list[0].temp.max);
+                    var min = useCelsius ? kelvinToCelsius(fResp.list[0].temp.min) : kelvinToFahrenheit(fResp.list[0].temp.min);
+
+                    for (var fIndex in fResp.list) {
+                        var fDay = new Date(fResp.list[fIndex].dt * 1000);
+                        if (day.getUTCDate() === fDay.getUTCDate()) {
+                            console.log(JSON.stringify(fResp.list[fIndex]));
+                            max = useCelsius ? kelvinToCelsius(fResp.list[fIndex].temp.max) : kelvinToFahrenheit(fResp.list[fIndex].temp.max);
+                            min = useCelsius ? kelvinToCelsius(fResp.list[fIndex].temp.min) : kelvinToFahrenheit(fResp.list[fIndex].temp.min);
+                        }
+                    }
+
+                    sendData(temp, max, min, condition);
+                } catch (ex) {
+                    console.log('Failure requesting forecast data from OpenWeatherMap');
+                    console.log(ex.stack);
+                }
+            });
 
         } catch (ex) {
+            console.log('Failure requesting current weather from OpenWeatherMap');
             console.log(ex.stack);
         }
     });
