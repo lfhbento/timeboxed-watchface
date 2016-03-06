@@ -13,6 +13,8 @@ static bool sleep_data_visible;
 static bool sleep_data_enabled;
 static bool useKm;
 static bool update_queued;
+static bool is_sleeping;
+static bool sleep_status_updated;
 
 static bool health_permission_granted() {
     HealthMetric metric_steps = HealthMetricStepCount;
@@ -83,8 +85,6 @@ static void update_steps_data() {
     }
 
     set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
-    persist_write_string(KEY_STEPS, steps_or_sleep_text);
-    persist_write_string(KEY_DIST, dist_or_deep_text);
 }
 
 static void update_sleep_data() {
@@ -144,8 +144,6 @@ static void update_sleep_data() {
     }
 
     set_steps_dist_color(current_sleep < sleep_last_week, current_deep < deep_last_week);
-    persist_write_string(KEY_SLEEP, steps_or_sleep_text);
-    persist_write_string(KEY_DEEP, dist_or_deep_text);
 }
 
 void queue_health_update() {
@@ -178,29 +176,8 @@ void health_handler(HealthEventType event, void *context) {
     }
 }
 
-static void load_steps_from_storage() {
-    if (persist_exists(KEY_STEPS)) {
-        char steps[10];
-        char dist[10];
-        persist_read_string(KEY_STEPS, steps, sizeof(steps));
-        persist_read_string(KEY_DIST, dist, sizeof(dist));
-        set_steps_or_sleep_layer_text(steps);
-        set_dist_or_deep_layer_text(dist);
-    }
-}
-
-static void load_sleep_from_storage() {
-    if (persist_exists(KEY_SLEEP)) {
-        char sleep[14];
-        char deep[14];
-        persist_read_string(KEY_SLEEP, sleep, sizeof(sleep));
-        persist_read_string(KEY_DEEP, deep, sizeof(deep));
-        set_steps_or_sleep_layer_text(sleep);
-        set_dist_or_deep_layer_text(deep);
-    }
-}
-
 void toggle_health(bool from_configs) {
+    is_sleeping = false;
     bool has_health = false;
     bool using_configs = get_config_toggles() != -1;
     health_enabled = using_configs ? is_health_toggle_enabled() : persist_read_int(KEY_ENABLEHEALTH);
@@ -211,17 +188,11 @@ void toggle_health(bool from_configs) {
         if (health_permission_granted()) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
-            set_steps_or_sleep_layer_text("");
-            set_dist_or_deep_layer_text("");
+            set_steps_or_sleep_layer_text("0");
+            set_dist_or_deep_layer_text("0");
             queue_health_update();
             if (from_configs) {
                 get_health_data();
-            } else {
-                if (!sleep_data_visible) {
-                    load_steps_from_storage();
-                } else {
-                    load_sleep_from_storage();
-                }
             }
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -238,20 +209,29 @@ void toggle_health(bool from_configs) {
 }
 
 bool is_user_sleeping() {
-    HealthActivityMask activities = health_service_peek_current_activities();
-    APP_LOG(APP_LOG_LEVEL_DEBUG,
-        "Sleeping data. %d %d %d",
-        (int)activities & HealthActivitySleep,
-        (int)activities & HealthActivityRestfulSleep,
-        (int)activities & HealthActivitySleep || activities & HealthActivityRestfulSleep);
-    return activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
+    time_t temp = time(NULL);
+    struct tm *tick_time = localtime(&temp);
+    if (tick_time->tm_min % 10 == 0) { // only check every 10 minutes
+        if (!sleep_status_updated) {
+            sleep_status_updated = true;
+            HealthActivityMask activities = health_service_peek_current_activities();
+            APP_LOG(APP_LOG_LEVEL_DEBUG,
+                "Sleeping data. %d %d %d",
+                (int)activities & HealthActivitySleep,
+                (int)activities & HealthActivityRestfulSleep,
+                (int)activities & HealthActivitySleep || activities & HealthActivityRestfulSleep);
+            is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
+        }
+    } else {
+        sleep_status_updated = false;
+    }
+
+    return is_sleeping;
 }
 
 void show_sleep_data_if_visible() {
     if (health_enabled && sleep_data_enabled) {
-        bool is_sleeping = is_user_sleeping();
-
-        if (is_sleeping) {
+        if (is_user_sleeping()) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "We are asleep. %d", was_asleep);
             sleep_data_visible = true;
             if (!was_asleep) {
@@ -262,7 +242,7 @@ void show_sleep_data_if_visible() {
             }
         }
 
-        if (!is_sleeping && was_asleep) {
+        if (!is_user_sleeping() && was_asleep) {
             sleep_data_visible = true;
             woke_up_at = time(NULL) + SECONDS_PER_MINUTE * 30; // 30 minutes
             APP_LOG(APP_LOG_LEVEL_DEBUG, "We woke up! %d", (int) woke_up_at);

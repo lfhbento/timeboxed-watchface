@@ -14,6 +14,8 @@ static signed int tz_hour;
 static uint8_t tz_minute;
 static char tz_name[TZ_LEN];
 static uint8_t min_counter;
+static bool first_health_requested;
+
 static void update_time() {
     // Get a tm structure
     time_t temp = time(NULL);
@@ -87,7 +89,7 @@ static void battery_handler(BatteryChargeState charge_state) {
     char s_battery_buffer[8];
 
     if (charge_state.is_charging) {
-        snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=/=)");
+        snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=)");
     } else {
         snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent <= 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
     }
@@ -369,7 +371,8 @@ static void watchface_load(Window *window) {
 
     create_text_layers(window);
 
-    min_counter = 0;
+    min_counter = 20; // after loading, get the next weather update in 10 min
+    first_health_requested = false;
 
     if (persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
@@ -395,8 +398,6 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
     min_counter++;
 
-    bool is_sleeping = is_user_sleeping();
-
     if (!is_update_disabled() && tick_time->tm_hour == 4) { // updates at 4am
         check_for_updates();
     }
@@ -404,7 +405,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         notify_update(false);
     }
 
-    uint8_t tick_interval = is_sleeping ? 90 : 30;
+    uint8_t tick_interval = is_user_sleeping() ? 90 : 30;
 
     show_sleep_data_if_visible();
 
@@ -413,13 +414,16 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         if (is_weather_enabled()) {
             update_weather();
         }
-        if (is_sleeping) {
+        if (is_user_sleeping()) {
             queue_health_update();
         }
         min_counter = 0;
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
-    get_health_data();
+    if (tick_time->tm_min % 2 == 0 || !first_health_requested) { // check for health updates every 2 minutes
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        get_health_data();
+        first_health_requested = true;
+    }
 }
 
 
