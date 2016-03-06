@@ -64,6 +64,7 @@
 #define SYSTEM_FONT 2
 #define ARCHIVO_FONT 3
 #define DIN_FONT 4
+#define PROTOTYPE_FONT 5
 
 #define ALIGN_LEFT 0
 #define ALIGN_CENTER 1

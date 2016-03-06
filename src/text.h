@@ -33,6 +33,5 @@ void set_weather_layer_text(char*);
 void set_max_icon_layer_text(char*);
 void set_min_icon_layer_text(char*);
 void set_update_layer_text(char*);
-void set_health_icon_text(char*);
 
 #endif

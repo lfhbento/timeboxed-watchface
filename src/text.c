@@ -17,7 +17,6 @@ static TextLayer *weather;
 static TextLayer *max_icon;
 static TextLayer *min_icon;
 static TextLayer *update;
-static TextLayer *health_icon;
 
 static GFont time_font;
 static GFont medium_font;
@@ -48,7 +47,6 @@ static char battery_text[8];
 static char alt_time_text[22];
 static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
-static char health_icon_text[2];
 
 static uint8_t loaded_font;
 static bool enable_advanced;
@@ -68,7 +66,6 @@ struct TextPositions {
     GPoint icon_min;
     GPoint steps_or_sleep;
     GPoint dist_or_deep;
-    GPoint health_icon;
 };
 
 uint8_t get_loaded_font() {
@@ -112,7 +109,6 @@ static void get_text_positions_blocko(GTextAlignment align, struct TextPositions
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
     positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
-    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
 }
 
 static void get_text_positions_blocko_big(GTextAlignment align, struct TextPositions* positions) {
@@ -130,7 +126,6 @@ static void get_text_positions_blocko_big(GTextAlignment align, struct TextPosit
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
-    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
 }
 
 static void get_text_positions_system(GTextAlignment align, struct TextPositions* positions) {
@@ -148,7 +143,6 @@ static void get_text_positions_system(GTextAlignment align, struct TextPositions
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
-    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
 }
 
 static void get_text_positions_archivo(GTextAlignment align, struct TextPositions* positions) {
@@ -166,7 +160,6 @@ static void get_text_positions_archivo(GTextAlignment align, struct TextPosition
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
-    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
 }
 
 static void get_text_positions_din(GTextAlignment align, struct TextPositions* positions) {
@@ -184,7 +177,23 @@ static void get_text_positions_din(GTextAlignment align, struct TextPositions* p
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
     positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(145, 148));
     positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(160, 148));
-    positions->health_icon = create_point(PBL_IF_ROUND_ELSE(0, 0), PBL_IF_ROUND_ELSE(144, 148));
+}
+
+static void get_text_positions_prototype(GTextAlignment align, struct TextPositions* positions) {
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(50, 42));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(102, 94));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(44, 36));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(124, 116));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(70, get_pos(align, 60, 118, 60)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(88, get_pos(align, 78, 118, 78)));
+    positions->weather = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions->temp_cur = create_point(PBL_IF_ROUND_ELSE(16, 38), 4);
+    positions->temp_max = create_point(PBL_IF_ROUND_ELSE(105, 113), PBL_IF_ROUND_ELSE(22, 4));
+    positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 4));
+    positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
+    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions) {
@@ -204,6 +213,9 @@ static void get_text_positions(int selected_font, GTextAlignment alignment, stru
         case DIN_FONT:
             get_text_positions_din(alignment, positions);
             break;
+        case PROTOTYPE_FONT:
+            get_text_positions_prototype(alignment, positions);
+            break;
         default:
             get_text_positions_blocko(alignment, positions);
     }
@@ -215,6 +227,7 @@ void create_text_layers(Window* window) {
     GRect bounds = layer_get_bounds(window_layer);
 
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
+
     int alignment = PBL_IF_ROUND_ELSE(ALIGN_CENTER, persist_exists(KEY_TEXTALIGN) ? persist_read_int(KEY_TEXTALIGN) : ALIGN_RIGHT);
 
     GTextAlignment text_align = GTextAlignmentRight;
@@ -292,10 +305,6 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(dist_or_deep, GColorClear);
     text_layer_set_text_alignment(dist_or_deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
 
-    health_icon = text_layer_create(GRect(text_positions.health_icon.x, text_positions.health_icon.y, width, 50));
-    text_layer_set_background_color(health_icon, GColorClear);
-    text_layer_set_text_alignment(health_icon, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentCenter));
-
     layer_add_child(window_layer, text_layer_get_layer(hours));
     layer_add_child(window_layer, text_layer_get_layer(date));
     layer_add_child(window_layer, text_layer_get_layer(alt_time));
@@ -310,7 +319,6 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(temp_max));
     layer_add_child(window_layer, text_layer_get_layer(steps_or_sleep));
     layer_add_child(window_layer, text_layer_get_layer(dist_or_deep));
-    layer_add_child(window_layer, text_layer_get_layer(health_icon));
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -331,15 +339,10 @@ void destroy_text_layers() {
     text_layer_destroy(temp_max);
     text_layer_destroy(steps_or_sleep);
     text_layer_destroy(dist_or_deep);
-    text_layer_destroy(health_icon);
 }
 
 void load_face_fonts() {
-    int selected_font = BLOCKO_FONT;
-
-    if (persist_exists(KEY_FONTTYPE)) {
-        selected_font = persist_read_int(KEY_FONTTYPE);
-    }
+    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
 
     if (selected_font == SYSTEM_FONT) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading system fonts. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -362,6 +365,13 @@ void load_face_fonts() {
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_20));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = DIN_FONT;
+    } else if (selected_font == PROTOTYPE_FONT) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Prototype font. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_52));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_22));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_16));
+        weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
+        loaded_font = PROTOTYPE_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
@@ -411,7 +421,6 @@ void set_face_fonts() {
     text_layer_set_font(temp_max, base_font);
     text_layer_set_font(steps_or_sleep, base_font);
     text_layer_set_font(dist_or_deep, base_font);
-    text_layer_set_font(health_icon, awesome_font);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -446,7 +455,6 @@ void set_colors(Window *window) {
             enable_advanced ? steps_color : base_color);
     text_layer_set_text_color(dist_or_deep,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
-    text_layer_set_text_color(health_icon, steps_color);
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 
@@ -457,7 +465,6 @@ void set_colors(Window *window) {
 void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
     GColor steps_cur_color = falling_behind_steps ? steps_behind_color : steps_color;
     text_layer_set_text_color(steps_or_sleep, steps_cur_color);
-    text_layer_set_text_color(health_icon, steps_cur_color);
     text_layer_set_text_color(dist_or_deep, falling_behind_dist ? dist_behind_color : dist_color);
 }
 
@@ -547,9 +554,4 @@ void set_min_icon_layer_text(char* text) {
 void set_update_layer_text(char* text) {
     strcpy(update_text, text);
     text_layer_set_text(update, update_text);
-}
-
-void set_health_icon_text(char* text) {
-    strcpy(health_icon_text, text);
-    text_layer_set_text(health_icon, health_icon_text);
 }

@@ -82,7 +82,6 @@ static void update_steps_data() {
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
-    set_health_icon_text("");
     set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
     persist_write_string(KEY_STEPS, steps_or_sleep_text);
     persist_write_string(KEY_DIST, dist_or_deep_text);
@@ -144,7 +143,6 @@ static void update_sleep_data() {
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
-    set_health_icon_text("");
     set_steps_dist_color(current_sleep < sleep_last_week, current_deep < deep_last_week);
     persist_write_string(KEY_SLEEP, steps_or_sleep_text);
     persist_write_string(KEY_DEEP, dist_or_deep_text);
@@ -188,7 +186,6 @@ static void load_steps_from_storage() {
         persist_read_string(KEY_DIST, dist, sizeof(dist));
         set_steps_or_sleep_layer_text(steps);
         set_dist_or_deep_layer_text(dist);
-        set_health_icon_text("");
     }
 }
 
@@ -200,7 +197,6 @@ static void load_sleep_from_storage() {
         persist_read_string(KEY_DEEP, deep, sizeof(deep));
         set_steps_or_sleep_layer_text(sleep);
         set_dist_or_deep_layer_text(deep);
-        set_health_icon_text("");
     }
 }
 
@@ -217,7 +213,6 @@ void toggle_health(bool from_configs) {
             has_health = health_service_events_subscribe(health_handler, NULL);
             set_steps_or_sleep_layer_text("");
             set_dist_or_deep_layer_text("");
-            set_health_icon_text("");
             queue_health_update();
             if (from_configs) {
                 get_health_data();
@@ -238,7 +233,6 @@ void toggle_health(bool from_configs) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
-        set_health_icon_text("");
         health_service_events_unsubscribe();
     }
 }
@@ -295,7 +289,6 @@ void toggle_health(bool from_configs) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     set_steps_or_sleep_layer_text("");
     set_dist_or_deep_layer_text("");
-    set_health_icon_text("");
 }
 
 bool is_user_sleeping() {

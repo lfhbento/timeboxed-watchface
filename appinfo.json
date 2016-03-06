@@ -159,6 +159,27 @@
                 "file": "fonts/OSP-DIN.ttf",
                 "name": "FONT_DIN_58",
                 "type": "font"
+            },
+            {
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+                "compatibility": "2.7",
+                "file": "fonts/Prototype.ttf",
+                "name": "FONT_PROTOTYPE_16",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "compatibility": "2.7",
+                "file": "fonts/Prototype.ttf",
+                "name": "FONT_PROTOTYPE_22",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9:! ]",
+                "compatibility": "2.7",
+                "file": "fonts/Prototype.ttf",
+                "name": "FONT_PROTOTYPE_52",
+                "type": "font"
             }
         ]
     },
