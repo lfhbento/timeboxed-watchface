@@ -6,13 +6,14 @@
 #include "health.h"
 #include "text.h"
 #include "weather.h"
+#include "configs.h"
 
 static Window *watchface;
 
 static signed int tz_hour;
 static uint8_t tz_minute;
 static char tz_name[TZ_LEN];
-
+static uint8_t min_counter;
 static void update_time() {
     // Get a tm structure
     time_t temp = time(NULL);
@@ -31,6 +32,10 @@ static void update_time() {
 
     if (tz_name[0] != '#') {
         strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
+        if (is_leading_zero_disabled()) {
+            if (hour_text[0] == '0') hour_text[0] = ' ';
+            if (tz_text[0] == '0') tz_text[0] = ' ';
+        }
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
             (gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon > tick_time->tm_mon) ||
@@ -70,10 +75,7 @@ void bt_handler(bool connected) {
         set_bluetooth_layer_text("");
     } else {
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is not connected.");
-        bool is_sleeping = is_user_sleeping();
-        bool bluetooth_disconnect_vibe = persist_exists(KEY_BLUETOOTHDISCONNECT) && persist_read_int(KEY_BLUETOOTHDISCONNECT);
-
-        if (bluetooth_disconnect_vibe && !is_sleeping) {
+        if (is_bluetooth_vibrate_enabled() && !is_user_sleeping()) {
             vibes_long_pulse();
         }
         set_bluetooth_color();
@@ -109,7 +111,7 @@ static void load_screen(bool from_configs) {
 }
 
 static void check_for_updates() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_uint8(iter, KEY_HASUPDATE, 1);
@@ -117,7 +119,7 @@ static void check_for_updates() {
 }
 
 static void notify_update(int update_available) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%2d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
     if (update_available) {
         set_update_color();
     }
@@ -155,38 +157,40 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
         store_weather_values(temp_val, max_val, min_val, weather_val);
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         return;
     }
 
+    int configs = 0;
+
     Tuple *enableHealth = dict_find(iterator, KEY_ENABLEHEALTH);
     if (enableHealth) {
-        persist_write_int(KEY_ENABLEHEALTH, enableHealth->value->int32);
+        bool enabled = enableHealth->value->int8;
+        if (enabled) configs += FLAG_HEALTH;
     }
 
     Tuple *useKm = dict_find(iterator, KEY_USEKM);
     if (useKm) {
-        persist_write_int(KEY_USEKM, useKm->value->int8);
+        bool enabled = useKm->value->int8;
+        if (enabled) configs += FLAG_KM;
     }
 
     Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);
     if (showSleep) {
-        persist_write_int(KEY_SHOWSLEEP, showSleep->value->int8);
+        bool enabled = showSleep->value->int8;
+        if (enabled) configs += FLAG_SLEEP;
     }
 
     Tuple *enableWeather = dict_find(iterator, KEY_ENABLEWEATHER);
     if (enableWeather) {
-        persist_write_int(KEY_ENABLEWEATHER, enableWeather->value->int8);
-    }
-
-    Tuple *weatherKey = dict_find(iterator, KEY_WEATHERKEY);
-    if (weatherKey) {
-        persist_write_string(KEY_WEATHERKEY, weatherKey->value->cstring);
+        bool enabled =  enableWeather->value->int8;
+        if (enabled) configs += FLAG_WEATHER;
     }
 
     Tuple *useCelsius = dict_find(iterator, KEY_USECELSIUS);
     if (useCelsius) {
-        persist_write_int(KEY_USECELSIUS, useCelsius->value->int8);
+        bool enabled = useCelsius->value->int8;
+        if (enabled)  configs += FLAG_CELSIUS;
     }
 
     Tuple *timezones = dict_find(iterator, KEY_TIMEZONES);
@@ -222,7 +226,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *enableAdvanced = dict_find(iterator, KEY_ENABLEADVANCED);
     if (enableAdvanced) {
-        persist_write_int(KEY_ENABLEADVANCED, enableAdvanced->value->int8);
+        bool enabled = enableAdvanced->value->int8;
+        if (enabled) configs += FLAG_ADVANCED;
     }
 
     Tuple *dateColor = dict_find(iterator, KEY_DATECOLOR);
@@ -292,7 +297,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *bluetoothDisconnect = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
     if (bluetoothDisconnect) {
-        persist_write_int(KEY_BLUETOOTHDISCONNECT, bluetoothDisconnect->value->int8);
+        bool enabled = bluetoothDisconnect->value->int8;
+        if(enabled) configs += FLAG_BLUETOOTH;
     }
 
     Tuple *bluetoothColor = dict_find(iterator, KEY_BLUETOOTHCOLOR);
@@ -307,7 +313,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
     if (updateAvailable) {
-        persist_write_int(KEY_UPDATE, updateAvailable->value->int32);
+        bool enabled = updateAvailable->value->int8;
+        if (!enabled) configs += FLAG_UPDATE;
     }
 
     Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
@@ -330,7 +337,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_TEXTALIGN, textAlign->value->int8);
     }
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    Tuple *leadingZero = dict_find(iterator, KEY_LEADINGZERO);
+    if (leadingZero) {
+        bool enabled = leadingZero->value->int8;
+        if (!enabled) configs += FLAG_LEADINGZERO;
+    }
+
+    persist_write_int(KEY_CONFIGS, configs);
+    set_config_toggles(configs);
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     destroy_text_layers();
     create_text_layers(watchface);
     load_screen(true);
@@ -349,9 +365,11 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
 static void watchface_load(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 
     create_text_layers(window);
+
+    min_counter = 0;
 
     if (persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
@@ -360,52 +378,53 @@ static void watchface_load(Window *window) {
     } else {
         tz_name[0] = '#';
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void watchface_unload(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 
     unload_face_fonts();
 
     destroy_text_layers();
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
+    min_counter++;
+
     bool is_sleeping = is_user_sleeping();
 
-
-    bool update_enabled = persist_exists(KEY_UPDATE) ? persist_read_int(KEY_UPDATE) : true;
-
-    if (update_enabled && tick_time->tm_hour == 4) { // updates at 4am
+    if (!is_update_disabled() && tick_time->tm_hour == 4) { // updates at 4am
         check_for_updates();
     }
-    if (!update_enabled) {
+    if (is_update_disabled()) {
         notify_update(false);
     }
 
-    uint8_t tick_interval = is_sleeping ? 60 : 30;
+    uint8_t tick_interval = is_sleeping ? 90 : 30;
 
     show_sleep_data_if_visible();
 
-    if((tick_time->tm_min % tick_interval == 0)) {
+    if(min_counter == tick_interval) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Time for updates (%d). %d%2d", tick_interval, (int)time(NULL), (int)time_ms(NULL, NULL));
         if (is_weather_enabled()) {
             update_weather();
         }
         if (is_sleeping) {
             queue_health_update();
         }
+        min_counter = 0;
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     get_health_data();
 }
 
 
 static void init(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
     init_sleep_data();
@@ -434,21 +453,21 @@ static void init(void) {
 
     load_screen(false);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void deinit(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     window_destroy(watchface);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 int main(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     init();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop start. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_event_loop();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     deinit();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }

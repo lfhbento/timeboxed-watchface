@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "text.h"
 #include "keys.h"
+#include "configs.h"
 
 static TextLayer *hours;
 static TextLayer *date;
@@ -26,6 +27,12 @@ static GFont weather_big_font;
 static GFont awesome_font;
 
 static GColor base_color;
+static GColor battery_color;
+static GColor battery_low_color;
+static GColor steps_color;
+static GColor steps_behind_color;
+static GColor dist_color;
+static GColor dist_behind_color;
 
 static char hour_text[13];
 static char date_text[13];
@@ -203,7 +210,7 @@ static void get_text_positions(int selected_font, GTextAlignment alignment, stru
 };
 
 void create_text_layers(Window* window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
@@ -222,7 +229,7 @@ void create_text_layers(Window* window) {
             text_align = GTextAlignmentRight;
             break;
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Alignment set: %d. %d%d", text_align, (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Alignment set: %d. %d%2d", text_align, (int)time(NULL), (int)time_ms(NULL, NULL));
 
     struct TextPositions text_positions;
     get_text_positions(selected_font, text_align, &text_positions);
@@ -305,11 +312,11 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(dist_or_deep));
     layer_add_child(window_layer, text_layer_get_layer(health_icon));
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void destroy_text_layers() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Destroying text layers. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Destroying text layers. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_destroy(hours);
     text_layer_destroy(date);
     text_layer_destroy(alt_time);
@@ -335,35 +342,35 @@ void load_face_fonts() {
     }
 
     if (selected_font == SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading system fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading system fonts. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
         medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
         base_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_28));
         loaded_font = SYSTEM_FONT;
     } else if (selected_font == ARCHIVO_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Archivo font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Archivo font. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_28));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = ARCHIVO_FONT;
     } else if (selected_font == DIN_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading DIN font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading DIN font. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_58));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_26));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_20));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
         loaded_font = DIN_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_32));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
         weather_big_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_28));
         loaded_font = BLOCKO_BIG_FONT;
     } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_16));
@@ -373,12 +380,12 @@ void load_face_fonts() {
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
     awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts loaded. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts loaded. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void unload_face_fonts() {
     if (loaded_font != SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading custom fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading custom fonts. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         fonts_unload_custom_font(time_font);
         fonts_unload_custom_font(medium_font);
         fonts_unload_custom_font(base_font);
@@ -389,7 +396,7 @@ void unload_face_fonts() {
 }
 
 void set_face_fonts() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting fonts. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting fonts. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_set_font(hours, time_font);
     text_layer_set_font(date, medium_font);
     text_layer_set_font(alt_time, base_font);
@@ -406,18 +413,23 @@ void set_face_fonts() {
     text_layer_set_font(dist_or_deep, base_font);
     text_layer_set_font(health_icon, awesome_font);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void set_colors(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defining colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defining colors. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
-    enable_advanced = persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
+    enable_advanced = get_config_toggles() != -1 ? is_advanced_colors_enabled() : persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enable_advanced);
     GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
     GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;
-    GColor steps_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color;
+
+    steps_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color;
+    steps_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : base_color;
+    dist_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color;
+    dist_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : base_color;
+
     text_layer_set_text_color(date,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time,
@@ -435,17 +447,18 @@ void set_colors(Window *window) {
     text_layer_set_text_color(dist_or_deep,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
     text_layer_set_text_color(health_icon, steps_color);
+    battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
+    battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
-    GColor steps_color = enable_advanced ? (falling_behind_steps ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_STEPSCOLOR))) : base_color;
-    text_layer_set_text_color(steps_or_sleep, steps_color);
-    text_layer_set_text_color(health_icon, steps_color);
-    text_layer_set_text_color(dist_or_deep,
-            enable_advanced ? (falling_behind_dist ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : GColorFromHEX(persist_read_int(KEY_DISTCOLOR))) : base_color);
+    GColor steps_cur_color = falling_behind_steps ? steps_behind_color : steps_color;
+    text_layer_set_text_color(steps_or_sleep, steps_cur_color);
+    text_layer_set_text_color(health_icon, steps_cur_color);
+    text_layer_set_text_color(dist_or_deep, falling_behind_dist ? dist_behind_color : dist_color);
 }
 
 void set_bluetooth_color() {
@@ -460,11 +473,9 @@ void set_update_color() {
 
 void set_battery_color(int percentage) {
     if (percentage > 20) {
-        text_layer_set_text_color(battery,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color);
+        text_layer_set_text_color(battery, battery_color);
     } else {
-        text_layer_set_text_color(battery,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color);
+        text_layer_set_text_color(battery, battery_low_color);
     }
 }
 

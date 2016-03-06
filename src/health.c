@@ -2,6 +2,7 @@
 #include "keys.h"
 #include "health.h"
 #include "text.h"
+#include "configs.h"
 
 
 #if defined(PBL_HEALTH)
@@ -150,7 +151,7 @@ static void update_sleep_data() {
 }
 
 void queue_health_update() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     update_queued = true;
 }
 
@@ -158,11 +159,11 @@ void get_health_data() {
     if (health_enabled && update_queued) {
         update_queued = false;
         if (!sleep_data_visible) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_steps_data();
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data updated. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data updated. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_sleep_data();
         }
     }
@@ -173,7 +174,7 @@ void health_handler(HealthEventType event, void *context) {
         case HealthEventSignificantUpdate:
         case HealthEventMovementUpdate:
         case HealthEventSleepUpdate:
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             queue_health_update();
             break;
     }
@@ -205,13 +206,14 @@ static void load_sleep_from_storage() {
 
 void toggle_health(bool from_configs) {
     bool has_health = false;
-    health_enabled = persist_read_int(KEY_ENABLEHEALTH);
-    sleep_data_enabled = persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
-    useKm = persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
+    bool using_configs = get_config_toggles() != -1;
+    health_enabled = using_configs ? is_health_toggle_enabled() : persist_read_int(KEY_ENABLEHEALTH);
+    sleep_data_enabled = using_configs ? is_sleep_data_enabled() : persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
+    useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
     if (health_enabled) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (health_permission_granted()) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
             set_steps_or_sleep_layer_text("");
             set_dist_or_deep_layer_text("");
@@ -227,13 +229,13 @@ void toggle_health(bool from_configs) {
                 }
             }
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
             health_enabled = false;
         }
     }
 
     if (!health_enabled || !has_health) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
         set_health_icon_text("");
@@ -290,7 +292,7 @@ void init_sleep_data() {
 #else // Health not available
 
 void toggle_health(bool from_configs) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
     set_steps_or_sleep_layer_text("");
     set_dist_or_deep_layer_text("");
     set_health_icon_text("");
