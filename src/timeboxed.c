@@ -14,7 +14,6 @@ static signed int tz_hour;
 static uint8_t tz_minute;
 static char tz_name[TZ_LEN];
 static uint8_t min_counter;
-static bool first_health_requested;
 
 static void update_time() {
     // Get a tm structure
@@ -372,7 +371,6 @@ static void watchface_load(Window *window) {
     create_text_layers(window);
 
     min_counter = 20; // after loading, get the next weather update in 10 min
-    first_health_requested = false;
 
     if (persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
@@ -421,13 +419,11 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         }
         min_counter = 0;
     }
-    if (tick_time->tm_min % 2 == 0 || !first_health_requested) { // check for health updates every 2 minutes
+    if (tick_time->tm_min % 2 == 0) { // check for health updates every 2 minutes
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         get_health_data();
-        first_health_requested = true;
     }
 }
-
 
 static void init(void) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));

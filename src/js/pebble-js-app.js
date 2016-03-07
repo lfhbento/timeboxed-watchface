@@ -41,8 +41,7 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
-        //'http://www.lbento.space/pebble-apps/timeboxed/v2.6/index.html?v=' + currentVersion +
-        'http://47e989c6.ngrok.io/v2.6/index.html?v=' + currentVersion +
+        'http://www.lbento.space/pebble-apps/timeboxed/v2.6/index.html?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language +
         '&nonce=' + new Date().getTime());

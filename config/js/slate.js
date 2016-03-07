@@ -142,6 +142,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
                           'ffaaff': 'ecc3eb','ffff00': 'ffeeab','ffff55': 'fff1b5',
                           'ffffaa': 'fff6d3'};
 
+      var counter = 0;
       this.each(function() {
         var $color = $(this);
         var $item = $color.parent();
@@ -206,11 +207,19 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           }
         }
 
+        var injectSelector = function() {
+            return '<div class="tab-buttons select-color-type">' +
+                '<a name="tab-color-' + counter + '" class="tab-button tab-color-normal active">Normal</a>' +
+                '<a name="tab-color-' + counter + '" class="tab-button tab-color-sunny">Sunny</a>' +
+            '</div>';
+        }
+
         var $injectedColor = $('<div class="item-styled-color">' +
           '<span class="value" style="background:' + $color.val().replace(/^0x/, '#') + '"></span>' +
           '<div ' +
               'style="padding-bottom:' + boxHeight + '%"' +
               'class="color-box-wrap">' +
+            (options.both ? injectSelector() : '') +
             '<div class="color-box-container primary-colors">' +
                 grid +
             '</div>' +
@@ -218,6 +227,28 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           '</div>' +
         '</div>');
         $item.append($injectedColor);
+
+        if (options.both) {
+            var paletteNormal = $injectedColor.find('.primary-colors');
+            var paletteSunny = $injectedColor.find('.secondary-colors');
+            paletteNormal.css({'top': '48px'});
+            paletteSunny.css({'top': '48px'});
+            paletteNormal.parent().css({'margin-bottom': '50px'});
+
+            $injectedColor.find('.tab-color-normal').click(function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                paletteNormal.css({'display': 'block'});
+                paletteSunny.css({'display': 'none'});
+            });
+
+            $injectedColor.find('.tab-color-sunny').click(function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                paletteNormal.css({'display': 'none'});
+                paletteSunny.css({'display': 'block'});
+            });
+        }
 
         var $valueDisplay = $injectedColor.find('.value');
 
@@ -234,7 +265,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           $valueDisplay.css('background-color', value.replace(/^0x/, '#'));
           $item.find('.color-box-wrap').removeClass('show');
         })
-
+        counter++;
       });
     },
 
