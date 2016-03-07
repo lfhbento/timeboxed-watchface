@@ -15,6 +15,8 @@ static bool useKm;
 static bool update_queued;
 static bool is_sleeping;
 static bool sleep_status_updated;
+static char steps_or_sleep_text[16];
+static char dist_or_deep_text[16];
 
 static bool health_permission_granted() {
     HealthMetric metric_steps = HealthMetricStepCount;
@@ -34,14 +36,12 @@ static void update_steps_data() {
     time_t end = time(NULL);
     int one_day = 24 * SECONDS_PER_HOUR;
 
-    uint16_t current_steps = 0;
-    uint16_t steps_last_week = 0;
-    uint16_t current_dist = 0;
-    uint16_t dist_last_week = 0;
-    uint16_t current_dist_int = 0;
-    uint16_t current_dist_dec = 0;
-    char steps_or_sleep_text[16];
-    char dist_or_deep_text[16];
+    int current_steps = 0;
+    int steps_last_week = 0;
+    int current_dist = 0;
+    int dist_last_week = 0;
+    int current_dist_int = 0;
+    int current_dist_dec = 0;
 
     HealthServiceAccessibilityMask mask_steps =
         health_service_metric_accessible(metric_steps, start, end);
@@ -95,12 +95,10 @@ static void update_sleep_data() {
     time_t end = time(NULL);
     int one_day = 24 * SECONDS_PER_HOUR;
 
-    uint16_t current_sleep = 0;
-    uint16_t current_deep = 0;
-    uint16_t sleep_last_week = 0;
-    uint16_t deep_last_week = 0;
-    char steps_or_sleep_text[16];
-    char dist_or_deep_text[16];
+    int current_sleep = 0;
+    int current_deep = 0;
+    int sleep_last_week = 0;
+    int deep_last_week = 0;
 
     HealthServiceAccessibilityMask mask_sleep =
         health_service_metric_accessible(metric_sleep, start, end);
@@ -108,11 +106,11 @@ static void update_sleep_data() {
         health_service_metric_accessible(metric_deep, start, end);
 
     if (mask_sleep & HealthServiceAccessibilityMaskAvailable) {
-        current_sleep = (int)health_service_sum(metric_sleep, start, end);
+        current_sleep = (int)health_service_sum_today(metric_sleep);
 
         sleep_last_week = 0;
         for (int i = 1; i <= 7; i++) {
-            sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, end - i*one_day);
+            sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, start - (i-1)*one_day);
         }
         sleep_last_week /= 7;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_sleep, sleep_last_week);
@@ -126,14 +124,14 @@ static void update_sleep_data() {
     }
 
     if (mask_deep & HealthServiceAccessibilityMaskAvailable) {
-        current_deep = (int)health_service_sum(metric_deep, start, end);
+        current_deep = (int)health_service_sum_today(metric_deep);
 
         deep_last_week = 0;
         for (int i = 1; i <= 7; i++) {
-            deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, end - i*one_day);
+            deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, start - (i-1)*one_day);
         }
         deep_last_week /= 7;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_deep, deep_last_week);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Deep sleep data: %d / %d", current_deep, deep_last_week);
 
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
         int current_deep_minutes = (current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
@@ -147,7 +145,7 @@ static void update_sleep_data() {
 }
 
 void queue_health_update() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     update_queued = true;
 }
 
@@ -155,11 +153,11 @@ void get_health_data() {
     if (health_enabled && update_queued) {
         update_queued = false;
         if (!sleep_data_visible) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating steps data. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_steps_data();
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data updated. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data updated. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating sleep data. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_sleep_data();
         }
     }
@@ -170,9 +168,21 @@ void health_handler(HealthEventType event, void *context) {
         case HealthEventSignificantUpdate:
         case HealthEventMovementUpdate:
         case HealthEventSleepUpdate:
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             queue_health_update();
             break;
+    }
+}
+
+static void load_health_data_from_storage() {
+    if (persist_exists(KEY_STEPS)) {
+        char steps[16];
+        char dist[16];
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading health data from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        persist_read_string(KEY_STEPS, steps, sizeof(steps));
+        persist_read_string(KEY_DIST, dist, sizeof(dist));
+        set_steps_or_sleep_layer_text(steps);
+        set_dist_or_deep_layer_text(dist);
     }
 }
 
@@ -184,24 +194,26 @@ void toggle_health(bool from_configs) {
     sleep_data_enabled = using_configs ? is_sleep_data_enabled() : persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
     useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
     if (health_enabled) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (health_permission_granted()) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
-            set_steps_or_sleep_layer_text("0");
-            set_dist_or_deep_layer_text("0");
+            set_steps_or_sleep_layer_text("");
+            set_dist_or_deep_layer_text("");
             queue_health_update();
             if (from_configs) {
                 get_health_data();
+            } else {
+                load_health_data_from_storage();
             }
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             health_enabled = false;
         }
     }
 
     if (!health_enabled || !has_health) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
         health_service_events_unsubscribe();
@@ -263,10 +275,16 @@ void init_sleep_data() {
     sleep_data_visible = false;
 }
 
+void save_health_data_to_storage() {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing health data. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    persist_write_string(KEY_STEPS, steps_or_sleep_text);
+    persist_write_string(KEY_DIST, dist_or_deep_text);
+}
+
 #else // Health not available
 
 void toggle_health(bool from_configs) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     set_steps_or_sleep_layer_text("");
     set_dist_or_deep_layer_text("");
 }
@@ -288,6 +306,10 @@ void init_sleep_data() {
 }
 
 void queue_health_update() {
+    return;
+}
+
+void save_health_data_to_storage() {
     return;
 }
 

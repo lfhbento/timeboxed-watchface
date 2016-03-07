@@ -146,6 +146,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
         var $color = $(this);
         var $item = $color.parent();
         var grid = '';
+        var grid2 = '';
         var itemWidth = 100 / layout[0].length;
         var itemHeight = 100 / layout.length;
         var boxHeight = itemWidth * layout.length;
@@ -187,6 +188,21 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
                 'height:' + itemHeight + '%; ' +
                 'background:' + color + ';">' +
             '</i>';
+
+            if (options.both) {
+              if (color !== ENUMS.COLOR.EMPTY) {
+                color = '#' + mappingSunny[color.replace('#', '').toLowerCase()];
+              }
+              grid2 += '<i ' +
+                'class="color-box ' + selectable + roundedTL +
+                        roundedTR + roundedBL + roundedBR + '" ' +
+                'data-value="' + color.replace(/^#/, '0x') + '" ' +
+                'style="' +
+                    'width:' + itemWidth + '%; ' +
+                    'height:' + itemHeight + '%; ' +
+                    'background:' + color + ';">' +
+              '</i>';
+            }
           }
         }
 
@@ -195,9 +211,10 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
           '<div ' +
               'style="padding-bottom:' + boxHeight + '%"' +
               'class="color-box-wrap">' +
-            '<div class="color-box-container">' +
+            '<div class="color-box-container primary-colors">' +
                 grid +
             '</div>' +
+            (options.both ? '<div class="color-box-container secondary-colors">' + grid2 + '</div>' : '') +
           '</div>' +
         '</div>');
         $item.append($injectedColor);
@@ -355,6 +372,7 @@ var Zepto=function(){function L(t){return null==t?String(t):j[S.call(t)]||"objec
     $('.item-radio').itemRadio();
     $('.item-color-normal').itemColor({sunny: false});
     $('.item-color-sunny').itemColor({sunny: true});
+    $('.item-color-both').itemColor({both: true});
     $('.tab-button').tab();
     $('.item-slider').itemSlider();
     $('.item-draggable-list').itemDraggableList();

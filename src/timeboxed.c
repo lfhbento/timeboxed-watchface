@@ -113,7 +113,7 @@ static void load_screen(bool from_configs) {
 }
 
 static void check_for_updates() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_uint8(iter, KEY_HASUPDATE, 1);
@@ -121,7 +121,7 @@ static void check_for_updates() {
 }
 
 static void notify_update(int update_available) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%2d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%03d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
     if (update_available) {
         set_update_color();
     }
@@ -159,7 +159,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
         store_weather_values(temp_val, max_val, min_val, weather_val);
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         return;
     }
 
@@ -348,7 +348,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     destroy_text_layers();
     create_text_layers(watchface);
     load_screen(true);
@@ -367,7 +367,7 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
 static void watchface_load(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 
     create_text_layers(window);
 
@@ -381,17 +381,19 @@ static void watchface_load(Window *window) {
     } else {
         tz_name[0] = '#';
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void watchface_unload(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+
+    save_health_data_to_storage();
 
     unload_face_fonts();
 
     destroy_text_layers();
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Unload end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -410,7 +412,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     show_sleep_data_if_visible();
 
     if(min_counter == tick_interval) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Time for updates (%d). %d%2d", tick_interval, (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Time for updates (%d). %d%03d", tick_interval, (int)time(NULL), (int)time_ms(NULL, NULL));
         if (is_weather_enabled()) {
             update_weather();
         }
@@ -420,7 +422,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         min_counter = 0;
     }
     if (tick_time->tm_min % 2 == 0 || !first_health_requested) { // check for health updates every 2 minutes
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         get_health_data();
         first_health_requested = true;
     }
@@ -428,7 +430,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 
 static void init(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
     init_sleep_data();
@@ -457,21 +459,21 @@ static void init(void) {
 
     load_screen(false);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 static void deinit(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     window_destroy(watchface);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Deinit end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 int main(void) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     init();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop start. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop start. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_event_loop();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App event loop end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     deinit();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%2d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "App end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }

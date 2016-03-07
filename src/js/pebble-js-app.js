@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.5";
+var currentVersion = "2.6";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -41,7 +41,8 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
-        'http://www.lbento.space/pebble-apps/timeboxed/v2.3/index.html?v=' + currentVersion +
+        //'http://www.lbento.space/pebble-apps/timeboxed/v2.6/index.html?v=' + currentVersion +
+        'http://47e989c6.ngrok.io/v2.6/index.html?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language +
         '&nonce=' + new Date().getTime());

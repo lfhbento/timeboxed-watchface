@@ -178,7 +178,7 @@
                 "characterRegex": "[0-9:! ]",
                 "compatibility": "2.7",
                 "file": "fonts/Prototype.ttf",
-                "name": "FONT_PROTOTYPE_52",
+                "name": "FONT_PROTOTYPE_48",
                 "type": "font"
             }
         ]
@@ -191,7 +191,7 @@
         "chalk"
     ],
     "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
-    "versionLabel": "2.5",
+    "versionLabel": "2.6",
     "watchapp": {
         "watchface": true
     }

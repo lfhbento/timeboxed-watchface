@@ -60,7 +60,7 @@ void update_weather(void) {
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_message_outbox_send();
 }
 
@@ -99,13 +99,13 @@ void toggle_weather(bool from_configs) {
 
         use_celsius = use_configs ? is_use_celsius_enabled() : persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS);
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (from_configs) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0, 0, 0);
             update_weather();
         } else if (persist_exists(KEY_TEMP)) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             int temp = persist_read_int(KEY_TEMP);
             int min = persist_read_int(KEY_MIN);
             int max = persist_read_int(KEY_MAX);
@@ -113,12 +113,12 @@ void toggle_weather(bool from_configs) {
 
             update_weather_values(temp, max, min, weather);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0, 0, 0);
             update_weather();
         }
     } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather disabled, clearing up. %d%d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather disabled, clearing up. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_temp_cur_layer_text("");
         set_temp_max_layer_text("");
         set_temp_min_layer_text("");
@@ -129,7 +129,7 @@ void toggle_weather(bool from_configs) {
 }
 
 void store_weather_values(int temp, int max, int min, int weather) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%03d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
     persist_write_int(KEY_TEMP, temp);
     persist_write_int(KEY_MAX, max);
     persist_write_int(KEY_MIN, min);

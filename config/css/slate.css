@@ -274,6 +274,8 @@ input[type=date] {
       width: 100%;
       left: 0;
       top: 0; }
+    .item-styled-color .color-box-wrap .color-box-container.secondary-colors {
+        display: none;}
       .item-styled-color .color-box-wrap .color-box-container .color-box {
         float: left;
         cursor: pointer; }
