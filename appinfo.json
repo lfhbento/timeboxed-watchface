@@ -37,6 +37,7 @@
         "KEY_UPDATE": 33,
         "KEY_UPDATECOLOR": 34,
         "KEY_USECELSIUS": 9,
+        "KEY_USECAL": 47,
         "KEY_USEKM": 5,
         "KEY_WEATHER": 3,
         "KEY_WEATHERCOLOR": 18,
@@ -191,7 +192,7 @@
         "chalk"
     ],
     "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
-    "versionLabel": "2.6",
+    "versionLabel": "2.7",
     "watchapp": {
         "watchface": true
     }

@@ -12,6 +12,7 @@ static bool was_asleep;
 static bool sleep_data_visible;
 static bool sleep_data_enabled;
 static bool useKm;
+static bool useCalories;
 static bool update_queued;
 static bool is_sleeping;
 static bool sleep_status_updated;
@@ -32,14 +33,17 @@ static void update_steps_data() {
 
     HealthMetric metric_steps = HealthMetricStepCount;
     HealthMetric metric_dist = HealthMetricWalkedDistanceMeters;
+    HealthMetric metric_cal_rest = HealthMetricRestingKCalories;
+    HealthMetric metric_cal_act = HealthMetricActiveKCalories;
+
     time_t start = time_start_of_today();
     time_t end = time(NULL);
     int one_day = 24 * SECONDS_PER_HOUR;
 
     int current_steps = 0;
     int steps_last_week = 0;
-    int current_dist = 0;
-    int dist_last_week = 0;
+    int current_cal_or_dist = 0;
+    int cal_or_dist_last_week = 0;
     int current_dist_int = 0;
     int current_dist_dec = 0;
 
@@ -47,15 +51,29 @@ static void update_steps_data() {
         health_service_metric_accessible(metric_steps, start, end);
     HealthServiceAccessibilityMask mask_dist =
         health_service_metric_accessible(metric_dist, start, end);
+    HealthServiceAccessibilityMask mask_cal_rest =
+        health_service_metric_accessible(metric_cal_rest, start, end);
+    HealthServiceAccessibilityMask mask_cal_act =
+        health_service_metric_accessible(metric_cal_act, start, end);
+
 
     if (mask_steps & HealthServiceAccessibilityMaskAvailable) {
         current_steps = (int)health_service_sum_today(metric_steps);
 
         steps_last_week = 0;
-        for (int i = 7; i <= 28; i = i+7) {
-            steps_last_week += (int)health_service_sum(metric_steps, start - i*one_day, end - i*one_day);
+        HealthServiceAccessibilityMask mask_steps_average =
+            health_service_metric_averaged_accessible(metric_steps, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+
+        if (mask_steps_average & HealthServiceAccessibilityMaskAvailable) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average steps");
+            steps_last_week = (int)health_service_sum_averaged(metric_steps, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average steps");
+            for (int i = 7; i <= 28; i = i+7) {
+                steps_last_week += (int)health_service_sum(metric_steps, start - i*one_day, end - i*one_day);
+            }
+            steps_last_week /= 4;
         }
-        steps_last_week /= 4;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Steps data: %d / %d", current_steps, steps_last_week);
 
         snprintf(steps_or_sleep_text, sizeof(steps_or_sleep_text), "%d", current_steps);
@@ -63,28 +81,65 @@ static void update_steps_data() {
         set_steps_or_sleep_layer_text(steps_or_sleep_text);
     }
 
-    if (mask_dist & HealthServiceAccessibilityMaskAvailable) {
-        current_dist = (int)health_service_sum_today(metric_dist);
+    bool has_cal_metric = (mask_cal_rest & HealthServiceAccessibilityMaskAvailable) || (mask_cal_act & HealthServiceAccessibilityMaskAvailable);
+    if (useCalories && has_cal_metric) {
+        current_cal_or_dist = (int)health_service_sum_today(metric_cal_rest) + (int)health_service_sum_today(metric_cal_act);
 
-        dist_last_week = 0;
-        for (int i = 7; i <= 28; i = i+7) {
-            dist_last_week += (int)health_service_sum(metric_dist, start - i*one_day, end - i*one_day);
+        cal_or_dist_last_week = 0;
+        HealthServiceAccessibilityMask mask_cal_rest_average =
+            health_service_metric_averaged_accessible(metric_cal_rest, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        HealthServiceAccessibilityMask mask_cal_act_average =
+            health_service_metric_averaged_accessible(metric_cal_act, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+
+        if ((mask_cal_rest_average & HealthServiceAccessibilityMaskAvailable) || mask_cal_act_average & HealthServiceAccessibilityMaskAvailable) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average calories");
+            cal_or_dist_last_week += (int)health_service_sum_averaged(metric_cal_rest, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+            cal_or_dist_last_week += (int)health_service_sum_averaged(metric_cal_act, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average calories");
+            for (int i = 7; i <= 28; i = i+7) {
+                cal_or_dist_last_week += (int)health_service_sum(metric_cal_rest, start - i*one_day, end - i*one_day);
+                cal_or_dist_last_week += (int)health_service_sum(metric_cal_act, start - i*one_day, end - i*one_day);
+            }
+            cal_or_dist_last_week /= 4;
         }
-        dist_last_week /= 4;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Dist data: %d / %d", current_dist, dist_last_week);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Calories data: %d / %d", current_cal_or_dist, cal_or_dist_last_week);
+
+        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dk", current_cal_or_dist);
+
+        set_dist_or_deep_layer_text(dist_or_deep_text);
+
+    } else if (mask_dist & HealthServiceAccessibilityMaskAvailable) {
+        current_cal_or_dist = (int)health_service_sum_today(metric_dist);
+
+        cal_or_dist_last_week = 0;
+        HealthServiceAccessibilityMask mask_dist_average =
+            health_service_metric_averaged_accessible(metric_dist, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+
+        if (mask_dist_average & HealthServiceAccessibilityMaskAvailable) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average dist");
+            cal_or_dist_last_week = (int)health_service_sum_averaged(metric_dist, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average dist");
+            for (int i = 7; i <= 28; i = i+7) {
+                cal_or_dist_last_week += (int)health_service_sum(metric_dist, start - i*one_day, end - i*one_day);
+            }
+            cal_or_dist_last_week /= 4;
+        }
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Dist data: %d / %d", current_cal_or_dist, cal_or_dist_last_week);
 
         if (!useKm) {
-            current_dist /= 1.6;
+            current_cal_or_dist /= 1.6;
         }
-        current_dist_int = current_dist/1000;
-        current_dist_dec = (current_dist%1000)/100;
+        current_dist_int = current_cal_or_dist/1000;
+        current_dist_dec = (current_cal_or_dist%1000)/100;
 
         snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), (useKm ? "%d.%dkm" : "%d.%dmi"), current_dist_int, current_dist_dec);
 
         set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 
-    set_steps_dist_color(current_steps < steps_last_week, current_dist < dist_last_week);
+    set_steps_dist_color(current_steps < steps_last_week, current_cal_or_dist < cal_or_dist_last_week);
 }
 
 static void update_sleep_data() {
@@ -104,15 +159,25 @@ static void update_sleep_data() {
         health_service_metric_accessible(metric_sleep, start, end);
     HealthServiceAccessibilityMask mask_deep =
         health_service_metric_accessible(metric_deep, start, end);
+    HealthServiceAccessibilityMask mask_sleep_average =
+        health_service_metric_averaged_accessible(metric_sleep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+    HealthServiceAccessibilityMask mask_deep_average =
+        health_service_metric_averaged_accessible(metric_deep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
 
     if (mask_sleep & HealthServiceAccessibilityMaskAvailable) {
         current_sleep = (int)health_service_sum_today(metric_sleep);
 
         sleep_last_week = 0;
-        for (int i = 1; i <= 7; i++) {
-            sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, start - (i-1)*one_day);
+        if (mask_sleep_average & HealthServiceAccessibilityMaskAvailable) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average sleep");
+            sleep_last_week = (int)health_service_sum_averaged(metric_sleep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average sleep");
+            for (int i = 1; i <= 7; i++) {
+                sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, start - (i-1)*one_day);
+            }
+            sleep_last_week /= 7;
         }
-        sleep_last_week /= 7;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_sleep, sleep_last_week);
 
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
@@ -127,10 +192,16 @@ static void update_sleep_data() {
         current_deep = (int)health_service_sum_today(metric_deep);
 
         deep_last_week = 0;
-        for (int i = 1; i <= 7; i++) {
-            deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, start - (i-1)*one_day);
+        if (mask_deep_average & HealthServiceAccessibilityMaskAvailable) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average deep sleep");
+            deep_last_week = (int)health_service_sum_averaged(metric_deep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average deep sleep");
+            for (int i = 1; i <= 7; i++) {
+                deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, start - (i-1)*one_day);
+            }
+            deep_last_week /= 7;
         }
-        deep_last_week /= 7;
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Deep sleep data: %d / %d", current_deep, deep_last_week);
 
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
@@ -176,13 +247,11 @@ void health_handler(HealthEventType event, void *context) {
 
 static void load_health_data_from_storage() {
     if (persist_exists(KEY_STEPS)) {
-        char steps[16];
-        char dist[16];
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading health data from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        persist_read_string(KEY_STEPS, steps, sizeof(steps));
-        persist_read_string(KEY_DIST, dist, sizeof(dist));
-        set_steps_or_sleep_layer_text(steps);
-        set_dist_or_deep_layer_text(dist);
+        persist_read_string(KEY_STEPS, steps_or_sleep_text, sizeof(steps_or_sleep_text));
+        persist_read_string(KEY_DIST, dist_or_deep_text, sizeof(dist_or_deep_text));
+        set_steps_or_sleep_layer_text(steps_or_sleep_text);
+        set_dist_or_deep_layer_text(dist_or_deep_text);
     }
 }
 
@@ -192,7 +261,17 @@ void toggle_health(bool from_configs) {
     bool using_configs = get_config_toggles() != -1;
     health_enabled = using_configs ? is_health_toggle_enabled() : persist_read_int(KEY_ENABLEHEALTH);
     sleep_data_enabled = using_configs ? is_sleep_data_enabled() : persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
-    useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
+
+    MeasurementSystem distMeasure = health_service_get_measurement_system_for_display(HealthMetricWalkedDistanceMeters);
+    if (distMeasure != MeasurementSystemUnknown) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        useKm = distMeasure == MeasurementSystemMetric;
+    } else {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Using config measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
+    }
+
+    useCalories = is_use_calories_enabled();
     if (health_enabled) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (health_permission_granted()) {

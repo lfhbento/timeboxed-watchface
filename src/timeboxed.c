@@ -34,7 +34,6 @@ static void update_time() {
     if (tz_name[0] != '#') {
         strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
         if (is_leading_zero_disabled()) {
-            if (hour_text[0] == '0') hour_text[0] = ' ';
             if (tz_text[0] == '0') tz_text[0] = ' ';
         }
 
@@ -65,6 +64,9 @@ static void update_time() {
         set_alt_time_layer_text("");
     }
 
+    if (is_leading_zero_disabled()) {
+        if (hour_text[0] == '0') hour_text[0] = ' ';
+    }
     set_hours_layer_text(hour_text);
     get_current_date(tick_time, date_text, sizeof(date_text));
     set_date_layer_text(date_text);
@@ -174,6 +176,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (useKm) {
         bool enabled = useKm->value->int8;
         if (enabled) configs += FLAG_KM;
+    }
+
+    Tuple *useCal = dict_find(iterator, KEY_USECAL);
+    if (useCal) {
+        bool enabled = useCal->value->int8;
+        if (enabled) configs += FLAG_CALORIES;
     }
 
     Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);

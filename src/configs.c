@@ -59,3 +59,7 @@ bool is_advanced_colors_enabled() {
 bool is_sleep_data_enabled() {
     return get_config_toggles() & FLAG_SLEEP;
 }
+
+bool is_use_calories_enabled() {
+    return get_config_toggles() & FLAG_CALORIES;
+}

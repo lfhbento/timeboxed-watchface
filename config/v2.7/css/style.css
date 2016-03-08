@@ -1,0 +1,54 @@
+.title {
+    text-transform: uppercase;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.6em;
+    font-weight: 500;
+    color: #888;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+#versionContainer {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+#versionContainer .item {
+    padding: 3px;
+}
+
+#updateText {
+    font-weight: bold;
+}
+
+.item-container-header {
+    color: #888;
+}
+
+.item-container-header.main {
+    padding-top: 4px;
+    font-size: 1em;
+    margin: 22px 0 8px 0;
+    border-bottom: 1px solid #CCC;
+    border-top: 1px solid #CCC;
+    text-align: center;
+}
+
+.item-select {
+    width: 90%;
+}
+
+.item-button {
+    font-family: 'PFDinDisplayPro-Light',PFDinDisplayProLightWebfont,sans-serif;
+}
+
+.default-preset .delete-item {
+    display: none;
+}
+
+.tab-button {
+    transition: color 0.2s ease, background-color 0.2s ease;
+}

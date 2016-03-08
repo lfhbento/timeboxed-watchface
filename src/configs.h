@@ -13,5 +13,6 @@ bool is_update_disabled();
 bool is_leading_zero_disabled();
 bool is_advanced_colors_enabled();
 bool is_sleep_data_enabled();
+bool is_use_calories_enabled();
 
 #endif
