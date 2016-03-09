@@ -105,7 +105,7 @@ static void update_steps_data() {
         }
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Calories data: %d / %d", current_cal_or_dist, cal_or_dist_last_week);
 
-        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dk", current_cal_or_dist);
+        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dcal", current_cal_or_dist);
 
         set_dist_or_deep_layer_text(dist_or_deep_text);
 
@@ -170,7 +170,7 @@ static void update_sleep_data() {
         sleep_last_week = 0;
         if (mask_sleep_average & HealthServiceAccessibilityMaskAvailable) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average sleep");
-            sleep_last_week = (int)health_service_sum_averaged(metric_sleep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+            sleep_last_week = (int)health_service_sum_averaged(metric_sleep, start, start + 24*SECONDS_PER_HOUR-1, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average sleep");
             for (int i = 1; i <= 7; i++) {
@@ -194,7 +194,7 @@ static void update_sleep_data() {
         deep_last_week = 0;
         if (mask_deep_average & HealthServiceAccessibilityMaskAvailable) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average deep sleep");
-            deep_last_week = (int)health_service_sum_averaged(metric_deep, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+            deep_last_week = (int)health_service_sum_averaged(metric_deep, start, start + 24*SECONDS_PER_HOUR-1, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average deep sleep");
             for (int i = 1; i <= 7; i++) {
@@ -316,7 +316,6 @@ bool is_user_sleeping() {
     } else {
         sleep_status_updated = false;
     }
-
     return is_sleeping;
 }
 

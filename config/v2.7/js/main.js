@@ -56,6 +56,10 @@
             toggleWeatherKeys(value);
         });
 
+        $('#donateBtn').click(function(e) {
+            trackEvent('donate', 'click');
+        });
+
         $('#presetList').on('itemRemoved', function(e, item) {
             trackEvent('presets', 'remove');
             if (localStorage['preset-' + item]) {
@@ -120,7 +124,7 @@
     };
 
     var loadPresets = function() {
-        localStorage['default-preset-Colorful (default)'] = '{"bgColor":"0x000055","hoursColor":"0xFFFFFF","dateColor":"0xAAFFFF","altHoursColor":"0x00FFFF","batteryColor":"0xAAAAAA","batteryLowColor":"0xFF5500","weatherColor":"0xFFFF00","tempColor":"0xFFFF00","minColor":"0x00FFFF","maxColor":"0xFF5500","stepsColor":"0x00FF00","distColor":"0x55FF55","stepsBehindColor":"0xFFFF00","distBehindColor":"0xFFFF00","updateColor":"0x00FF00","bluetoothColor":"0xFF5500"}';
+        localStorage['default-preset-Colorful (default)'] = '{"bgColor":"0x000055","hoursColor":"0xFFFFFF","dateColor":"0xAAFFFF","altHoursColor":"0x00FFFF","batteryColor":"0xAAAAAA","batteryLowColor":"0xFF5500","weatherColor":"0xFFFF00","tempColor":"0xFFFF00","minColor":"0x00FFFF","maxColor":"0xFF5500","stepsColor":"0x55FFFF","distColor":"0x55FFFF","stepsBehindColor":"0xFFFF00","distBehindColor":"0xFFFF00","updateColor":"0x00FF00","bluetoothColor":"0xFF5500"}';
         localStorage['default-preset-Black and white (default)'] = '{"bgColor":"0x000000","hoursColor":"0xFFFFFF","dateColor":"0xFFFFFF","altHoursColor":"0xFFFFFF","batteryColor":"0xFFFFFF","batteryLowColor":"0xFFFFFF","weatherColor":"0xFFFFFF","tempColor":"0xFFFFFF","minColor":"0xFFFFFF","maxColor":"0xFFFFFF","stepsColor":"0xFFFFFF","distColor":"0xFFFFFF","stepsBehindColor":"0xFFFFFF","distBehindColor":"0xFFFFFF","updateColor":"0xFFFFFF","bluetoothColor":"0xFFFFFF"}';
         for (var item in localStorage) {
             if (item.indexOf('preset-') !== -1) {
