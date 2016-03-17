@@ -25,7 +25,16 @@
         "KEY_MIN": 2,
         "KEY_MINCOLOR": 20,
         "KEY_OVERRIDELOCATION": 31,
+        "KEY_SLEEP_SLOTA": 53,
+        "KEY_SLEEP_SLOTB": 54,
+        "KEY_SLEEP_SLOTC": 55,
+        "KEY_SLEEP_SLOTD": 56,
         "KEY_SHOWSLEEP": 6,
+        "KEY_SIMPLEMODE": 48,
+        "KEY_SLOTA": 49,
+        "KEY_SLOTB": 50,
+        "KEY_SLOTC": 51,
+        "KEY_SLOTD": 52,
         "KEY_STEPSCOLOR": 22,
         "KEY_STEPSBEHINDCOLOR": 39,
         "KEY_TEMP": 0,
@@ -192,7 +201,7 @@
         "chalk"
     ],
     "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
-    "versionLabel": "2.12",
+    "versionLabel": "3.0",
     "watchapp": {
         "watchface": true
     }

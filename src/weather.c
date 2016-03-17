@@ -71,9 +71,7 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
     char min_text[8];
     char weather_text[4];
 
-    if (get_loaded_font() == BLOCKO_BIG_FONT) {
-        strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
-    } else if (get_loaded_font() == BLOCKO_FONT) {
+    if (get_loaded_font() == BLOCKO_BIG_FONT || get_loaded_font == BLOCKO_FONT) {
         strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
     } else {
         strcpy(temp_pattern, use_celsius ? "%dC" : "%dF");

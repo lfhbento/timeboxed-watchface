@@ -40,7 +40,7 @@ static void update_time() {
         strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
     }
 
-    if (tz_name[0] != '#') {
+    if (is_timezone_enabled()) {
         if (is_leading_zero_disabled()) {
             strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M%p"), gmt_time);
             if (tz_text[0] == ' ') {
@@ -65,7 +65,7 @@ static void update_time() {
             strcat(tz_text, "-1");
         }
 
-        strcat(tz_text, ".");
+        strcat(tz_text, " ");
         strcat(tz_text, tz_name);
 
         for (unsigned char i = 0; tz_text[i]; ++i) {
@@ -234,6 +234,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         char* tz_code = timezonesCode->value->cstring;
         persist_write_string(KEY_TIMEZONESCODE, tz_code);
         strcpy(tz_name, tz_code);
+        if (tz_code[0] != '#') configs += FLAG_TIMEZONES;
     }
 
     Tuple *bgColor = dict_find(iterator, KEY_BGCOLOR);
@@ -335,8 +336,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
     if (updateAvailable) {
-        bool enabled = updateAvailable->value->int8;
-        if (!enabled) configs += FLAG_UPDATE;
+        bool disabled = updateAvailable->value->int8;
+        if (!disabled) configs += FLAG_UPDATE;
     }
 
     Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
@@ -361,8 +362,14 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *leadingZero = dict_find(iterator, KEY_LEADINGZERO);
     if (leadingZero) {
-        bool enabled = leadingZero->value->int8;
-        if (!enabled) configs += FLAG_LEADINGZERO;
+        bool disabled = leadingZero->value->int8;
+        if (!disabled) configs += FLAG_LEADINGZERO;
+    }
+
+    Tuple *simpleMode = dict_find(iterator, KEY_SIMPLEMODE);
+    if (simpleMode) {
+        bool enabled = simpleMode->value->int8;
+        if (enabled) configs += FLAG_SIMPLEMODE;
     }
 
     persist_write_int(KEY_CONFIGS, configs);
@@ -393,13 +400,12 @@ static void watchface_load(Window *window) {
 
     min_counter = 20; // after loading, get the next weather update in 10 min
 
-    if (persist_exists(KEY_TIMEZONESCODE)) {
+    if (is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
         tz_hour = persist_exists(KEY_TIMEZONES) ? persist_read_int(KEY_TIMEZONES) : 0;
         tz_minute = persist_exists(KEY_TIMEZONESMINUTES) ? persist_read_int(KEY_TIMEZONESMINUTES) : 0;
-    } else {
-        tz_name[0] = '#';
     }
+
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 

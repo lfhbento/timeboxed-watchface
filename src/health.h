@@ -15,4 +15,6 @@ void init_sleep_data();
 
 void save_health_data_to_storage();
 
+bool should_show_sleep_data();
+
 #endif

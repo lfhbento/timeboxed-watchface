@@ -49,6 +49,15 @@
 #define KEY_CONFIGS 45
 #define KEY_LEADINGZERO 46
 #define KEY_USECAL 47
+#define KEY_SIMPLEMODE 48
+#define KEY_SLOTA 49
+#define KEY_SLOTB 50
+#define KEY_SLOTC 51
+#define KEY_SLOTD 52
+#define KEY_SLEEP_SLOTA 53
+#define KEY_SLEEP_SLOTB 54
+#define KEY_SLEEP_SLOTC 55
+#define KEY_SLEEP_SLOTD 56
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -60,6 +69,8 @@
 #define FLAG_UPDATE 0x0080
 #define FLAG_LEADINGZERO 0x0100
 #define FLAG_CALORIES 0x0200
+#define FLAG_SIMPLEMODE 0x0400
+#define FLAG_TIMEZONES 0x0800
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
@@ -89,5 +100,14 @@
 
 #define FORMAT_WMD 0
 #define FORMAT_WDM 1
+
+#define MODULE_NONE -1
+#define MODULE_WEATHER 1
+#define MODULE_FORECAST 2
+#define MODULE_STEPS 3
+#define MODULE_DIST 4
+#define MODULE_CAL 5
+#define MODULE_SLEEP 6
+#define MODULE_DEEP 7
 
 #endif

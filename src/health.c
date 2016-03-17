@@ -367,6 +367,10 @@ void save_health_data_to_storage() {
     persist_write_string(KEY_DIST, dist_or_deep_text);
 }
 
+bool should_show_sleep_data() {
+    return sleep_data_visible;
+}
+
 #else // Health not available
 
 void toggle_health(bool from_configs) {
@@ -397,6 +401,10 @@ void queue_health_update() {
 
 void save_health_data_to_storage() {
     return;
+}
+
+void should_show_sleep_data() {
+    return false;
 }
 
 #endif

@@ -47,10 +47,10 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting date: %s %s %d.  %d%03d", weekday, month, tick_time->tm_mday, (int)time(NULL), (int)time_ms(NULL, NULL));
     switch(selected_format) {
         case FORMAT_WMD:
-            snprintf(buffer, buf_size, "%s.%s.%02d", weekday, month, tick_time->tm_mday);
+            snprintf(buffer, buf_size, "%s %s %02d", weekday, month, tick_time->tm_mday);
             break;
         case FORMAT_WDM:
-            snprintf(buffer, buf_size, "%s.%02d.%s", weekday, tick_time->tm_mday, month);
+            snprintf(buffer, buf_size, "%s %02d %s", weekday, tick_time->tm_mday, month);
             break;
     }
 
