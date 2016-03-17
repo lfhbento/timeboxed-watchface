@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "2.8";
+var currentVersion = "2.9";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;

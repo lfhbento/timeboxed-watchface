@@ -417,7 +417,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     show_sleep_data_if_visible();
 
-    if(min_counter == tick_interval) {
+    if(min_counter >= tick_interval) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Time for updates (%d). %d%03d", tick_interval, (int)time(NULL), (int)time_ms(NULL, NULL));
         if (is_weather_enabled()) {
             update_weather();

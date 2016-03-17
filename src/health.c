@@ -105,7 +105,7 @@ static void update_steps_data() {
         }
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Calories data: %d / %d", current_cal_or_dist, cal_or_dist_last_week);
 
-        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%dcal", current_cal_or_dist);
+        snprintf(dist_or_deep_text, sizeof(dist_or_deep_text), "%d cal", current_cal_or_dist);
 
         set_dist_or_deep_layer_text(dist_or_deep_text);
 
