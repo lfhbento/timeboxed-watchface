@@ -35,7 +35,7 @@
             trackEvent(e.currentTarget.id, 'click');
         });
         $('.item-select').change(function(e) {
-            trackEvent(e.currentTarget.id, 'select', e.currentTarget.selectedOptions[0].value);
+            trackEvent(e.currentTarget.id, 'select', e.currentTarget.options[e.currentTarget.selectedIndex].value);
         });
 
         $('.item-toggle').change(function(e) {
@@ -438,14 +438,14 @@
             weatherKey: $('#weatherKey').val(),
             yahooKey: $('#yahooKey').val(),
             useCelsius: $('#useCelsius')[0].checked,
-            timezones: $('#timezones')[0].selectedOptions[0].value,
-            fontType: $('#fontType')[0].selectedOptions[0].value,
+            timezones: $('#timezones')[0].options[$('#timezones')[0].selectedIndex].value,
+            fontType: $('#fontType')[0].options[$('#fontType')[0].selectedIndex].value,
             bluetoothDisconnect: $('#bluetoothDisconnect')[0].checked,
             overrideLocation: $('#overrideLocation').val(),
             enableAdvanced: $('#enableAdvanced')[0].checked,
             update: $('#update')[0].checked,
-            locale: $('#locale')[0].selectedOptions[0].value,
-            dateFormat: $('#dateFormat')[0].selectedOptions[0].value,
+            locale: $('#locale')[0].options[$('#locale')[0].selectedIndex].value,
+            dateFormat: $('#dateFormat')[0].options[$('#dateFormat')[0].selectedIndex].value,
             textAlign: $('.tab-align.active')[0].getAttribute('data-value'),
             weatherProvider: $('.tab-weather.active')[0].getAttribute('data-value'),
             leadingZero: $('#leadingZero')[0].checked,
