@@ -11,8 +11,11 @@ static TextLayer *bluetooth;
 static TextLayer *temp_cur;
 static TextLayer *temp_max;
 static TextLayer *temp_min;
-static TextLayer *steps_or_sleep;
-static TextLayer *dist_or_deep;
+static TextLayer *steps;
+static TextLayer *sleep;
+static TextLayer *dist;
+static TextLayer *cal;
+static TextLayer *deep;
 static TextLayer *weather;
 static TextLayer *max_icon;
 static TextLayer *min_icon;
@@ -45,8 +48,12 @@ static char bluetooth_text[4];
 static char update_text[4];
 static char battery_text[8];
 static char alt_time_text[22];
-static char steps_or_sleep_text[16];
-static char dist_or_deep_text[16];
+
+static char steps_text[16];
+static char cal_text[16];
+static char dist_text[16];
+static char sleep_text[16];
+static char deep_text[16];
 
 static uint8_t loaded_font;
 static bool enable_advanced;
@@ -64,13 +71,13 @@ struct TextPositions {
     GPoint temp_min;
     GPoint icon_max;
     GPoint icon_min;
-    GPoint steps_or_sleep;
-    GPoint dist_or_deep;
+    GPoint slot_a;
+    GPoint slot_b;
+    GPoint slot_c;
+    GPoint slot_d;
 };
 
-uint8_t get_loaded_font() {
-    return loaded_font;
-}
+static GPoint slot_positions[6][4];
 
 static GPoint create_point(int x, int y) {
     struct GPoint point;
@@ -94,7 +101,49 @@ static int get_pos(int alignment, int left_pos, int center_pos, int right_pos) {
     return right_pos;
 }
 
+static void init_slot_positions(int alignment) {
+    slot_positions[BLOCKO_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[BLOCKO_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 4));
+    slot_positions[BLOCKO_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[BLOCKO_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
+
+    slot_positions[BLOCKO_BIG_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[BLOCKO_BIG_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 3));
+    slot_positions[BLOCKO_BIG_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[BLOCKO_BIG_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
+
+    slot_positions[SYSTEM_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[SYSTEM_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(20, 2));
+    slot_positions[SYSTEM_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[SYSTEM_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
+
+    slot_positions[ARCHIVO_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[ARCHIVO_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(24, 2));
+    slot_positions[ARCHIVO_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[ARCHIVO_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
+
+    slot_positions[DIN_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[DIN_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 2));
+    slot_positions[DIN_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[DIN_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(160, 148));
+
+    slot_positions[PROTOTYPE_FONT][SLOT_A] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    slot_positions[PROTOTYPE_FONT][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(26, 4));
+    slot_positions[PROTOTYPE_FONT][SLOT_C] = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
+    slot_positions[PROTOTYPE_FONT][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
+
+}
+
+uint8_t get_loaded_font() {
+    return loaded_font;
+}
+
 static void get_text_positions_blocko(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[BLOCKO_FONT][SLOT_A];
+    positions->slot_b = slot_positions[BLOCKO_FONT][SLOT_B];
+    positions->slot_c = slot_positions[BLOCKO_FONT][SLOT_C];
+    positions->slot_d = slot_positions[BLOCKO_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(46, 38));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, 90));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, 38));
@@ -107,11 +156,14 @@ static void get_text_positions_blocko(GTextAlignment align, struct TextPositions
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 4));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(20, 0));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions_blocko_big(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[BLOCKO_BIG_FONT][SLOT_A];
+    positions->slot_b = slot_positions[BLOCKO_BIG_FONT][SLOT_B];
+    positions->slot_c = slot_positions[BLOCKO_BIG_FONT][SLOT_C];
+    positions->slot_d = slot_positions[BLOCKO_BIG_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 2, 0)), PBL_IF_ROUND_ELSE(40, 32));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(96, 88));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(42, 34));
@@ -124,11 +176,14 @@ static void get_text_positions_blocko_big(GTextAlignment align, struct TextPosit
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 3));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions_system(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[SYSTEM_FONT][SLOT_A];
+    positions->slot_b = slot_positions[SYSTEM_FONT][SLOT_B];
+    positions->slot_c = slot_positions[SYSTEM_FONT][SLOT_C];
+    positions->slot_d = slot_positions[SYSTEM_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(54, 42));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, 86));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, 34));
@@ -141,11 +196,14 @@ static void get_text_positions_system(GTextAlignment align, struct TextPositions
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(20, 2));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions_archivo(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[ARCHIVO_FONT][SLOT_A];
+    positions->slot_b = slot_positions[ARCHIVO_FONT][SLOT_B];
+    positions->slot_c = slot_positions[ARCHIVO_FONT][SLOT_C];
+    positions->slot_d = slot_positions[ARCHIVO_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, 40));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(100, 92));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(44, 34));
@@ -158,11 +216,14 @@ static void get_text_positions_archivo(GTextAlignment align, struct TextPosition
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(24, 2));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(18, -2));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(18, -2));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions_din(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[DIN_FONT][SLOT_A];
+    positions->slot_b = slot_positions[DIN_FONT][SLOT_B];
+    positions->slot_c = slot_positions[DIN_FONT][SLOT_C];
+    positions->slot_d = slot_positions[DIN_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(47, 39));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, 92));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(42, 32));
@@ -175,11 +236,14 @@ static void get_text_positions_din(GTextAlignment align, struct TextPositions* p
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(22, 2));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(20, 0));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(20, 0));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(145, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(160, 148));
 }
 
 static void get_text_positions_prototype(GTextAlignment align, struct TextPositions* positions) {
+    positions->slot_a = slot_positions[PROTOTYPE_FONT][SLOT_A];
+    positions->slot_b = slot_positions[PROTOTYPE_FONT][SLOT_B];
+    positions->slot_c = slot_positions[PROTOTYPE_FONT][SLOT_C];
+    positions->slot_d = slot_positions[PROTOTYPE_FONT][SLOT_D];
+
     positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(54, 44));
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(100, 92));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(48, 38));
@@ -192,11 +256,10 @@ static void get_text_positions_prototype(GTextAlignment align, struct TextPositi
     positions->temp_min = create_point(PBL_IF_ROUND_ELSE(70, 80), PBL_IF_ROUND_ELSE(26, 4));
     positions->icon_max = create_point(positions->temp_max.x - 10, PBL_IF_ROUND_ELSE(22, 0));
     positions->icon_min = create_point(positions->temp_min.x - 10, PBL_IF_ROUND_ELSE(22, 0));
-    positions->steps_or_sleep = create_point(PBL_IF_ROUND_ELSE(0, 4), PBL_IF_ROUND_ELSE(144, 148));
-    positions->dist_or_deep = create_point(PBL_IF_ROUND_ELSE(0, -4), PBL_IF_ROUND_ELSE(158, 148));
 }
 
 static void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions) {
+    init_slot_positions(alignment);
     switch(selected_font) {
         case BLOCKO_FONT:
             get_text_positions_blocko(alignment, positions);
@@ -297,13 +360,25 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(max_icon, GColorClear);
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
-    steps_or_sleep = text_layer_create(GRect(text_positions.steps_or_sleep.x, text_positions.steps_or_sleep.y, width, 50));
-    text_layer_set_background_color(steps_or_sleep, GColorClear);
-    text_layer_set_text_alignment(steps_or_sleep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+    steps = text_layer_create(GRect(0, 0, width, 50));
+    text_layer_set_background_color(steps, GColorClear);
+    text_layer_set_text_alignment(steps, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
-    dist_or_deep = text_layer_create(GRect(text_positions.dist_or_deep.x, text_positions.dist_or_deep.y, width, 50));
-    text_layer_set_background_color(dist_or_deep, GColorClear);
-    text_layer_set_text_alignment(dist_or_deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    dist = text_layer_create(GRect(0, 0, width, 50));
+    text_layer_set_background_color(dist, GColorClear);
+    text_layer_set_text_alignment(dist, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+
+    cal = text_layer_create(GRect(0, 0, width, 50));
+    text_layer_set_background_color(cal, GColorClear);
+    text_layer_set_text_alignment(cal, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+
+    sleep = text_layer_create(GRect(0, 0, width, 50));
+    text_layer_set_background_color(sleep, GColorClear);
+    text_layer_set_text_alignment(sleep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+
+    deep = text_layer_create(GRect(0, 0, width, 50));
+    text_layer_set_background_color(deep, GColorClear);
+    text_layer_set_text_alignment(deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
     layer_add_child(window_layer, text_layer_get_layer(hours));
     layer_add_child(window_layer, text_layer_get_layer(date));
@@ -317,8 +392,11 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(temp_cur));
     layer_add_child(window_layer, text_layer_get_layer(temp_min));
     layer_add_child(window_layer, text_layer_get_layer(temp_max));
-    layer_add_child(window_layer, text_layer_get_layer(steps_or_sleep));
-    layer_add_child(window_layer, text_layer_get_layer(dist_or_deep));
+    layer_add_child(window_layer, text_layer_get_layer(steps));
+    layer_add_child(window_layer, text_layer_get_layer(dist));
+    layer_add_child(window_layer, text_layer_get_layer(cal));
+    layer_add_child(window_layer, text_layer_get_layer(sleep));
+    layer_add_child(window_layer, text_layer_get_layer(deep));
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -337,8 +415,11 @@ void destroy_text_layers() {
     text_layer_destroy(temp_cur);
     text_layer_destroy(temp_min);
     text_layer_destroy(temp_max);
-    text_layer_destroy(steps_or_sleep);
-    text_layer_destroy(dist_or_deep);
+    text_layer_destroy(steps);
+    text_layer_destroy(dist);
+    text_layer_destroy(sleep);
+    text_layer_destroy(cal);
+    text_layer_destroy(deep);
 }
 
 void load_face_fonts() {
@@ -419,8 +500,11 @@ void set_face_fonts() {
     text_layer_set_font(temp_cur, base_font);
     text_layer_set_font(temp_min, base_font);
     text_layer_set_font(temp_max, base_font);
-    text_layer_set_font(steps_or_sleep, base_font);
-    text_layer_set_font(dist_or_deep, base_font);
+    text_layer_set_font(steps, base_font);
+    text_layer_set_font(dist, base_font);
+    text_layer_set_font(cal, base_font);
+    text_layer_set_font(sleep, base_font);
+    text_layer_set_font(deep, base_font);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -451,9 +535,9 @@ void set_colors(Window *window) {
     text_layer_set_text_color(min_icon, min_color);
     text_layer_set_text_color(temp_max, max_color);
     text_layer_set_text_color(max_icon, max_color);
-    text_layer_set_text_color(steps_or_sleep,
+    text_layer_set_text_color(steps,
             enable_advanced ? steps_color : base_color);
-    text_layer_set_text_color(dist_or_deep,
+    text_layer_set_text_color(dist,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
@@ -462,10 +546,24 @@ void set_colors(Window *window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
-void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist) {
-    GColor steps_cur_color = falling_behind_steps ? steps_behind_color : steps_color;
-    text_layer_set_text_color(steps_or_sleep, steps_cur_color);
-    text_layer_set_text_color(dist_or_deep, falling_behind_dist ? dist_behind_color : dist_color);
+void set_progress_color_steps(bool falling_behind) {
+    text_layer_set_text_color(steps, falling_behind ? steps_behind_color : steps_color);
+}
+
+void set_progress_color_dist(bool falling_behind) {
+    text_layer_set_text_color(dist, falling_behind ? steps_behind_color : steps_color);
+}
+
+void set_progress_color_cal(bool falling_behind) {
+    text_layer_set_text_color(cal, falling_behind ? steps_behind_color : steps_color);
+}
+
+void set_progress_color_sleep(bool falling_behind) {
+    text_layer_set_text_color(sleep, falling_behind ? steps_behind_color : steps_color);
+}
+
+void set_progress_color_deep(bool falling_behind) {
+    text_layer_set_text_color(deep, falling_behind ? steps_behind_color : steps_color);
 }
 
 void set_bluetooth_color() {
@@ -526,14 +624,29 @@ void set_temp_min_layer_text(char* text) {
     text_layer_set_text(temp_min, temp_min_text);
 }
 
-void set_steps_or_sleep_layer_text(char* text) {
-    strcpy(steps_or_sleep_text, text);
-    text_layer_set_text(steps_or_sleep, steps_or_sleep_text);
+void set_steps_layer_text(char* text) {
+    strcpy(steps_text, text);
+    text_layer_set_text(steps, steps_text);
 }
 
-void set_dist_or_deep_layer_text(char* text) {
-    strcpy(dist_or_deep_text, text);
-    text_layer_set_text(dist_or_deep, dist_or_deep_text);
+void set_dist_layer_text(char* text) {
+    strcpy(dist_text, text);
+    text_layer_set_text(dist, dist_text);
+}
+
+void set_cal_layer_text(char* text) {
+    strcpy(cal_text, text);
+    text_layer_set_text(cal, cal_text);
+}
+
+void set_sleep_layer_text(char* text) {
+    strcpy(sleep_text, text);
+    text_layer_set_text(sleep, sleep_text);
+}
+
+void set_deep_layer_text(char* text) {
+    strcpy(deep_text, text);
+    text_layer_set_text(deep, deep_text);
 }
 
 void set_weather_layer_text(char* text) {

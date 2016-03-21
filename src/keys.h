@@ -58,6 +58,7 @@
 #define KEY_SLEEP_SLOTB 54
 #define KEY_SLEEP_SLOTC 55
 #define KEY_SLEEP_SLOTD 56
+#define KEY_CAL 57
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -100,6 +101,11 @@
 
 #define FORMAT_WMD 0
 #define FORMAT_WDM 1
+
+#define SLOT_A 0
+#define SLOT_B 1
+#define SLOT_C 2
+#define SLOT_D 3
 
 #define MODULE_NONE -1
 #define MODULE_WEATHER 1

@@ -64,30 +64,45 @@ void update_weather(void) {
     app_message_outbox_send();
 }
 
-void update_weather_values(int temp_val, int max_val, int min_val, int weather_val) {
-    char temp_pattern[4];
-    char temp_text[8];
-    char max_text[8];
-    char min_text[8];
-    char weather_text[4];
+void update_weather_values(int temp_val, int weather_val) {
+    if (is_module_enabled(MODULE_WEATHER)) {
+        char temp_pattern[4];
+        char temp_text[8];
+        char weather_text[4];
 
-    if (get_loaded_font() == BLOCKO_BIG_FONT || get_loaded_font == BLOCKO_FONT) {
-        strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
-    } else {
-        strcpy(temp_pattern, use_celsius ? "%dC" : "%dF");
+        if (get_loaded_font() == BLOCKO_BIG_FONT || get_loaded_font() == BLOCKO_FONT) {
+            strcpy(temp_pattern, use_celsius ? "%dc" : "%df");
+        } else {
+            strcpy(temp_pattern, use_celsius ? "%dC" : "%dF");
+        }
+
+        snprintf(temp_text, sizeof(temp_text), temp_pattern, temp_val);
+        snprintf(weather_text, sizeof(weather_text), "%s", weather_conditions[weather_val]);
+
+        set_temp_cur_layer_text(temp_text);
+        set_weather_layer_text(weather_text);
     }
+}
 
-    snprintf(temp_text, sizeof(temp_text), temp_pattern, temp_val);
-    snprintf(max_text, sizeof(max_text), "%d", max_val);
-    snprintf(min_text, sizeof(min_text), "%d", min_val);
-    snprintf(weather_text, sizeof(weather_text), "%s", weather_conditions[weather_val]);
+void update_forecast_values(int max_val, int min_val) {
+    if (is_module_enabled(MODULE_FORECAST)) {
+        char max_text[8];
+        char min_text[8];
 
-    set_temp_cur_layer_text(temp_text);
-    set_temp_max_layer_text(max_text);
-    set_temp_min_layer_text(min_text);
-    set_weather_layer_text(weather_text);
-    set_max_icon_layer_text("\U0000F058");
-    set_min_icon_layer_text("\U0000F044");
+        snprintf(max_text, sizeof(max_text), "%d", max_val);
+        snprintf(min_text, sizeof(min_text), "%d", min_val);
+
+        set_temp_max_layer_text(max_text);
+        set_temp_min_layer_text(min_text);
+        set_max_icon_layer_text("\U0000F058");
+        set_min_icon_layer_text("\U0000F044");
+    }
+}
+
+static bool get_weather_enabled() {
+    bool use_configs = get_config_toggles() != -1;
+    bool weather_module_available = is_module_enabled(MODULE_WEATHER) || is_module_enabled(MODULE_FORECAST);
+    return (use_configs ? (is_weather_toggle_enabled() || weather_module_available) : (persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER)));
 }
 
 void toggle_weather(bool from_configs) {
@@ -99,19 +114,22 @@ void toggle_weather(bool from_configs) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (from_configs) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            update_weather_values(0, 0, 0, 0);
+            update_weather_values(0, 0);
+            update_forecast_values(0, 0);
             update_weather();
         } else if (persist_exists(KEY_TEMP)) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             int temp = persist_read_int(KEY_TEMP);
+            int weather = persist_read_int(KEY_WEATHER);
+            update_weather_values(temp, weather);
+
             int min = persist_read_int(KEY_MIN);
             int max = persist_read_int(KEY_MAX);
-            int weather = persist_read_int(KEY_WEATHER);
-
-            update_weather_values(temp, max, min, weather);
+            update_forecast_values(max, min);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            update_weather_values(0, 0, 0, 0);
+            update_weather_values(0, 0);
+            update_forecast_values(0, 0);
             update_weather();
         }
     } else {

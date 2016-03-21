@@ -14,7 +14,11 @@ void set_colors(Window*);
 
 uint8_t get_loaded_font();
 
-void set_steps_dist_color(bool falling_behind_steps, bool falling_behind_dist);
+void set_progress_color_steps(bool);
+void set_progress_color_dist(bool);
+void set_progress_color_cal(bool);
+void set_progress_color_sleep(bool);
+void set_progress_color_deep(bool);
 void set_bluetooth_color();
 void set_update_color();
 void set_battery_color();
@@ -27,8 +31,11 @@ void set_bluetooth_layer_text(char*);
 void set_temp_cur_layer_text(char*);
 void set_temp_max_layer_text(char*);
 void set_temp_min_layer_text(char*);
-void set_steps_or_sleep_layer_text(char*);
-void set_dist_or_deep_layer_text(char*);
+void set_steps_layer_text(char*);
+void set_dist_layer_text(char*);
+void set_cal_layer_text(char*);
+void set_sleep_layer_text(char*);
+void set_deep_layer_text(char*);
 void set_weather_layer_text(char*);
 void set_max_icon_layer_text(char*);
 void set_min_icon_layer_text(char*);

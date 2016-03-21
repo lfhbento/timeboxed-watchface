@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include "keys.h"
 #include "locales.h"
+#include "text.h"
 
 uint8_t selected_locale;
 uint8_t selected_format;
@@ -54,13 +55,14 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size) {
             break;
     }
 
-    for (unsigned char i = 0; buffer[i]; ++i) {
+    int start = (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_FONT) ? 0 : 1;
+    for (unsigned char i = start; buffer[i]; ++i) {
         buffer[i] = tolower((unsigned char)buffer[i]);
     }
 }
 
 void load_locale() {
-   selected_locale = persist_exists(KEY_LOCALE) ? persist_read_int(KEY_LOCALE) : LC_ENGLISH;
-   selected_format = persist_exists(KEY_DATEFORMAT) ? persist_read_int(KEY_DATEFORMAT): FORMAT_WMD;
+    selected_locale = persist_exists(KEY_LOCALE) ? persist_read_int(KEY_LOCALE) : LC_ENGLISH;
+    selected_format = persist_exists(KEY_DATEFORMAT) ? persist_read_int(KEY_DATEFORMAT): FORMAT_WMD;
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Locale loaded: %d %d.  %d%03d", selected_locale, selected_format, (int)time(NULL), (int)time_ms(NULL, NULL));
 }

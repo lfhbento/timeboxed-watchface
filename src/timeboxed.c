@@ -72,7 +72,11 @@ static void update_time() {
             if (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_BIG_FONT) {
                 tz_text[i] = tolower((unsigned char)tz_text[i]);
             } else {
-                tz_text[i] = toupper((unsigned char)tz_text[i]);
+                if (i == 0) {
+                    tz_text[i] = toupper((unsigned char)tz_text[i]);
+                } else {
+                    tz_text[i] = tolower((unsigned char)tz_text[i]);
+                }
             }
         }
         set_alt_time_layer_text(tz_text);
@@ -169,7 +173,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         int min_val = (int)min_tuple->value->int32;
         int weather_val = (int)weather_tuple->value->int32;
 
-        update_weather_values(temp_val, max_val, min_val, weather_val);
+        update_weather_values(temp_val, weather_val);
+        update_forecast_values(max_val, min_val);
 
         store_weather_values(temp_val, max_val, min_val, weather_val);
 

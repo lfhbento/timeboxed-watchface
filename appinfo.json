@@ -6,9 +6,12 @@
         "KEY_BGCOLOR": 11,
         "KEY_BLUETOOTHCOLOR": 30,
         "KEY_BLUETOOTHDISCONNECT": 29,
+        "KEY_CAL": 57,
         "KEY_CONFIGS": 45,
         "KEY_DATECOLOR": 14,
         "KEY_DATEFORMAT": 37,
+        "KEY_DEEP": 42,
+        "KEY_DIST": 28,
         "KEY_DISTCOLOR": 23,
         "KEY_DISTBEHINDCOLOR": 40,
         "KEY_ENABLEADVANCED": 13,
@@ -25,6 +28,7 @@
         "KEY_MIN": 2,
         "KEY_MINCOLOR": 20,
         "KEY_OVERRIDELOCATION": 31,
+        "KEY_SLEEP": 41,
         "KEY_SLEEP_SLOTA": 53,
         "KEY_SLEEP_SLOTB": 54,
         "KEY_SLEEP_SLOTC": 55,
@@ -35,6 +39,7 @@
         "KEY_SLOTB": 50,
         "KEY_SLOTC": 51,
         "KEY_SLOTD": 52,
+        "KEY_STEPS": 27,
         "KEY_STEPSCOLOR": 22,
         "KEY_STEPSBEHINDCOLOR": 39,
         "KEY_TEMP": 0,
@@ -77,6 +82,13 @@
                 "compatibility": "2.7",
                 "file": "fonts/weathericons-regular-webfont.ttf",
                 "name": "FONT_WEATHER_24",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072]",
+                "compatibility": "2.7",
+                "file": "fonts/weathericons-regular-webfont.ttf",
+                "name": "FONT_WEATHER_32",
                 "type": "font"
             },
             {

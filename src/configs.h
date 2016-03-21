@@ -3,6 +3,7 @@
 
 void set_config_toggles(int);
 int get_config_toggles();
+bool is_module_enabled(int);
 
 bool is_weather_toggle_enabled();
 bool is_health_toggle_enabled();
