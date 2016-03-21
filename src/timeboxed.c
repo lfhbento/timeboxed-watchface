@@ -7,6 +7,7 @@
 #include "text.h"
 #include "weather.h"
 #include "configs.h"
+#include "positions.h"
 
 static Window *watchface;
 
@@ -377,6 +378,56 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         if (enabled) configs += FLAG_SIMPLEMODE;
     }
 
+    Tuple *slotA = dict_find(iterator, KEY_SLOTA);
+    if (slotA) {
+        int value = slotA->value->int8;
+        set_module(SLOT_A, value, false);
+        persist_write_int(KEY_SLOTA, value);
+    }
+    Tuple *slotB = dict_find(iterator, KEY_SLOTB);
+    if (slotB) {
+        int value = slotB->value->int8;
+        set_module(SLOT_B, value, false);
+        persist_write_int(KEY_SLOTB, value);
+    }
+    Tuple *slotC = dict_find(iterator, KEY_SLOTC);
+    if (slotC) {
+        int value = slotC->value->int8;
+        set_module(SLOT_C, value, false);
+        persist_write_int(KEY_SLOTC, value);
+    }
+    Tuple *slotD = dict_find(iterator, KEY_SLOTD);
+    if (slotD) {
+        int value = slotD->value->int8;
+        set_module(SLOT_D, value, false);
+        persist_write_int(KEY_SLOTD, value);
+    }
+
+    Tuple *slotASleep = dict_find(iterator, KEY_SLEEPSLOTA);
+    if (slotASleep) {
+        int value = slotASleep->value->int8;
+        set_module(SLOT_A, value, true);
+        persist_write_int(KEY_SLEEPSLOTA, value);
+    }
+    Tuple *slotBSleep = dict_find(iterator, KEY_SLEEPSLOTB);
+    if (slotBSleep) {
+        int value = slotBSleep->value->int8;
+        set_module(SLOT_B, value, true);
+        persist_write_int(KEY_SLEEPSLOTB, value);
+    }
+    Tuple *slotCSleep = dict_find(iterator, KEY_SLEEPSLOTC);
+    if (slotCSleep) {
+        int value = slotCSleep->value->int8;
+        set_module(SLOT_C, value, true);
+        persist_write_int(KEY_SLEEPSLOTC, value);
+    }
+    Tuple *slotDSleep = dict_find(iterator, KEY_SLEEPSLOTD);
+    if (slotDSleep) {
+        int value = slotDSleep->value->int8;
+        set_module(SLOT_D, value, true);
+        persist_write_int(KEY_SLEEPSLOTD, value);
+    }
+
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
 
@@ -463,6 +514,7 @@ static void init(void) {
 
     init_sleep_data();
     queue_health_update();
+    init_positions();
 
     watchface = window_create();
 
@@ -479,7 +531,7 @@ static void init(void) {
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
-    app_message_open(384, 64);
+    app_message_open(512, 64);
 
     connection_service_subscribe((ConnectionHandlers) {
 	.pebble_app_connection_handler = bt_handler

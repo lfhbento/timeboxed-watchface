@@ -1,0 +1,20 @@
+#ifndef __TIMEBOXED_POSITIONS
+#define __TIMEBOXED_POSITIONS
+
+#include <pebble.h>
+
+struct TextPositions {
+    GPoint hours;
+    GPoint date;
+    GPoint alt_time;
+    GPoint battery;
+    GPoint bluetooth;
+    GPoint updates;
+};
+
+GPoint create_point(int x, int y);
+GPoint get_pos_for_item(int slot, int item, int mode, int font);
+void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions);
+void init_positions();
+
+#endif

@@ -41,7 +41,8 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
-        'http://www.lbento.space/pebble-apps/timeboxed/v2.7/index.html?v=' + currentVersion +
+        //'http://www.lbento.space/pebble-apps/timeboxed/v3.0/index.html?v=' + currentVersion +
+        'http://42f648ea.ngrok.io/v3.0/index.html?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language +
         '&nonce=' + new Date().getTime());
@@ -68,7 +69,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
             dict[key + 'MINUTES'] = parseInt(value.split('|')[1].split(':')[1], 10);
             value = parseInt(newValue, 10);
         }
-        if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' || key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER') {
+        if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' ||
+                key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1) {
             value = parseInt(value, 10);
         }
         dict[key] = value;

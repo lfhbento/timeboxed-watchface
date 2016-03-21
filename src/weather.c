@@ -66,6 +66,7 @@ void update_weather(void) {
 
 void update_weather_values(int temp_val, int weather_val) {
     if (is_module_enabled(MODULE_WEATHER)) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         char temp_pattern[4];
         char temp_text[8];
         char weather_text[4];
@@ -86,6 +87,7 @@ void update_weather_values(int temp_val, int weather_val) {
 
 void update_forecast_values(int max_val, int min_val) {
     if (is_module_enabled(MODULE_FORECAST)) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating forecast values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         char max_text[8];
         char min_text[8];
 
@@ -100,13 +102,12 @@ void update_forecast_values(int max_val, int min_val) {
 }
 
 static bool get_weather_enabled() {
-    bool use_configs = get_config_toggles() != -1;
     bool weather_module_available = is_module_enabled(MODULE_WEATHER) || is_module_enabled(MODULE_FORECAST);
-    return (use_configs ? (is_weather_toggle_enabled() || weather_module_available) : (persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER)));
+    return is_weather_toggle_enabled() || weather_module_available;
 }
 
 void toggle_weather(bool from_configs) {
-    weather_enabled = is_weather_toggle_enabled();
+    weather_enabled = get_weather_enabled();
     if (weather_enabled) {
 
         use_celsius = is_use_celsius_enabled();

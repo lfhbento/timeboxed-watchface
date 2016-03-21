@@ -54,10 +54,10 @@
 #define KEY_SLOTB 50
 #define KEY_SLOTC 51
 #define KEY_SLOTD 52
-#define KEY_SLEEP_SLOTA 53
-#define KEY_SLEEP_SLOTB 54
-#define KEY_SLEEP_SLOTC 55
-#define KEY_SLEEP_SLOTD 56
+#define KEY_SLEEPSLOTA 53
+#define KEY_SLEEPSLOTB 54
+#define KEY_SLEEPSLOTC 55
+#define KEY_SLEEPSLOTD 56
 #define KEY_CAL 57
 
 #define FLAG_WEATHER 0x0001
@@ -115,5 +115,18 @@
 #define MODULE_CAL 5
 #define MODULE_SLEEP 6
 #define MODULE_DEEP 7
+
+#define MODE_NORMAL 0
+#define MODE_SIMPLE 1
+
+#define WEATHER_ITEM 0
+#define TEMP_ITEM 1
+#define TEMPMIN_ITEM 2
+#define TEMPMAX_ITEM 3
+#define STEPS_ITEM 4
+#define DIST_ITEM 5
+#define CAL_ITEM 6
+#define SLEEP_ITEM 7
+#define DEEP_ITEM 8
 
 #endif

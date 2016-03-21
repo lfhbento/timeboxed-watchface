@@ -317,10 +317,19 @@ static void load_health_data_from_storage() {
     }
 }
 
+static bool get_health_enabled() {
+    return is_health_toggle_enabled() ||
+        is_module_enabled(MODULE_STEPS) ||
+        is_module_enabled(MODULE_DIST) ||
+        is_module_enabled(MODULE_CAL) ||
+        is_module_enabled(MODULE_SLEEP) ||
+        is_module_enabled(MODULE_DEEP);
+}
+
 void toggle_health(bool from_configs) {
     is_sleeping = false;
     bool has_health = false;
-    health_enabled = is_health_toggle_enabled();
+    health_enabled = get_health_enabled();
     sleep_data_enabled = is_sleep_data_enabled();
 
     if (health_enabled) {
@@ -343,6 +352,8 @@ void toggle_health(bool from_configs) {
                 queue_health_update();
                 if (from_configs) {
                     get_health_data();
+                } else {
+                    load_health_data_from_storage();
                 }
             } else {
                 health_service_events_unsubscribe();
