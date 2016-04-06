@@ -262,28 +262,32 @@ void toggle_health(bool from_configs) {
     health_enabled = using_configs ? is_health_toggle_enabled() : persist_read_int(KEY_ENABLEHEALTH);
     sleep_data_enabled = using_configs ? is_sleep_data_enabled() : persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
 
-    MeasurementSystem distMeasure = health_service_get_measurement_system_for_display(HealthMetricWalkedDistanceMeters);
-    if (distMeasure != MeasurementSystemUnknown) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        useKm = distMeasure == MeasurementSystemMetric;
-    } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Using config measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
-    }
-
-    useCalories = is_use_calories_enabled();
     if (health_enabled) {
+        MeasurementSystem distMeasure = health_service_get_measurement_system_for_display(HealthMetricWalkedDistanceMeters);
+        if (distMeasure != MeasurementSystemUnknown) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            useKm = distMeasure == MeasurementSystemMetric;
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using config measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+            useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
+        }
+
+        useCalories = is_use_calories_enabled();
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (health_permission_granted()) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
-            set_steps_or_sleep_layer_text("");
-            set_dist_or_deep_layer_text("");
-            queue_health_update();
-            if (from_configs) {
-                get_health_data();
+            if (has_health) {
+                set_steps_or_sleep_layer_text("");
+                set_dist_or_deep_layer_text("");
+                queue_health_update();
+                if (from_configs) {
+                    get_health_data();
+                } else {
+                    load_health_data_from_storage();
+                }
             } else {
-                load_health_data_from_storage();
+                health_service_events_unsubscribe();
             }
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -295,7 +299,6 @@ void toggle_health(bool from_configs) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_steps_or_sleep_layer_text("");
         set_dist_or_deep_layer_text("");
-        health_service_events_unsubscribe();
     }
 }
 
