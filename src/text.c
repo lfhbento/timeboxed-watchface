@@ -429,7 +429,7 @@ void set_colors(Window *window) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Defining colors. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
-    enable_advanced = get_config_toggles() != -1 ? is_advanced_colors_enabled() : persist_exists(KEY_ENABLEADVANCED) ? persist_read_int(KEY_ENABLEADVANCED) : false;
+    enable_advanced = is_advanced_colors_enabled();
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enable_advanced);
     GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
     GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;

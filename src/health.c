@@ -20,6 +20,9 @@ static char steps_or_sleep_text[16];
 static char dist_or_deep_text[16];
 
 static bool health_permission_granted() {
+    if (!health_enabled) {
+        return false;
+    }
     HealthMetric metric_steps = HealthMetricStepCount;
     time_t start = time_start_of_today();
     time_t end = time(NULL);
@@ -258,9 +261,8 @@ static void load_health_data_from_storage() {
 void toggle_health(bool from_configs) {
     is_sleeping = false;
     bool has_health = false;
-    bool using_configs = get_config_toggles() != -1;
-    health_enabled = using_configs ? is_health_toggle_enabled() : persist_read_int(KEY_ENABLEHEALTH);
-    sleep_data_enabled = using_configs ? is_sleep_data_enabled() : persist_exists(KEY_SHOWSLEEP) && persist_read_int(KEY_SHOWSLEEP);
+    health_enabled = is_health_toggle_enabled();
+    sleep_data_enabled = is_sleep_data_enabled();
 
     if (health_enabled) {
         MeasurementSystem distMeasure = health_service_get_measurement_system_for_display(HealthMetricWalkedDistanceMeters);
@@ -269,7 +271,7 @@ void toggle_health(bool from_configs) {
             useKm = distMeasure == MeasurementSystemMetric;
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Using config measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            useKm = using_configs ? is_use_km_enabled() : persist_exists(KEY_USEKM) && persist_read_int(KEY_USEKM);
+            useKm = is_use_km_enabled();
         }
 
         useCalories = is_use_calories_enabled();
@@ -303,6 +305,9 @@ void toggle_health(bool from_configs) {
 }
 
 bool is_user_sleeping() {
+    if (!health_enabled) {
+        return false;
+    }
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
     if (tick_time->tm_min % 10 == 0) { // only check every 10 minutes

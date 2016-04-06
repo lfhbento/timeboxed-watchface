@@ -93,11 +93,10 @@ void update_weather_values(int temp_val, int max_val, int min_val, int weather_v
 }
 
 void toggle_weather(bool from_configs) {
-    bool use_configs = get_config_toggles() != -1;
-    weather_enabled = use_configs ? is_weather_toggle_enabled() : persist_exists(KEY_ENABLEWEATHER) && persist_read_int(KEY_ENABLEWEATHER);
+    weather_enabled = is_weather_toggle_enabled();
     if (weather_enabled) {
 
-        use_celsius = use_configs ? is_use_celsius_enabled() : persist_exists(KEY_USECELSIUS) && persist_read_int(KEY_USECELSIUS);
+        use_celsius = is_use_celsius_enabled();
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (from_configs) {

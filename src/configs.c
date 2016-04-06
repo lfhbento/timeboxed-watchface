@@ -6,7 +6,7 @@ static bool configs_loaded;
 static int configs;
 
 static int load_configs() {
-    configs = persist_exists(KEY_CONFIGS) ? persist_read_int(KEY_CONFIGS) : -1;
+    configs = persist_exists(KEY_CONFIGS) ? persist_read_int(KEY_CONFIGS) : 0;
     configs_loaded = true;
     return configs;
 }
