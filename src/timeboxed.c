@@ -28,13 +28,29 @@ static void update_time() {
     char hour_text[13];
     char date_text[13];
 
-    // Write the current hours and minutes into a buffer
-    strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
+    if (is_leading_zero_disabled()) {
+        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M"), tick_time);
+        if (hour_text[0] == ' ') {
+            for (int i = 0; i < 12; ++i) {
+                hour_text[i] = hour_text[i+1];
+            }
+            hour_text[12] = '\0';
+        }
+    } else {
+        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
+    }
 
     if (tz_name[0] != '#') {
-        strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
         if (is_leading_zero_disabled()) {
-            if (tz_text[0] == '0') tz_text[0] = ' ';
+            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M%p"), gmt_time);
+            if (tz_text[0] == ' ') {
+                for (int i = 0; i < 12; ++i) {
+                    tz_text[i] = tz_text[i+1];
+                }
+                tz_text[12] = '\0';
+            }
+        } else {
+            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
         }
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
@@ -64,9 +80,6 @@ static void update_time() {
         set_alt_time_layer_text("");
     }
 
-    if (is_leading_zero_disabled()) {
-        if (hour_text[0] == '0') hour_text[0] = ' ';
-    }
     set_hours_layer_text(hour_text);
     get_current_date(tick_time, date_text, sizeof(date_text));
     set_date_layer_text(date_text);
