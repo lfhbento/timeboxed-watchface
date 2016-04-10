@@ -59,6 +59,9 @@
 #define KEY_SLEEPSLOTC 55
 #define KEY_SLEEPSLOTD 56
 #define KEY_CAL 57
+#define KEY_FEELS 58
+#define KEY_SPEED 59
+#define KEY_DIRECTION 60
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -115,6 +118,9 @@
 #define MODULE_CAL 5
 #define MODULE_SLEEP 6
 #define MODULE_DEEP 7
+#define MODULE_WIND 8
+#define MODULE_FEELS 9
+#define MODULE_WEATHER_FEELS 10
 
 #define MODE_NORMAL 0
 #define MODE_SIMPLE 1
@@ -128,5 +134,9 @@
 #define CAL_ITEM 6
 #define SLEEP_ITEM 7
 #define DEEP_ITEM 8
+#define WIND_ITEM 9
+#define FEELS_ITEM 10
+#define WEATHER_FEELS_WEATHER_ITEM 11
+#define WEATHER_FEELS_FEELS_ITEM 12
 
 #endif

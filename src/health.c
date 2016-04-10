@@ -302,18 +302,28 @@ static void load_health_data_from_storage() {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading health data from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     if (is_module_enabled(MODULE_STEPS)) {
         persist_read_string(KEY_STEPS, steps_text, sizeof(steps_text));
+        set_steps_layer_text(steps_text);
+        set_progress_color_steps(false);
     }
     if (is_module_enabled(MODULE_DIST)) {
         persist_read_string(KEY_DIST, dist_text, sizeof(dist_text));
+        set_dist_layer_text(dist_text);
+        set_progress_color_dist(false);
     }
     if (is_module_enabled(MODULE_CAL)) {
         persist_read_string(KEY_CAL, cal_text, sizeof(cal_text));
+        set_cal_layer_text(cal_text);
+        set_progress_color_cal(false);
     }
     if (is_module_enabled(MODULE_SLEEP)) {
         persist_read_string(KEY_SLEEP, sleep_text, sizeof(sleep_text));
+        set_sleep_layer_text(sleep_text);
+        set_progress_color_sleep(false);
     }
     if (is_module_enabled(MODULE_DEEP)) {
         persist_read_string(KEY_DEEP, deep_text, sizeof(deep_text));
+        set_deep_layer_text(deep_text);
+        set_progress_color_deep(false);
     }
 }
 

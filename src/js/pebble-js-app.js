@@ -42,7 +42,7 @@ Pebble.addEventListener('appmessage',
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
         //'http://www.lbento.space/pebble-apps/timeboxed/v3.0/index.html?v=' + currentVersion +
-        'http://42f648ea.ngrok.io/v3.0/index.html?v=' + currentVersion +
+        'http://b843cae3.ngrok.io/v3.0/index.html?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language +
         '&nonce=' + new Date().getTime());
@@ -136,18 +136,23 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var dayUTC = now.getUTCDate();
 
                 var resultIndex = (now.getDate() === now.getUTCDate() ? 1 : (now.getTimezoneOffset() > 0 ? 0 : 2));
-                var results = resp.query.results.channel.item;
+                var res = resp.query.results;
+                var results = res.item;
+                var wind = res.wind;
                 console.log(JSON.stringify(results.forecast[resultIndex]));
                 var temp = Math.round(useCelsius ? fahrenheitToCelsius(results.condition.temp) : results.condition.temp);
                 var min = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].low) : results.forecast[resultIndex].low);
                 var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].high) : results.forecast[resultIndex].high);
                 var condition = y_iconToId[results.condition.code];
+                var feels = Math.round(useCelsius ? fahrenheitToCelsius(wind.chill) : wind.chill);
+                var speed = wind.speed;
+                var direction = wind.direction;
 
                 if (typeof(condition) === 'undefined') {
                     condition = 0;
                 }
 
-                sendData(temp, max, min, condition);
+                sendData(temp, max, min, condition, feels, speed, direction);
             } catch (ex) {
                 console.log(ex);
                 console.log('Yahoo weather failed, falling back to open weather');
@@ -220,18 +225,23 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);
-            var temp = Math.round((useCelsius ? resp.current_observation.temp_c : resp.current_observation.temp_f));
+            var results = resp.current_observation;
+            var temp = Math.round((useCelsius ? results.temp_c : results.temp_f));
             var highTemp = resp.forecast.simpleforecast.forecastday[0].high;
             var lowTemp = resp.forecast.simpleforecast.forecastday[0].low;
             var max = Math.round((useCelsius ? highTemp.celsius : highTemp.fahrenheit));
             var min = Math.round((useCelsius ? lowTemp.celsius : lowTemp.fahrenheit));
-            var icon = resp.current_observation.icon_url.match(/\/([^.\/]*)\.gif/)[1];
+            var icon = results.icon_url.match(/\/([^.\/]*)\.gif/)[1];
             var condition = wu_iconToId[icon];
+            var feels = Math.round((useCelsius ? results.feelslike_c : results.feelslike_f));
+            var speed = Math.round(results.wind_mph);
+            var direction = results.wind_degrees;
+
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
 
-            sendData(temp, max, min, condition);
+            sendData(temp, max, min, condition, feels, speed, direction);
 
         } catch(ex) {
             console.log(ex.stack);
@@ -262,6 +272,9 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             var resp = JSON.parse(responseText);
             var temp = useCelsius ? kelvinToCelsius(resp.main.temp) : kelvinToFahrenheit(resp.main.temp);
             var condition = ow_iconToId[resp.weather[0].icon];
+            var feels = temp;
+            var speed = Math.round(resp.wind.speed * 2.23694);
+            var direction = resp.wind.deg;
             var day = new Date(resp.dt * 1000);
             if (typeof(condition) === 'undefined') {
                 condition = 0;
@@ -284,7 +297,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
                         }
                     }
 
-                    sendData(temp, max, min, condition);
+                    sendData(temp, max, min, condition, feels, speed, direction);
                 } catch (ex) {
                     console.log('Failure requesting forecast data from OpenWeatherMap');
                     console.log(ex.stack);
@@ -333,12 +346,15 @@ function kelvinToFahrenheit(temp) {
     return Math.round(temp * 1.8 - 459.67);
 }
 
-function sendData(temp, max, min, condition) {
+function sendData(temp, max, min, condition, feels, speed, direction) {
     var data = {
         'KEY_TEMP': temp,
         'KEY_MAX': max,
         'KEY_MIN': min,
-        'KEY_WEATHER': condition
+        'KEY_WEATHER': condition,
+        'KEY_FEELS': feels,
+        'KEY_SPEED': speed,
+        'KEY_DIRECTION': direction,
     };
 
     console.log(JSON.stringify(data));

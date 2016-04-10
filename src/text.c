@@ -91,7 +91,7 @@ void create_text_layers(Window* window) {
     get_text_positions(selected_font, text_align, &text_positions);
 
     int width = bounds.size.w;
-    int slot_width = is_simple_mode_enabled() ? width : 72;
+    int slot_width = is_simple_mode_enabled() ? width : 68;
 
     hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
     text_layer_set_background_color(hours, GColorClear);
@@ -134,7 +134,7 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(temp_min, GColorClear);
     text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
 
-    min_icon = text_layer_create(GRect(min_pos.x - 10, min_pos.y, width, 50));
+    min_icon = text_layer_create(GRect(min_pos.x - 10, min_pos.y - 3, width, 50));
     text_layer_set_background_color(min_icon, GColorClear);
     text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
 
@@ -143,7 +143,7 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(temp_max, GColorClear);
     text_layer_set_text_alignment(temp_max, GTextAlignmentLeft);
 
-    max_icon = text_layer_create(GRect(max_pos.x - 10, max_pos.y, width, 50));
+    max_icon = text_layer_create(GRect(max_pos.x - 10, max_pos.y - 3, width, 50));
     text_layer_set_background_color(max_icon, GColorClear);
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
@@ -337,10 +337,6 @@ void set_colors(Window *window) {
     text_layer_set_text_color(min_icon, min_color);
     text_layer_set_text_color(temp_max, max_color);
     text_layer_set_text_color(max_icon, max_color);
-    text_layer_set_text_color(steps,
-            enable_advanced ? steps_color : base_color);
-    text_layer_set_text_color(dist,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color);
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 

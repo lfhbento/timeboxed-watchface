@@ -167,6 +167,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *max_tuple = dict_find(iterator, KEY_MAX);
     Tuple *min_tuple = dict_find(iterator, KEY_MIN);
     Tuple *weather_tuple = dict_find(iterator, KEY_WEATHER);
+    Tuple *feels_tuple = dict_find(iterator, KEY_FEELS);
+    Tuple *speed_tuple = dict_find(iterator, KEY_SPEED);
+    Tuple *direction_tuple = dict_find(iterator, KEY_DIRECTION);
 
     if (temp_tuple && max_tuple && min_tuple && weather_tuple && is_weather_enabled()) {
         int temp_val = (int)temp_tuple->value->int32;
@@ -178,6 +181,15 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         update_forecast_values(max_val, min_val);
 
         store_weather_values(temp_val, max_val, min_val, weather_val);
+
+        if (feels_tuple && speed_tuple && direction_tuple) {
+            int feels_val = (int)feels_tuple->value->int32;
+            int speed_val = (int)speed_tuple->value->int32;
+            int direction_val = (int)direction_tuple->value->int32;
+
+            update_feels_value(feels_val);
+            update_wind_value(speed_val, direction_val);
+        }
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         return;

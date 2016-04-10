@@ -107,82 +107,82 @@ void get_text_positions(int selected_font, GTextAlignment alignment, struct Text
 };
 
 void init_positions() {
-    slot_positions[MODE_NORMAL][SLOT_A] = create_point(0, 0);
+    slot_positions[MODE_NORMAL][SLOT_A] = create_point(2, 0);
     slot_positions[MODE_NORMAL][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(0, 72), PBL_IF_ROUND_ELSE(22, 0));
-    slot_positions[MODE_NORMAL][SLOT_C] = create_point(0, PBL_IF_ROUND_ELSE(144, 148));
-    slot_positions[MODE_NORMAL][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, 72), PBL_IF_ROUND_ELSE(158, 148));
+    slot_positions[MODE_NORMAL][SLOT_C] = create_point(2, PBL_IF_ROUND_ELSE(138, 142));
+    slot_positions[MODE_NORMAL][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, 72), PBL_IF_ROUND_ELSE(152, 142));
 
     // weather condition
-    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 0), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[WEATHER_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
 
     // current temperature
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 4);
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), PBL_IF_ROUND_ELSE(4, 3));
-    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 2);
-    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 2);
-    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 2);
-    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 4);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
 
     // min temperature
-    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), 0);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), PBL_IF_ROUND_ELSE(0, -1));
-    positions[TEMPMIN_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), PBL_IF_ROUND_ELSE(0, -2));
-    positions[TEMPMIN_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), PBL_IF_ROUND_ELSE(0, -2));
-    positions[TEMPMIN_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), PBL_IF_ROUND_ELSE(0, -2));
-    positions[TEMPMIN_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 10), PBL_IF_ROUND_ELSE(0, 0));
+    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[TEMPMIN_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[TEMPMIN_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[TEMPMIN_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[TEMPMIN_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
 
     // max temperature
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(0, 0));
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(0, -1));
-    positions[TEMPMAX_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(-2, -2));
-    positions[TEMPMAX_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(2, -2));
-    positions[TEMPMAX_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(0, -2));
-    positions[TEMPMAX_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 43), PBL_IF_ROUND_ELSE(4, 0));
+    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
 
     // steps
-    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 0);
-    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 0);
-    positions[STEPS_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 0);
-    positions[STEPS_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 0);
-    positions[STEPS_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 0);
-    positions[STEPS_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 0);
+    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[STEPS_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[STEPS_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[STEPS_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[STEPS_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 
     // distance
-    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 0);
-    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 0);
-    positions[DIST_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 0);
-    positions[DIST_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 0);
-    positions[DIST_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 0);
-    positions[DIST_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 0);
+    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[DIST_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[DIST_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[DIST_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[DIST_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 
     // calories
-    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 0);
-    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 0);
-    positions[CAL_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 0);
-    positions[CAL_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 0);
-    positions[CAL_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 0);
-    positions[CAL_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 0);
+    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[CAL_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[CAL_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[CAL_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[CAL_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 
     // sleep
-    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 0);
-    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 0);
-    positions[SLEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 0);
-    positions[SLEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 0);
-    positions[SLEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 0);
-    positions[SLEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 0);
+    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[SLEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[SLEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[SLEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[SLEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 
     // deep sleep
-    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 0);
-    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 0);
-    positions[DEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 0);
-    positions[DEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 0);
-    positions[DEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 0);
-    positions[DEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 0);
+    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[DEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[DEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[DEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[DEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 }
 
 GPoint get_pos_for_item(int slot, int item, int mode, int font) {
