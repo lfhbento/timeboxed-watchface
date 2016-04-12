@@ -3,6 +3,7 @@
 #include "health.h"
 #include "text.h"
 #include "configs.h"
+#include "screen.h"
 
 static void clear_health_fields() {
     set_steps_layer_text("");
@@ -404,7 +405,7 @@ bool is_user_sleeping() {
     return is_sleeping;
 }
 
-void show_sleep_data_if_visible() {
+void show_sleep_data_if_visible(Window *watchface) {
     if (health_enabled && sleep_data_enabled) {
         if (is_user_sleeping()) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "We are asleep. %d", was_asleep);
@@ -413,6 +414,7 @@ void show_sleep_data_if_visible() {
                 was_asleep = true;
                 woke_up_at = 0;
                 queue_health_update();
+                redraw_screen(watchface);
                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Just went to sleep. %d", was_asleep);
             }
         }
@@ -428,6 +430,7 @@ void show_sleep_data_if_visible() {
         if (sleep_data_visible && woke_up_at > 0 && time(NULL) > woke_up_at) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Past half an hour after wake up! %d - %d", (int) time(NULL), (int) woke_up_at);
             sleep_data_visible = false;
+            redraw_screen(watchface);
             queue_health_update();
         }
     }
@@ -466,7 +469,7 @@ void get_health_data() {
     return;
 }
 
-void show_sleep_data_if_visible() {
+void show_sleep_data_if_visible(Window *watchface) {
     return;
 }
 

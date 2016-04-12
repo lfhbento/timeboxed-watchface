@@ -1,5 +1,4 @@
 #include <pebble.h>
-#include <ctype.h>
 #include <time.h>
 #include "keys.h"
 #include "locales.h"
@@ -8,144 +7,11 @@
 #include "weather.h"
 #include "configs.h"
 #include "positions.h"
+#include "screen.h"
 
 static Window *watchface;
 
-static signed int tz_hour;
-static uint8_t tz_minute;
-static char tz_name[TZ_LEN];
 static uint8_t min_counter;
-
-static void update_time() {
-    // Get a tm structure
-    time_t temp = time(NULL);
-    struct tm *tick_time = localtime(&temp);
-    struct tm *gmt_time = gmtime(&temp);
-    gmt_time->tm_hour = gmt_time->tm_hour + tz_hour;
-    mktime(gmt_time);
-    gmt_time->tm_min = gmt_time->tm_min + tz_minute;
-    mktime(gmt_time);
-    char tz_text[22];
-    char hour_text[13];
-    char date_text[13];
-
-    if (is_leading_zero_disabled()) {
-        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M"), tick_time);
-        if (hour_text[0] == ' ') {
-            for (int i = 0; i < 12; ++i) {
-                hour_text[i] = hour_text[i+1];
-            }
-            hour_text[12] = '\0';
-        }
-    } else {
-        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
-    }
-
-    if (is_timezone_enabled()) {
-        if (is_leading_zero_disabled()) {
-            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M%p"), gmt_time);
-            if (tz_text[0] == ' ') {
-                for (int i = 0; i < 12; ++i) {
-                    tz_text[i] = tz_text[i+1];
-                }
-                tz_text[12] = '\0';
-            }
-        } else {
-            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
-        }
-
-        if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
-            (gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon > tick_time->tm_mon) ||
-            (gmt_time->tm_year > tick_time->tm_year)
-        ) {
-                strcat(tz_text, "+1");
-        } else if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday < tick_time->tm_mday) ||
-            (gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon < tick_time->tm_mon) ||
-            (gmt_time->tm_year < tick_time->tm_year)
-        ) {
-            strcat(tz_text, "-1");
-        }
-
-        strcat(tz_text, " ");
-        strcat(tz_text, tz_name);
-
-        for (unsigned char i = 0; tz_text[i]; ++i) {
-            if (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_BIG_FONT) {
-                tz_text[i] = tolower((unsigned char)tz_text[i]);
-            } else {
-                if (i == 0) {
-                    tz_text[i] = toupper((unsigned char)tz_text[i]);
-                } else {
-                    tz_text[i] = tolower((unsigned char)tz_text[i]);
-                }
-            }
-        }
-        set_alt_time_layer_text(tz_text);
-    } else {
-        set_alt_time_layer_text("");
-    }
-
-    set_hours_layer_text(hour_text);
-    get_current_date(tick_time, date_text, sizeof(date_text));
-    set_date_layer_text(date_text);
-}
-
-void bt_handler(bool connected) {
-    if (connected) {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is connected.");
-        set_bluetooth_layer_text("");
-    } else {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is not connected.");
-        if (is_bluetooth_vibrate_enabled() && !is_user_sleeping()) {
-            vibes_long_pulse();
-        }
-        set_bluetooth_color();
-        set_bluetooth_layer_text("a");
-    }
-}
-
-static void battery_handler(BatteryChargeState charge_state) {
-    char s_battery_buffer[8];
-
-    if (charge_state.is_charging) {
-        snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=)");
-    } else {
-        snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent <= 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
-    }
-    set_battery_color(charge_state.charge_percent);
-    set_battery_layer_text(s_battery_buffer);
-}
-
-static void load_screen(bool from_configs) {
-    if (from_configs) {
-        unload_face_fonts();
-    }
-    load_face_fonts();
-    set_face_fonts();
-    load_locale();
-    update_time();
-    set_colors(watchface);
-    toggle_health(from_configs);
-    toggle_weather(from_configs);
-    battery_handler(battery_state_service_peek());
-    bt_handler(connection_service_peek_pebble_app_connection());
-}
-
-static void check_for_updates() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_uint8(iter, KEY_HASUPDATE, 1);
-    app_message_outbox_send();
-}
-
-static void notify_update(int update_available) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%03d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
-    if (update_available) {
-        set_update_color();
-    }
-    set_update_layer_text(update_available ? "f" : "");
-}
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     Tuple *error_tuple = dict_find(iterator, KEY_ERROR);
@@ -187,8 +53,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             int speed_val = (int)speed_tuple->value->int32;
             int direction_val = (int)direction_tuple->value->int32;
 
-            update_feels_value(feels_val);
-            update_wind_value(speed_val, direction_val);
+            //update_feels_value(feels_val);
+            //update_wind_value(speed_val, direction_val);
         }
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather data updated. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -196,6 +62,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     }
 
     int configs = 0;
+    signed int tz_hour = 0;
+    uint8_t tz_minute = 0;
+    static char tz_name[TZ_LEN];
 
     Tuple *enableHealth = dict_find(iterator, KEY_ENABLEHEALTH);
     if (enableHealth) {
@@ -442,11 +311,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
+    set_timezone(tz_name, tz_hour, tz_minute);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Configs persisted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     destroy_text_layers();
     create_text_layers(watchface);
-    load_screen(true);
+    load_screen(true, watchface);
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
@@ -468,11 +338,7 @@ static void watchface_load(Window *window) {
 
     min_counter = 20; // after loading, get the next weather update in 10 min
 
-    if (is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
-        persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
-        tz_hour = persist_exists(KEY_TIMEZONES) ? persist_read_int(KEY_TIMEZONES) : 0;
-        tz_minute = persist_exists(KEY_TIMEZONESMINUTES) ? persist_read_int(KEY_TIMEZONESMINUTES) : 0;
-    }
+    load_timezone_from_storage();
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Watchface load end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -502,7 +368,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     uint8_t tick_interval = is_user_sleeping() ? 90 : 30;
 
-    show_sleep_data_if_visible();
+    show_sleep_data_if_visible(watchface);
 
     if(min_counter >= tick_interval) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Time for updates (%d). %d%03d", tick_interval, (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -549,7 +415,7 @@ static void init(void) {
 	.pebble_app_connection_handler = bt_handler
     });
 
-    load_screen(false);
+    load_screen(false, watchface);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Init end. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
