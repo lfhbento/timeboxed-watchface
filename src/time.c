@@ -63,23 +63,16 @@ void update_time() {
         strcat(tz_text, tz_name);
 
         for (unsigned char i = 0; tz_text[i]; ++i) {
-            if (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_BIG_FONT) {
-                tz_text[i] = tolower((unsigned char)tz_text[i]);
-            } else {
-                if (i == 0) {
-                    tz_text[i] = toupper((unsigned char)tz_text[i]);
-                } else {
-                    tz_text[i] = tolower((unsigned char)tz_text[i]);
-                }
-            }
+            tz_text[i] = toupper((unsigned char)tz_text[i]);
         }
+
         set_alt_time_layer_text(tz_text);
     } else {
         set_alt_time_layer_text("");
     }
 
     set_hours_layer_text(hour_text);
-    get_current_date(tick_time, date_text, sizeof(date_text));
+    get_current_date(tick_time, date_text, sizeof(date_text), 0);
     set_date_layer_text(date_text);
 }
 

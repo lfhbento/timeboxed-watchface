@@ -40,5 +40,8 @@ void set_weather_layer_text(char*);
 void set_max_icon_layer_text(char*);
 void set_min_icon_layer_text(char*);
 void set_update_layer_text(char*);
+void set_wind_speed_layer_text(char*);
+void set_wind_direction_layer_text(char*);
+void set_wind_icon_layer_text(char*);
 
 #endif

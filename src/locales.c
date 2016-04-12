@@ -8,13 +8,13 @@ uint8_t selected_locale;
 uint8_t selected_format;
 
 static char* WEEKDAYS[14][7] = {
-    {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}, // en_US
-    {"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"}, // pt_BR
-    {"DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"}, // fr_FR
-    {"SO", "MO", "DI", "MI", "DO", "FR", "SA"}, // de_DE
-    {"DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"}, // es_ES
-    {"DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"}, // it_IT
-    {"ZO", "MA", "DI", "WO", "DO", "VR", "ZA"}, // nl_NL
+    {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}, // en_US
+    {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"}, // pt_BR
+    {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"}, // fr_FR
+    {"So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"}, // de_DE
+    {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"}, // es_ES
+    {"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"}, // it_IT
+    {"Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"}, // nl_NL
     {"SON", "MAN", "TIR", "ONS", "TOR", "FRE", "LOR"}, // da_DK
     {"PAZ", "PTS", "SAL", "CAR", "PER", "CUM", "CTS"}, // tr_TR
     {"NE", "PO", "UT", "ST", "CT", "PA", "SO"}, // cs_CZ
@@ -25,39 +25,38 @@ static char* WEEKDAYS[14][7] = {
 };
 
 static char* MONTHS[14][12] = {
-    {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"}, // en_US
-    {"JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"}, // pt_BR
-    {"JAN", "FEV", "MAR", "AVR", "MAI", "JUI", "JUL", "AOU", "SEP", "OCT", "NOV", "DEC"}, // fr_FR
-    {"JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ"}, // de_DE
-    {"ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"}, // es_ES
-    {"GEN", "FEB", "MAR", "APR", "MAG", "GIU", "LUG", "AGO", "SET", "OTT", "NOV", "DIC"}, // it_IT
-    {"JAN", "FEB", "MRT", "APR", "MEI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // nl_NL
-    {"JAN", "FEB", "MAR", "APR", "MAJ", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // da_DK
-    {"OCA", "SUB", "MAR", "NIS", "MAY", "HAZ", "TEM", "AGU", "EYL", "EKI", "KAS", "ARA"}, // tr_TR
-    {"LED", "UNO", "BRE", "DUB", "KVE", "CRV", "CVC", "SRP", "ZAR", "RIJ", "LIS", "PRO"}, // cs_CZ
-    {"STY", "LUT", "MAR", "KWI", "MAJ", "CZE", "LIP", "SIE", "WRZ", "PAZ", "LIS", "GRU"}, // pl_PL
-    {"JAN", "FEB", "MAR", "APR", "MAJ", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // sv_SE
-    {"TAM", "HEL", "MAA", "HUH", "TOU", "KES", "HEI", "ELO", "SYY", "LOK", "MAR", "JOU"}, // fi_FI
-    {"JAN", "FEB", "MAR", "APR", "MAJ", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"}, // sk_SK
+    {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}, // en_US
+    {"Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"}, // pt_BR
+    {"Jan", "Fev", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Dec"}, // fr_FR
+    {"Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"}, // de_DE
+    {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"}, // es_ES
+    {"Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"}, // it_IT
+    {"Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"}, // nl_NL
+    {"Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"}, // da_DK
+    {"Oca", "Sub", "Mar", "Nis", "May", "Haz", "Tem", "Agu", "Eyl", "Eki", "Kas", "Ara"}, // tr_TR
+    {"Led", "Uno", "Bre", "Dub", "Kve", "Crv", "Cvc", "Srp", "Zar", "Rij", "Lis", "Pro"}, // cs_CZ
+    {"Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paz", "Lis", "Gru"}, // pl_PL
+    {"Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"}, // sv_SE
+    {"Tam", "Hel", "Maa", "Huh", "Tou", "Kes", "Hei", "Elo", "Syy", "Lok", "Mar", "Jou"}, // fi_FI
+    {"Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"}, // sk_SK
 };
 
-void get_current_date(struct tm* tick_time, char* buffer, int buf_size) {
+static char* SEPARATORS[4] = {
+    " ", ".", "-", "/"
+};
+
+void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int separator) {
     char* weekday = WEEKDAYS[selected_locale][tick_time->tm_wday];
     char* month = MONTHS[selected_locale][tick_time->tm_mon];
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting date: %s %s %d.  %d%03d", weekday, month, tick_time->tm_mday, (int)time(NULL), (int)time_ms(NULL, NULL));
     switch(selected_format) {
         case FORMAT_WMD:
-            snprintf(buffer, buf_size, "%s %s %02d", weekday, month, tick_time->tm_mday);
+            snprintf(buffer, buf_size, "%s%s%s%s%02d", weekday, SEPARATORS[separator], month, SEPARATORS[separator], tick_time->tm_mday);
             break;
         case FORMAT_WDM:
-            snprintf(buffer, buf_size, "%s %02d %s", weekday, tick_time->tm_mday, month);
+            snprintf(buffer, buf_size, "%s%s%02d%s%s", weekday, SEPARATORS[separator], tick_time->tm_mday, SEPARATORS[separator], month);
             break;
-    }
-
-    int start = (get_loaded_font() == BLOCKO_FONT || get_loaded_font() == BLOCKO_FONT) ? 0 : 1;
-    for (unsigned char i = start; buffer[i]; ++i) {
-        buffer[i] = tolower((unsigned char)buffer[i]);
     }
 }
 

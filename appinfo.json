@@ -102,14 +102,14 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/Blocko.ttf",
                 "name": "FONT_BLOCKO_19",
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9!a-z. ]",
+                "characterRegex": "[0-9!a-zA-Z. ]",
                 "compatibility": "2.7",
                 "file": "fonts/Blocko.ttf",
                 "name": "FONT_BLOCKO_32",
@@ -123,14 +123,14 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/Blocko.ttf",
                 "name": "FONT_BLOCKO_16",
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/Blocko.ttf",
                 "name": "FONT_BLOCKO_24",
@@ -151,7 +151,7 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/ArchivoNarrow-Bold.ttf",
                 "name": "FONT_ARCHIVO_28",
@@ -172,7 +172,7 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/OSP-DIN.ttf",
                 "name": "FONT_DIN_26",
@@ -193,7 +193,7 @@
                 "type": "font"
             },
             {
-                "characterRegex": "[0-9:a-z.+%!()/= -]",
+                "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
                 "compatibility": "2.7",
                 "file": "fonts/Prototype.ttf",
                 "name": "FONT_PROTOTYPE_22",

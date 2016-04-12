@@ -56,12 +56,56 @@ static char* weather_conditions[] = {
     "\U0000F073", // hurricane: 46
 };
 
+static char* wind_directions[] = {
+    "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+    "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
+    "N/A"
+};
+
 void update_weather(void) {
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_message_outbox_send();
+}
+
+static char* get_wind_direction(int degrees) {
+    if (degrees > 349 || degrees <= 11) {
+        return wind_directions[0]; // N
+    } else if (degrees > 11 && degrees <= 34) {
+        return wind_directions[1]; // NNE
+    } else if (degrees > 34 && degrees <= 56) {
+        return wind_directions[2]; // NE
+    } else if (degrees > 56 && degrees <= 79) {
+        return wind_directions[3]; // ENE
+    } else if (degrees > 79 && degrees <= 101) {
+        return wind_directions[4]; // E
+    } else if (degrees > 101 && degrees <= 124) {
+        return wind_directions[5]; // ESE
+    } else if (degrees > 124 && degrees <= 146) {
+        return wind_directions[6]; // SE
+    } else if (degrees > 146 && degrees <= 169) {
+        return wind_directions[7]; // SSE
+    } else if (degrees > 169 && degrees <= 191) {
+        return wind_directions[8]; // S
+    } else if (degrees > 191 && degrees <= 214) {
+        return wind_directions[9]; // SSW
+    } else if (degrees > 214 && degrees <= 236) {
+        return wind_directions[10]; // SW
+    } else if (degrees > 239 && degrees <= 259) {
+        return wind_directions[11]; // WSW
+    } else if (degrees > 259 && degrees <= 281) {
+        return wind_directions[12]; // W
+    } else if (degrees > 281 && degrees <= 304) {
+        return wind_directions[13]; // WNW
+    } else if (degrees > 304 && degrees <= 326) {
+        return wind_directions[14]; // NW
+    } else if (degrees > 326 && degrees <= 349) {
+        return wind_directions[15]; // NNW
+    }
+
+    return wind_directions[16];
 }
 
 void update_weather_values(int temp_val, int weather_val) {
@@ -101,8 +145,33 @@ void update_forecast_values(int max_val, int min_val) {
     }
 }
 
+void update_wind_values(int speed, int direction) {
+    if (is_module_enabled(MODULE_WIND)) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating wind values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        char wind_speed[10];
+        char wind_dir[4];
+
+        if (get_wind_speed_unit() == UNIT_KPH) {
+            speed = (speed * 1.60934)/1;
+        } else if (get_wind_speed_unit() == UNIT_KNOTS) {
+            speed = (speed * 0.868976)/1;
+        }
+
+        speed = 100;
+
+        strcpy(wind_dir, get_wind_direction(direction));
+        snprintf(wind_speed, sizeof(wind_speed), "%d", speed);
+
+        set_wind_direction_layer_text(wind_dir);
+        set_wind_speed_layer_text(wind_speed);
+    }
+}
+
 static bool get_weather_enabled() {
-    bool weather_module_available = is_module_enabled(MODULE_WEATHER) || is_module_enabled(MODULE_FORECAST);
+    bool weather_module_available =
+        is_module_enabled(MODULE_WEATHER) ||
+        is_module_enabled(MODULE_FORECAST) ||
+        is_module_enabled(MODULE_WIND);
     return is_weather_toggle_enabled() || weather_module_available;
 }
 
@@ -117,6 +186,7 @@ void toggle_weather(bool from_configs) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0);
             update_forecast_values(0, 0);
+            update_wind_values(0, 16);
             update_weather();
         } else if (persist_exists(KEY_TEMP)) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -127,10 +197,15 @@ void toggle_weather(bool from_configs) {
             int min = persist_read_int(KEY_MIN);
             int max = persist_read_int(KEY_MAX);
             update_forecast_values(max, min);
+
+            int speed = persist_read_int(KEY_SPEED);
+            int direction = persist_read_int(KEY_DIRECTION);
+            update_wind_values(speed, direction);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0);
             update_forecast_values(0, 0);
+            update_wind_values(0, 16);
             update_weather();
         }
     } else {
@@ -144,12 +219,14 @@ void toggle_weather(bool from_configs) {
     }
 }
 
-void store_weather_values(int temp, int max, int min, int weather) {
+void store_weather_values(int temp, int max, int min, int weather, int speed, int direction) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%03d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
     persist_write_int(KEY_TEMP, temp);
     persist_write_int(KEY_MAX, max);
     persist_write_int(KEY_MIN, min);
     persist_write_int(KEY_WEATHER, weather);
+    persist_write_int(KEY_SPEED, speed);
+    persist_write_int(KEY_DIRECTION, direction);
 }
 
 bool is_weather_enabled() {

@@ -21,6 +21,8 @@ static TextLayer *weather;
 static TextLayer *max_icon;
 static TextLayer *min_icon;
 static TextLayer *update;
+static TextLayer *direction;
+static TextLayer *speed;
 
 static GFont time_font;
 static GFont medium_font;
@@ -39,16 +41,19 @@ static GColor dist_behind_color;
 
 static char hour_text[13];
 static char date_text[13];
+static char bluetooth_text[4];
+static char update_text[4];
+static char battery_text[8];
+static char alt_time_text[22];
+
 static char temp_cur_text[8];
 static char temp_max_text[8];
 static char max_icon_text[4];
 static char temp_min_text[8];
 static char min_icon_text[4];
 static char weather_text[4];
-static char bluetooth_text[4];
-static char update_text[4];
-static char battery_text[8];
-static char alt_time_text[22];
+static char direction_text[4];
+static char speed_text[8];
 
 static char steps_text[16];
 static char cal_text[16];
@@ -147,6 +152,17 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(max_icon, GColorClear);
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
+    int wind_slot = get_slot_for_module(MODULE_WIND);
+    GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font);
+    speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, width, 50));
+    text_layer_set_background_color(speed, GColorClear);
+    text_layer_set_text_alignment(speed, GTextAlignmentLeft);
+
+    GPoint direction_pos = get_pos_for_item(wind_slot, DIRECTION_ITEM, mode, selected_font);
+    direction = text_layer_create(GRect(direction_pos.x, direction_pos.y, width, 50));
+    text_layer_set_background_color(direction, GColorClear);
+    text_layer_set_text_alignment(direction, GTextAlignmentLeft);
+
     int steps_slot = get_slot_for_module(MODULE_STEPS);
     GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font);
     steps = text_layer_create(GRect(steps_pos.x, steps_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
@@ -199,6 +215,8 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(cal));
     layer_add_child(window_layer, text_layer_get_layer(sleep));
     layer_add_child(window_layer, text_layer_get_layer(deep));
+    layer_add_child(window_layer, text_layer_get_layer(speed));
+    layer_add_child(window_layer, text_layer_get_layer(direction));
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -222,6 +240,8 @@ void destroy_text_layers() {
     text_layer_destroy(sleep);
     text_layer_destroy(cal);
     text_layer_destroy(deep);
+    text_layer_destroy(speed);
+    text_layer_destroy(direction);
 }
 
 void load_face_fonts() {
@@ -307,6 +327,8 @@ void set_face_fonts() {
     text_layer_set_font(cal, base_font);
     text_layer_set_font(sleep, base_font);
     text_layer_set_font(deep, base_font);
+    text_layer_set_font(speed, base_font);
+    text_layer_set_font(direction, base_font);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -337,6 +359,10 @@ void set_colors(Window *window) {
     text_layer_set_text_color(min_icon, min_color);
     text_layer_set_text_color(temp_max, max_color);
     text_layer_set_text_color(max_icon, max_color);
+
+    text_layer_set_text_color(speed, base_color);
+    text_layer_set_text_color(direction, base_color);
+
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 
@@ -375,7 +401,7 @@ void set_update_color() {
 }
 
 void set_battery_color(int percentage) {
-    if (percentage > 20) {
+    if (percentage > 10) {
         text_layer_set_text_color(battery, battery_color);
     } else {
         text_layer_set_text_color(battery, battery_low_color);
@@ -465,4 +491,14 @@ void set_min_icon_layer_text(char* text) {
 void set_update_layer_text(char* text) {
     strcpy(update_text, text);
     text_layer_set_text(update, update_text);
+}
+
+void set_wind_speed_layer_text(char* text) {
+    strcpy(speed_text, text);
+    text_layer_set_text(speed, speed_text);
+}
+
+void set_wind_direction_layer_text(char* text) {
+    strcpy(direction_text, text);
+    text_layer_set_text(direction, direction_text);
 }

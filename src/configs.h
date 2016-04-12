@@ -21,4 +21,6 @@ bool is_use_calories_enabled();
 bool is_simple_mode_enabled();
 bool is_timezone_enabled();
 
+int get_wind_speed_unit();
+
 #endif

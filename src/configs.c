@@ -17,6 +17,10 @@ void set_module(int slot, int module, bool sleeping_mode) {
     }
 }
 
+int get_wind_speed_unit() {
+    return UNIT_MPH;
+}
+
 static void load_modules() {
     modules[SLOT_A] = persist_read_int(KEY_SLOTA);
     modules[SLOT_B] = persist_read_int(KEY_SLOTB);

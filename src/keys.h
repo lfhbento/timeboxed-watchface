@@ -134,9 +134,11 @@
 #define CAL_ITEM 6
 #define SLEEP_ITEM 7
 #define DEEP_ITEM 8
-#define WIND_ITEM 9
-#define FEELS_ITEM 10
-#define WEATHER_FEELS_WEATHER_ITEM 11
-#define WEATHER_FEELS_FEELS_ITEM 12
+#define SPEED_ITEM 9
+#define DIRECTION_ITEM 10
+
+#define UNIT_MPH 0
+#define UNIT_KPH 1
+#define UNIT_KNOTS 2
 
 #endif

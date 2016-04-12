@@ -3,7 +3,7 @@
 #include "keys.h"
 
 static GPoint slot_positions[1][4];
-static GPoint positions[9][1][6];
+static GPoint positions[11][1][6];
 
 GPoint create_point(int x, int y) {
     struct GPoint point;
@@ -183,6 +183,22 @@ void init_positions() {
     positions[DEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
     positions[DEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
     positions[DEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+
+    // wind speed
+    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(116, 36), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(118, 38), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(116, 35), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
+
+    // wind direction
+    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(74, 6), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(72, 4), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(74, 6), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
 }
 
 GPoint get_pos_for_item(int slot, int item, int mode, int font) {
