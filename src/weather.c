@@ -157,8 +157,6 @@ void update_wind_values(int speed, int direction) {
             speed = (speed * 0.868976)/1;
         }
 
-        speed = 100;
-
         strcpy(wind_dir, get_wind_direction(direction));
         snprintf(wind_speed, sizeof(wind_speed), "%d", speed);
 
