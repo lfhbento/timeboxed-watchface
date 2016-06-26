@@ -130,9 +130,9 @@ void create_text_layers(Window* window) {
 
     int weather_slot = get_slot_for_module(MODULE_WEATHER);
     GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font);
-    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, width, 50));
+    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
     text_layer_set_background_color(weather, GColorClear);
-    text_layer_set_text_alignment(weather, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+    text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
     GPoint temp_pos = get_pos_for_item(weather_slot, TEMP_ITEM, mode, selected_font);
     temp_cur = text_layer_create(GRect(temp_pos.x, temp_pos.y, width, 50));
@@ -372,8 +372,8 @@ void set_colors(Window *window) {
     text_layer_set_text_color(temp_max, max_color);
     text_layer_set_text_color(max_icon, max_color);
 
-    text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
-    text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
+    text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
+    text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
 
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;

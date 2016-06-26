@@ -121,12 +121,12 @@ void init_positions() {
     positions[WEATHER_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
 
     // current temperature
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
 
     // min temperature
     positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);

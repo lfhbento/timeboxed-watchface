@@ -78,37 +78,37 @@ void update_weather(void) {
 
 static char* get_wind_direction(int degrees) {
     if (degrees > 349 || degrees <= 11) {
-        return wind_directions[0]; // N
+        return wind_directions[8]; // N -> S
     } else if (degrees > 11 && degrees <= 34) {
-        return wind_directions[1]; // NNE
+        return wind_directions[9]; // NNE -> SSW
     } else if (degrees > 34 && degrees <= 56) {
-        return wind_directions[2]; // NE
+        return wind_directions[10]; // NE -> SW
     } else if (degrees > 56 && degrees <= 79) {
-        return wind_directions[3]; // ENE
+        return wind_directions[11]; // ENE -> WSW
     } else if (degrees > 79 && degrees <= 101) {
-        return wind_directions[4]; // E
+        return wind_directions[12]; // E -> W
     } else if (degrees > 101 && degrees <= 124) {
-        return wind_directions[5]; // ESE
+        return wind_directions[13]; // ESE -> WNW
     } else if (degrees > 124 && degrees <= 146) {
-        return wind_directions[6]; // SE
+        return wind_directions[14]; // SE -> NW
     } else if (degrees > 146 && degrees <= 169) {
-        return wind_directions[7]; // SSE
+        return wind_directions[15]; // SSE -> NNW
     } else if (degrees > 169 && degrees <= 191) {
-        return wind_directions[8]; // S
+        return wind_directions[0]; // S -> N
     } else if (degrees > 191 && degrees <= 214) {
-        return wind_directions[9]; // SSW
+        return wind_directions[1]; // SSW -> NNE
     } else if (degrees > 214 && degrees <= 236) {
-        return wind_directions[10]; // SW
+        return wind_directions[2]; // SW -> NE
     } else if (degrees > 239 && degrees <= 259) {
-        return wind_directions[11]; // WSW
+        return wind_directions[3]; // WSW -> ENE
     } else if (degrees > 259 && degrees <= 281) {
-        return wind_directions[12]; // W
+        return wind_directions[4]; // W -> E
     } else if (degrees > 281 && degrees <= 304) {
-        return wind_directions[13]; // WNW
+        return wind_directions[5]; // WNW -> ESE
     } else if (degrees > 304 && degrees <= 326) {
-        return wind_directions[14]; // NW
+        return wind_directions[6]; // NW -> SE
     } else if (degrees > 326 && degrees <= 349) {
-        return wind_directions[15]; // NNW
+        return wind_directions[7]; // NNW -> SSE
     }
 
     return wind_directions[16];
