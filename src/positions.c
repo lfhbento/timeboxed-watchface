@@ -121,12 +121,12 @@ void init_positions() {
     positions[WEATHER_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
 
     // current temperature
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
+    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 34), 3);
 
     // min temperature
     positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
@@ -137,12 +137,12 @@ void init_positions() {
     positions[TEMPMIN_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
 
     // max temperature
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(113, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[TEMPMAX_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
 
     // steps
     positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
@@ -185,20 +185,20 @@ void init_positions() {
     positions[DEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
 
     // wind speed
-    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(116, 36), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(118, 38), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(116, 35), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(120, 40), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[SPEED_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
 
     // wind direction
-    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(74, 6), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(72, 4), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(74, 6), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[DIRECTION_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
 }
 
 GPoint get_pos_for_item(int slot, int item, int mode, int font) {

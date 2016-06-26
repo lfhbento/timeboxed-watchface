@@ -177,6 +177,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_MAXCOLOR, maxColor->value->int32);
     }
 
+    Tuple *windDirColor = dict_find(iterator, KEY_WINDDIRCOLOR);
+    if (windDirColor) {
+        persist_write_int(KEY_WINDDIRCOLOR, windDirColor->value->int32);
+    }
+
+    Tuple *windSpeedColor = dict_find(iterator, KEY_WINDSPEEDCOLOR);
+    if (windSpeedColor) {
+        persist_write_int(KEY_WINDSPEEDCOLOR, windSpeedColor->value->int32);
+    }
+
     Tuple *stepsColor = dict_find(iterator, KEY_STEPSCOLOR);
     if (stepsColor) {
         persist_write_int(KEY_STEPSCOLOR, stepsColor->value->int32);
@@ -187,6 +197,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_DISTCOLOR, distColor->value->int32);
     }
 
+    Tuple *calColor = dict_find(iterator, KEY_CALCOLOR);
+    if (calColor) {
+        persist_write_int(KEY_CALCOLOR, calColor->value->int32);
+    }
+
     Tuple *stepsBehindColor = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
     if (stepsBehindColor) {
         persist_write_int(KEY_STEPSBEHINDCOLOR, stepsBehindColor->value->int32);
@@ -195,6 +210,21 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *distBehindColor = dict_find(iterator, KEY_DISTBEHINDCOLOR);
     if (distBehindColor) {
         persist_write_int(KEY_DISTBEHINDCOLOR, distBehindColor->value->int32);
+    }
+
+    Tuple *calBehindColor = dict_find(iterator, KEY_CALBEHINDCOLOR);
+    if (calBehindColor) {
+        persist_write_int(KEY_CALBEHINDCOLOR, calBehindColor->value->int32);
+    }
+
+    Tuple *sleepBehindColor = dict_find(iterator, KEY_SLEEPBEHINDCOLOR);
+    if (sleepBehindColor) {
+        persist_write_int(KEY_SLEEPBEHINDCOLOR, sleepBehindColor->value->int32);
+    }
+
+    Tuple *deepBehindColor = dict_find(iterator, KEY_DEEPBEHINDCOLOR);
+    if (deepBehindColor) {
+        persist_write_int(KEY_DEEPBEHINDCOLOR, deepBehindColor->value->int32);
     }
 
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
@@ -242,6 +272,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *textAlign = dict_find(iterator, KEY_TEXTALIGN);
     if (textAlign) {
         persist_write_int(KEY_TEXTALIGN, textAlign->value->int8);
+    }
+
+    Tuple *speedUnit = dict_find(iterator, KEY_SPEEDUNIT);
+    if (speedUnit) {
+        persist_write_int(KEY_SPEEDUNIT, speedUnit->value->int8);
     }
 
     Tuple *leadingZero = dict_find(iterator, KEY_LEADINGZERO);
@@ -356,7 +391,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
     min_counter++;
 
-    if (!is_update_disabled() && tick_time->tm_hour == 4) { // updates at 4am
+    if (!is_update_disabled() && tick_time->tm_hour == 4 && tick_time->tm_min == 0) { // updates at 4:00am
         check_for_updates();
     }
     if (is_update_disabled()) {

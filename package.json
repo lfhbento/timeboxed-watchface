@@ -1,0 +1,241 @@
+{
+  "version": "3.0.0",
+  "author": "LFHB",
+  "private": true,
+  "dependencies": {},
+  "keywords": [
+    "pebble-app"
+  ],
+  "pebble": {
+    "sdkVersion": "3",
+    "resources": {
+      "media": [
+        {
+          "type": "font",
+          "characterRegex": "[\uf058\uf044]",
+          "compatibility": "2.7",
+          "file": "fonts/weathericons-regular-webfont.ttf",
+          "name": "FONT_WEATHER_28"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072\uf0b1]",
+          "compatibility": "2.7",
+          "file": "fonts/weathericons-regular-webfont.ttf",
+          "name": "FONT_WEATHER_24"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072\uf0b1]",
+          "compatibility": "2.7",
+          "file": "fonts/weathericons-regular-webfont.ttf",
+          "name": "FONT_WEATHER_32"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[a-zA-Z0-9]",
+          "compatibility": "2.7",
+          "file": "fonts/custom-icons.ttf",
+          "name": "FONT_ICONS_20"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_19"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9!a-zA-Z. ]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_32"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9: ]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_64"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_16"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_24"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/Blocko.ttf",
+          "name": "FONT_BLOCKO_56"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/ArchivoNarrow-Bold.ttf",
+          "name": "FONT_ARCHIVO_18"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/ArchivoNarrow-Bold.ttf",
+          "name": "FONT_ARCHIVO_28"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/ArchivoNarrow-Bold.ttf",
+          "name": "FONT_ARCHIVO_56"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/OSP-DIN.ttf",
+          "name": "FONT_DIN_20"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/OSP-DIN.ttf",
+          "name": "FONT_DIN_26"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/OSP-DIN.ttf",
+          "name": "FONT_DIN_58"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/Prototype.ttf",
+          "name": "FONT_PROTOTYPE_16"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/Prototype.ttf",
+          "name": "FONT_PROTOTYPE_22"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/Prototype.ttf",
+          "name": "FONT_PROTOTYPE_48"
+        }
+      ]
+    },
+    "projectType": "native",
+    "uuid": "1354d7dc-b9e5-420d-9edf-533ee2fd4520",
+    "messageKeys": {
+      "KEY_UPDATE": 33,
+      "KEY_ENABLEWEATHER": 7,
+      "KEY_DATEFORMAT": 37,
+      "KEY_USECAL": 47,
+      "KEY_LEADINGZERO": 46,
+      "KEY_ENABLEADVANCED": 13,
+      "KEY_WEATHERKEY": 8,
+      "KEY_MINCOLOR": 20,
+      "KEY_MIN": 2,
+      "KEY_BLUETOOTHCOLOR": 30,
+      "KEY_TEXTALIGN": 38,
+      "KEY_OVERRIDELOCATION": 31,
+      "KEY_ERROR": 32,
+      "KEY_USEKM": 5,
+      "KEY_BGCOLOR": 11,
+      "KEY_STEPSBEHINDCOLOR": 39,
+      "KEY_SPEED": 59,
+      "KEY_DISTBEHINDCOLOR": 40,
+      "KEY_WEATHERPROVIDER": 43,
+      "KEY_STEPSCOLOR": 22,
+      "KEY_MAX": 1,
+      "KEY_SLEEPSLOTA": 53,
+      "KEY_SLEEPSLOTC": 55,
+      "KEY_SLEEPSLOTB": 54,
+      "KEY_DATECOLOR": 14,
+      "KEY_SLEEPSLOTD": 56,
+      "KEY_MAXCOLOR": 21,
+      "KEY_SLEEP": 41,
+      "KEY_SHOWSLEEP": 6,
+      "KEY_FEELS": 58,
+      "KEY_SIMPLEMODE": 48,
+      "KEY_DEEP": 42,
+      "KEY_ENABLEHEALTH": 4,
+      "KEY_LOCALE": 36,
+      "KEY_TIMEZONESCODE": 24,
+      "KEY_WEATHERCOLOR": 18,
+      "KEY_DIST": 28,
+      "KEY_FONTTYPE": 26,
+      "KEY_HASUPDATE": 35,
+      "KEY_CAL": 57,
+      "KEY_HOURSCOLOR": 12,
+      "KEY_ALTHOURSCOLOR": 15,
+      "KEY_STEPS": 27,
+      "KEY_BLUETOOTHDISCONNECT": 29,
+      "KEY_USECELSIUS": 9,
+      "KEY_DISTCOLOR": 23,
+      "KEY_SLOTD": 52,
+      "KEY_UPDATECOLOR": 34,
+      "KEY_SLOTA": 49,
+      "KEY_SLOTC": 51,
+      "KEY_DIRECTION": 60,
+      "KEY_BATTERYLOWCOLOR": 17,
+      "KEY_TEMP": 0,
+      "KEY_SLOTB": 50,
+      "KEY_TIMEZONES": 10,
+      "KEY_TIMEZONESMINUTES": 25,
+      "KEY_BATTERYCOLOR": 16,
+      "KEY_CONFIGS": 45,
+      "KEY_YAHOOKEY": 44,
+      "KEY_TEMPCOLOR": 19,
+      "KEY_WEATHER": 3,
+      "KEY_WINDDIRCOLOR": 61,
+      "KEY_WINDSPEEDCOLOR": 62,
+      "KEY_CALCOLOR": 63,
+      "KEY_CALBEHINDCOLOR": 64,
+      "KEY_SPEEDUNIT": 65,
+      "KEY_SLEEPCOLOR": 66,
+      "KEY_SLEEPBEHINDCOLOR": 67,
+      "KEY_DEEPCOLOR": 68,
+      "KEY_DEEPBEHINDCOLOR": 69
+    },
+    "enableMultiJS": false,
+    "displayName": "timeboxed",
+    "watchapp": {
+      "onlyShownOnCommunication": false,
+      "hiddenApp": false,
+      "watchface": true
+    },
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk"
+    ],
+    "capabilities": [
+      "location",
+      "configurable",
+      "health"
+    ]
+  },
+  "name": "timeboxed"
+}

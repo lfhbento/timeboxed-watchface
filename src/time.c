@@ -72,7 +72,7 @@ void update_time() {
     }
 
     set_hours_layer_text(hour_text);
-    get_current_date(tick_time, date_text, sizeof(date_text), 0);
+    get_current_date(tick_time, date_text, sizeof(date_text), 1);
     set_date_layer_text(date_text);
 }
 

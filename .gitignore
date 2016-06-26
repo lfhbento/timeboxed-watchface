@@ -5,3 +5,5 @@
 /out/
 *.swp
 *.swo
+
+node_modules/

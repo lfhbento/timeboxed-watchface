@@ -18,7 +18,7 @@ void set_module(int slot, int module, bool sleeping_mode) {
 }
 
 int get_wind_speed_unit() {
-    return UNIT_MPH;
+    return persist_exists(KEY_SPEEDUNIT) ? persist_read_int(KEY_SPEEDUNIT) : UNIT_MPH;
 }
 
 static void load_modules() {

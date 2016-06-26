@@ -42,7 +42,7 @@ Pebble.addEventListener('appmessage',
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
         //'http://www.lbento.space/pebble-apps/timeboxed/v3.0/index.html?v=' + currentVersion +
-        'http://b843cae3.ngrok.io/v3.0/index.html?v=' + currentVersion +
+        'http://7f18b0f2.ngrok.io/?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language +
         '&nonce=' + new Date().getTime());
@@ -70,7 +70,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
             value = parseInt(newValue, 10);
         }
         if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' ||
-                key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1) {
+                key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1 ||
+                key === 'KEY_SPEEDUNIT') {
             value = parseInt(value, 10);
         }
         dict[key] = value;
@@ -136,7 +137,7 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var dayUTC = now.getUTCDate();
 
                 var resultIndex = (now.getDate() === now.getUTCDate() ? 1 : (now.getTimezoneOffset() > 0 ? 0 : 2));
-                var res = resp.query.results;
+                var res = resp.query.results.channel;
                 var results = res.item;
                 var wind = res.wind;
                 console.log(JSON.stringify(results.forecast[resultIndex]));
@@ -145,8 +146,8 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].high) : results.forecast[resultIndex].high);
                 var condition = y_iconToId[results.condition.code];
                 var feels = Math.round(useCelsius ? fahrenheitToCelsius(wind.chill) : wind.chill);
-                var speed = wind.speed;
-                var direction = wind.direction;
+                var speed = Math.round(wind.speed);
+                var direction = Math.round(wind.direction);
 
                 if (typeof(condition) === 'undefined') {
                     condition = 0;

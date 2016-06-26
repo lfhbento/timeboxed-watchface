@@ -38,6 +38,12 @@ static GColor steps_color;
 static GColor steps_behind_color;
 static GColor dist_color;
 static GColor dist_behind_color;
+static GColor cal_color;
+static GColor cal_behind_color;
+static GColor sleep_color;
+static GColor sleep_behind_color;
+static GColor deep_color;
+static GColor deep_behind_color;
 
 static char hour_text[13];
 static char date_text[13];
@@ -328,7 +334,7 @@ void set_face_fonts() {
     text_layer_set_font(sleep, base_font);
     text_layer_set_font(deep, base_font);
     text_layer_set_font(speed, base_font);
-    text_layer_set_font(direction, base_font);
+    text_layer_set_font(direction, awesome_font);
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
@@ -346,6 +352,12 @@ void set_colors(Window *window) {
     steps_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : base_color;
     dist_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color;
     dist_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : base_color;
+    cal_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALCOLOR)) : base_color;
+    cal_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALBEHINDCOLOR)) : base_color;
+    sleep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPCOLOR)) : base_color;
+    sleep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPBEHINDCOLOR)) : base_color;
+    deep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPCOLOR)) : base_color;
+    deep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPBEHINDCOLOR)) : base_color;
 
     text_layer_set_text_color(date,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
@@ -360,8 +372,8 @@ void set_colors(Window *window) {
     text_layer_set_text_color(temp_max, max_color);
     text_layer_set_text_color(max_icon, max_color);
 
-    text_layer_set_text_color(speed, base_color);
-    text_layer_set_text_color(direction, base_color);
+    text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
+    text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
 
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
@@ -375,19 +387,19 @@ void set_progress_color_steps(bool falling_behind) {
 }
 
 void set_progress_color_dist(bool falling_behind) {
-    text_layer_set_text_color(dist, falling_behind ? steps_behind_color : steps_color);
+    text_layer_set_text_color(dist, falling_behind ? dist_behind_color : dist_color);
 }
 
 void set_progress_color_cal(bool falling_behind) {
-    text_layer_set_text_color(cal, falling_behind ? steps_behind_color : steps_color);
+    text_layer_set_text_color(cal, falling_behind ? cal_behind_color : cal_color);
 }
 
 void set_progress_color_sleep(bool falling_behind) {
-    text_layer_set_text_color(sleep, falling_behind ? steps_behind_color : steps_color);
+    text_layer_set_text_color(sleep, falling_behind ? sleep_behind_color : sleep_color);
 }
 
 void set_progress_color_deep(bool falling_behind) {
-    text_layer_set_text_color(deep, falling_behind ? steps_behind_color : steps_color);
+    text_layer_set_text_color(deep, falling_behind ? deep_behind_color : deep_color);
 }
 
 void set_bluetooth_color() {
