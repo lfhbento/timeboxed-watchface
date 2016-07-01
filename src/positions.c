@@ -112,7 +112,7 @@ static GPoint get_weather_positions(int mode, int font) {
     positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
     positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
     positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-16, 4), 0);
 
     return positions[mode][font];
 };
@@ -125,7 +125,7 @@ static GPoint get_temp_positions(int mode, int font) {
     positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
     positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
     positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(18, 40), 3);
     
     return positions[mode][font];
 };
@@ -226,12 +226,12 @@ static GPoint get_deep_positions(int mode, int font) {
 static GPoint get_speed_positions(int mode, int font) {
     GPoint positions[1][6];
     // wind speed
-    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
-    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
-    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
-    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
-    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
-    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 6), 3);
     
     return positions[mode][font];
 };

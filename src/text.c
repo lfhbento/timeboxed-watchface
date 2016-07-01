@@ -170,7 +170,7 @@ void create_text_layers(Window* window) {
 
     int wind_slot = get_slot_for_module(MODULE_WIND);
     GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font);
-    speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, PBL_IF_ROUND_ELSE(width, 42), 50));
+    speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, 42, 50));
     text_layer_set_background_color(speed, GColorClear);
     text_layer_set_text_alignment(speed, GTextAlignmentRight);
 
