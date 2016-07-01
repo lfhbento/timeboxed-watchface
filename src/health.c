@@ -5,13 +5,6 @@
 #include "configs.h"
 #include "screen.h"
 
-static void clear_health_fields() {
-    set_steps_layer_text("");
-    set_dist_layer_text("");
-    set_cal_layer_text("");
-    set_sleep_layer_text("");
-    set_deep_layer_text("");
-}
 
 #if defined(PBL_HEALTH)
 static bool health_enabled;
@@ -29,6 +22,14 @@ static char cal_text[16];
 static char dist_text[16];
 static char sleep_text[16];
 static char deep_text[16];
+
+static void clear_health_fields() {
+    set_steps_layer_text("");
+    set_dist_layer_text("");
+    set_cal_layer_text("");
+    set_sleep_layer_text("");
+    set_deep_layer_text("");
+}
 
 static bool health_permission_granted() {
     if (!health_enabled) {
@@ -458,7 +459,6 @@ bool should_show_sleep_data() {
 
 void toggle_health(bool from_configs) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-    clear_health_fields();
 }
 
 bool is_user_sleeping() {

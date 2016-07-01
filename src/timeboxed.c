@@ -187,6 +187,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_WINDSPEEDCOLOR, windSpeedColor->value->int32);
     }
 
+    #if defined(PBL_HEALTH)
     Tuple *stepsColor = dict_find(iterator, KEY_STEPSCOLOR);
     if (stepsColor) {
         persist_write_int(KEY_STEPSCOLOR, stepsColor->value->int32);
@@ -226,6 +227,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (deepBehindColor) {
         persist_write_int(KEY_DEEPBEHINDCOLOR, deepBehindColor->value->int32);
     }
+    #endif
 
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
     if (fontType) {
@@ -424,7 +426,6 @@ static void init(void) {
 
     init_sleep_data();
     queue_health_update();
-    init_positions();
 
     watchface = window_create();
 

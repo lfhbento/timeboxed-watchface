@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.2.0",
   "author": "LFHB",
   "private": true,
   "dependencies": {},
@@ -23,13 +23,6 @@
           "compatibility": "2.7",
           "file": "fonts/weathericons-regular-webfont.ttf",
           "name": "FONT_WEATHER_24"
-        },
-        {
-          "type": "font",
-          "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072\uf0b1]",
-          "compatibility": "2.7",
-          "file": "fonts/weathericons-regular-webfont.ttf",
-          "name": "FONT_WEATHER_32"
         },
         {
           "type": "font",

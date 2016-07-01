@@ -56,12 +56,6 @@ static char* weather_conditions[] = {
     "\U0000F073", // hurricane: 46
 };
 
-static char* _wind_directions[] = {
-    "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
-    "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
-    "N/A"
-};
-
 static char* wind_directions[] = {
     "S", "T", "U", "V", "W", "X", "Y", "Z",
     "0", "1", "2", "3", "4", "5", "6", "7",
@@ -146,8 +140,8 @@ void update_forecast_values(int max_val, int min_val) {
 
         set_temp_max_layer_text(max_text);
         set_temp_min_layer_text(min_text);
-        set_max_icon_layer_text("\U0000F058");
-        set_min_icon_layer_text("\U0000F044");
+        set_max_icon_layer_text("y");
+        set_min_icon_layer_text("z");
     }
 }
 

@@ -2,11 +2,12 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.0";
+var currentVersion = "3.2";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
 var YAHOO = 2;
+var FORECAST = 3;
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -30,9 +31,13 @@ Pebble.addEventListener('appmessage',
                     case WUNDERGROUND:
                         weatherKey = localStorage.weatherKey;
                         break;
+                    case FORECAST:
+                        weatherKey = localStorage.forecastKey;
+                        break;
                     default:
                         weatherKey = '';
                 }
+                console.log(weatherKey);
             }
             getWeather(provider, weatherKey, parse(localStorage.useCelsius.toLowerCase()), localStorage.overrideLocation);
         }
@@ -81,12 +86,13 @@ Pebble.addEventListener('webviewclosed', function(e) {
     localStorage.weatherKey = dict.KEY_WEATHERKEY;
     localStorage.overrideLocation = dict.KEY_OVERRIDELOCATION;
     localStorage.weatherProvider = dict.KEY_WEATHERPROVIDER;
-    localStorage.yahooKey = dict.KEY_YAHOOKEY;
+    localStorage.forecastKey = dict.KEY_FORECASTKEY;
+
     delete dict.KEY_WEATHERKEY;
     delete dict.KEY_WEATHERPROVIDER;
     delete dict.KEY_OVERRIDELOCATION;
-    delete dict.KEY_YAHOOKEY;
-
+    delete dict.KEY_FORECASTKEY;
+    
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
     }, function() {
@@ -111,6 +117,8 @@ function locationSuccess(pos, provider, weatherKey, useCelsius, overrideLocation
         case YAHOO:
             fetchYahooData(pos, useCelsius, overrideLocation);
             break;
+        case FORECAST:
+            fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation);
     }
 }
 
@@ -248,6 +256,78 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             console.log('Falling back to Yahoo');
             fetchYahooData(pos, useCelsius, overrideLocation);
         }
+    });
+}
+
+function fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation) {
+    if (overrideLocation) {
+        findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation)
+    } else {
+        executeForecastQuery(pos, weatherKey, useCelsius);
+    }
+}
+
+function findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation) {
+    if (localStorage[overrideLocation]) {
+        console.log('Got coords for ' + overrideLocation + ' from storage: ' + localStorage[overrideLocation]);
+        executeForecastQuery(JSON.parse(localStorage[overrideLocation]), weatherKey, useCelsius, overrideLocation);
+        return;
+    }
+
+    var url = 'https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
+    var query = 'select centroid from geo.places(1) where text="' + overrideLocation + '"';
+    url += encodeURIComponent(query);
+    console.log('Retrieving location data for Forecast.io');
+    console.log(url);
+    xhrRequest(url, 'GET', function(responseText) {
+        try {
+            var resp = JSON.parse(responseText);
+            var res = resp.query.results.place.centroid;
+            var pos = { coords: {
+                latitude: parseFloat(res.latitude),
+                longitude: parseFloat(res.longitude),
+            }};
+
+            localStorage[overrideLocation] = JSON.stringify(pos);
+
+            executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation);
+        } catch (ex) {
+            console.log(ex.stack);
+            console.log('Falling back to Yahoo');
+            fetchYahooData(pos, useCelsius, overrideLocation);
+        }
+    });
+
+
+}
+
+function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
+    console.log(JSON.stringify(pos));
+    var truncLat = pos.coords.latitude.toFixed(4);
+    var truncLng = pos.coords.longitude.toFixed(4);
+    var url = 'https://api.forecast.io/forecast/' + weatherKey + '/' + truncLat  + ',' + truncLng;
+
+    console.log('Retrieving weather data from Forecast.io');
+    console.log(url);
+    xhrRequest(url, 'GET', function(responseText) {
+        try {
+            var resp = JSON.parse(responseText);
+            var temp = Math.round((useCelsius ? fahrenheitToCelsius(resp.currently.temperature) : resp.currently.temperature));
+            var max = Math.round((useCelsius ? fahrenheitToCelsius(resp.daily.data[0].temperatureMax) : resp.daily.data[0].temperatureMax));
+            var min = Math.round((useCelsius ? fahrenheitToCelsius(resp.daily.data[0].temperatureMin) : resp.daily.data[0].temperatureMin));
+            var icon = resp.currently.icon;
+            var condition = f_iconToId[icon];
+            var feels = Math.round((useCelsius ? fahrenheitToCelsius(resp.currently.apparentTemperature) : resp.currently.apparentTemperature));
+            var speed = Math.round(resp.currently.windSpeed);
+            var direction = Math.round(resp.currently.windBearing);
+
+            sendData(temp, max, min, condition, feels, speed, direction);
+        } catch (ex) {
+            console.log(ex.stack);
+            console.log('Falling back to Yahoo');
+            fetchYahooData(pos, useCelsius, overrideLocation);
+        }
+
     });
 }
 
@@ -460,6 +540,19 @@ var wu_iconToId = {
     'nt_chanceflurries': 37,
     'fog': 38,
     'nt_fog': 39
+};
+
+var f_iconToId = {
+    'clear-day': 1,
+    'clear-night': 20,
+    'rain': 8,
+    'snow': 9,
+    'sleet': 11,
+    'wind': 44,
+    'fog': 38,
+    'cloudy': 7,
+    'partly-cloudy-day': 6,
+    'partly-cloudy-night': 25
 };
 
 var ow_iconToId = {

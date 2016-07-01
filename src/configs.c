@@ -6,8 +6,8 @@
 static bool configs_loaded;
 static bool modules_loaded;
 static int configs;
-static int modules[4];
-static int modules_sleep[4];
+static uint8_t modules[4];
+static uint8_t modules_sleep[4];
 
 void set_module(int slot, int module, bool sleeping_mode) {
     if (!sleeping_mode) {

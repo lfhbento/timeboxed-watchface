@@ -2,8 +2,6 @@
 #include "positions.h"
 #include "keys.h"
 
-static GPoint slot_positions[1][4];
-static GPoint positions[11][1][6];
 
 GPoint create_point(int x, int y) {
     struct GPoint point;
@@ -106,103 +104,205 @@ void get_text_positions(int selected_font, GTextAlignment alignment, struct Text
     }
 };
 
-void init_positions() {
+static GPoint get_weather_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // weather condition
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
+
+    return positions[mode][font];
+};
+
+static GPoint get_temp_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // current temperature
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_tempmin_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // min temperature
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_tempmax_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // max temperature
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+    
+    return positions[mode][font];
+};
+
+#if defined(PBL_HEALTH)
+static GPoint get_steps_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // steps
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_dist_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // distance
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_cal_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // calories
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_sleep_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // sleep
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_deep_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // deep sleep
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(0, 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
+    
+    return positions[mode][font];
+};
+#endif
+
+static GPoint get_speed_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // wind speed
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_direction_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // wind direction
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    
+    return positions[mode][font];
+};
+
+GPoint get_slot_positions(int mode, int slot) {
+    GPoint slot_positions[1][4];
     slot_positions[MODE_NORMAL][SLOT_A] = create_point(2, 0);
     slot_positions[MODE_NORMAL][SLOT_B] = create_point(PBL_IF_ROUND_ELSE(0, 72), PBL_IF_ROUND_ELSE(22, 0));
     slot_positions[MODE_NORMAL][SLOT_C] = create_point(2, PBL_IF_ROUND_ELSE(138, 142));
     slot_positions[MODE_NORMAL][SLOT_D] = create_point(PBL_IF_ROUND_ELSE(0, 72), PBL_IF_ROUND_ELSE(152, 142));
 
-    // weather condition
-    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-    positions[WEATHER_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(-14, 4), 0);
-
-    // current temperature
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-    positions[TEMP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(16, 38), 3);
-
-    // min temperature
-    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-    positions[TEMPMIN_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
-
-    // max temperature
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-    positions[TEMPMAX_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-
-    // steps
-    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
-    positions[STEPS_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
-    positions[STEPS_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
-    positions[STEPS_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
-    positions[STEPS_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
-    positions[STEPS_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
-
-    // distance
-    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
-    positions[DIST_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
-    positions[DIST_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
-    positions[DIST_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
-    positions[DIST_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
-    positions[DIST_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
-
-    // calories
-    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
-    positions[CAL_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
-    positions[CAL_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
-    positions[CAL_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
-    positions[CAL_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
-    positions[CAL_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
-
-    // sleep
-    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
-    positions[SLEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
-    positions[SLEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
-    positions[SLEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
-    positions[SLEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
-    positions[SLEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
-
-    // deep sleep
-    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(0, 3);
-    positions[DEEP_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(0, 3);
-    positions[DEEP_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(0, 3);
-    positions[DEEP_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(0, 3);
-    positions[DEEP_ITEM][MODE_NORMAL][DIN_FONT] = create_point(0, 3);
-    positions[DEEP_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(0, 3);
-
-    // wind speed
-    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[SPEED_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-
-    // wind direction
-    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[DIRECTION_ITEM][MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-}
+    return slot_positions[mode][slot];
+};
 
 GPoint get_pos_for_item(int slot, int item, int mode, int font) {
-    GPoint slot_pos = slot_positions[mode][slot];
-    GPoint item_pos = positions[item][mode][font];
+    if (slot == -1) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid slot %d and item %d. Skipping. %d%03d", slot, item, (int)time(NULL), (int)time_ms(NULL, NULL));
+        return create_point(0, 0);
+    }
+    GPoint slot_pos = get_slot_positions(mode, slot);
+    GPoint item_pos;
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Getting positions for slot %d and item %d. %d%03d", slot, item, (int)time(NULL), (int)time_ms(NULL, NULL));
+    switch (item) {
+        case 0:
+            item_pos = get_weather_positions(mode, font);
+            break;
+        case 1:
+            item_pos = get_temp_positions(mode, font);
+            break;
+        case 2:
+            item_pos = get_tempmin_positions(mode, font);
+            break;
+        case 3:
+            item_pos = get_tempmax_positions(mode, font);
+            break;
+        #if defined(PBL_HEALTH)
+        case 4:
+            item_pos = get_steps_positions(mode, font);
+            break;
+        case 5:
+            item_pos = get_dist_positions(mode, font);
+            break;
+        case 6:
+            item_pos = get_cal_positions(mode, font);
+            break;
+        case 7:
+            item_pos = get_sleep_positions(mode, font);
+            break;
+        case 8:
+            item_pos = get_deep_positions(mode, font);
+            break;
+        #endif
+        case 9:
+            item_pos = get_speed_positions(mode, font);
+            break;
+        case 10:
+            item_pos = get_direction_positions(mode, font);
+            break;
+    }
     return create_point(slot_pos.x + item_pos.x, slot_pos.y + item_pos.y);
 }
