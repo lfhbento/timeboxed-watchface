@@ -31,17 +31,21 @@ void set_bluetooth_layer_text(char*);
 void set_temp_cur_layer_text(char*);
 void set_temp_max_layer_text(char*);
 void set_temp_min_layer_text(char*);
+
+#if defined(PBL_HEALTH)
 void set_steps_layer_text(char*);
 void set_dist_layer_text(char*);
 void set_cal_layer_text(char*);
 void set_sleep_layer_text(char*);
 void set_deep_layer_text(char*);
+#endif
+
 void set_weather_layer_text(char*);
 void set_max_icon_layer_text(char*);
 void set_min_icon_layer_text(char*);
 void set_update_layer_text(char*);
 void set_wind_speed_layer_text(char*);
 void set_wind_direction_layer_text(char*);
-void set_wind_icon_layer_text(char*);
+void set_wind_unit_layer_text(char*);
 
 #endif

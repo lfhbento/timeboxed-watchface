@@ -150,20 +150,23 @@ void update_wind_values(int speed, int direction) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating wind values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         char wind_speed[10];
         char wind_dir[4];
+        char *wind_unit;
 
         strcpy(wind_dir, get_wind_direction(direction));
         if (get_wind_speed_unit() == UNIT_KPH) {
             speed = (speed * 1.60934)/1;
-            snprintf(wind_speed, sizeof(wind_speed), "%dkmh", speed);
+            wind_unit = ")";
         } else if (get_wind_speed_unit() == UNIT_KNOTS) {
             speed = (speed * 0.868976)/1;
-            snprintf(wind_speed, sizeof(wind_speed), "%dkn", speed);
+            wind_unit = "*";
         } else {
-            snprintf(wind_speed, sizeof(wind_speed), "%dmph", speed);
+            wind_unit = "(";
         }
 
+        snprintf(wind_speed, sizeof(wind_speed), "%d", speed);
         set_wind_direction_layer_text(wind_dir);
         set_wind_speed_layer_text(wind_speed);
+        set_wind_unit_layer_text(wind_unit);
     }
 }
 
@@ -200,6 +203,7 @@ void toggle_weather(bool from_configs) {
 
             int speed = persist_read_int(KEY_SPEED);
             int direction = persist_read_int(KEY_DIRECTION);
+            speed = 22;
             update_wind_values(speed, direction);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));

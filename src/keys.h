@@ -145,6 +145,7 @@
 #define DEEP_ITEM 8
 #define SPEED_ITEM 9
 #define DIRECTION_ITEM 10
+#define WIND_UNIT_ITEM 11
 
 #define UNIT_MPH 0
 #define UNIT_KPH 1

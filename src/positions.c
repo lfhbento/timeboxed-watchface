@@ -226,12 +226,12 @@ static GPoint get_deep_positions(int mode, int font) {
 static GPoint get_speed_positions(int mode, int font) {
     GPoint positions[1][6];
     // wind speed
-    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
-    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(80, 24), 3);
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(54, 6), 3);
     
     return positions[mode][font];
 };
@@ -239,12 +239,25 @@ static GPoint get_speed_positions(int mode, int font) {
 static GPoint get_direction_positions(int mode, int font) {
     GPoint positions[1][6];
     // wind direction
-    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
-    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 2), 3);
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(56, 4), 3);
+    
+    return positions[mode][font];
+};
+
+static GPoint get_wind_unit_positions(int mode, int font) {
+    GPoint positions[1][6];
+    // wind unit
+    positions[MODE_NORMAL][BLOCKO_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 1);
+    positions[MODE_NORMAL][BLOCKO_BIG_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 3);
+    positions[MODE_NORMAL][SYSTEM_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 3);
+    positions[MODE_NORMAL][ARCHIVO_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 2);
+    positions[MODE_NORMAL][DIN_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 3);
+    positions[MODE_NORMAL][PROTOTYPE_FONT] = create_point(PBL_IF_ROUND_ELSE(100, 48), 1);
     
     return positions[mode][font];
 };
@@ -302,6 +315,9 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font) {
             break;
         case 10:
             item_pos = get_direction_positions(mode, font);
+            break;
+        case 11:
+            item_pos = get_wind_unit_positions(mode, font);
             break;
     }
     return create_point(slot_pos.x + item_pos.x, slot_pos.y + item_pos.y);

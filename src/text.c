@@ -12,23 +12,28 @@ static TextLayer *bluetooth;
 static TextLayer *temp_cur;
 static TextLayer *temp_max;
 static TextLayer *temp_min;
+
+#if defined(PBL_HEALTH)
 static TextLayer *steps;
 static TextLayer *sleep;
 static TextLayer *dist;
 static TextLayer *cal;
 static TextLayer *deep;
+#endif
+
 static TextLayer *weather;
 static TextLayer *max_icon;
 static TextLayer *min_icon;
 static TextLayer *update;
 static TextLayer *direction;
 static TextLayer *speed;
+static TextLayer *wind_unit;
 
 static GFont time_font;
 static GFont medium_font;
 static GFont base_font;
 static GFont weather_font;
-static GFont awesome_font;
+static GFont custom_font;
 
 static GColor base_color;
 static GColor battery_color;
@@ -62,6 +67,7 @@ static char min_icon_text[4];
 static char weather_text[4];
 static char direction_text[4];
 static char speed_text[8];
+static char wind_unit_text[2];
 
 #if defined(PBL_HEALTH)
 static char steps_text[16];
@@ -166,12 +172,17 @@ void create_text_layers(Window* window) {
     GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font);
     speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, PBL_IF_ROUND_ELSE(width, 42), 50));
     text_layer_set_background_color(speed, GColorClear);
-    text_layer_set_text_alignment(speed, PBL_IF_ROUND_ELSE(GTextAlignmentLeft, GTextAlignmentCenter));
+    text_layer_set_text_alignment(speed, GTextAlignmentRight);
 
     GPoint direction_pos = get_pos_for_item(wind_slot, DIRECTION_ITEM, mode, selected_font);
     direction = text_layer_create(GRect(direction_pos.x, direction_pos.y, width, 50));
     text_layer_set_background_color(direction, GColorClear);
     text_layer_set_text_alignment(direction, GTextAlignmentLeft);
+    
+    GPoint wind_unit_pos = get_pos_for_item(wind_slot, WIND_UNIT_ITEM, mode, selected_font);
+    wind_unit = text_layer_create(GRect(wind_unit_pos.x, wind_unit_pos.y, width, 50));
+    text_layer_set_background_color(wind_unit, GColorClear);
+    text_layer_set_text_alignment(wind_unit, GTextAlignmentLeft);
 
     #if defined(PBL_HEALTH)
     int steps_slot = get_slot_for_module(MODULE_STEPS);
@@ -224,6 +235,7 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(temp_max));
     layer_add_child(window_layer, text_layer_get_layer(speed));
     layer_add_child(window_layer, text_layer_get_layer(direction));
+    layer_add_child(window_layer, text_layer_get_layer(wind_unit));
 
     #if defined(PBL_HEALTH)
     layer_add_child(window_layer, text_layer_get_layer(steps));
@@ -252,6 +264,7 @@ void destroy_text_layers() {
     text_layer_destroy(temp_max);
     text_layer_destroy(speed);
     text_layer_destroy(direction);
+    text_layer_destroy(wind_unit);
 
     #if defined(PBL_HEALTH)
     text_layer_destroy(steps);
@@ -304,7 +317,7 @@ void load_face_fonts() {
     }
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
-    awesome_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
+    custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts loaded. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
@@ -316,7 +329,7 @@ void unload_face_fonts() {
         fonts_unload_custom_font(base_font);
     }
     fonts_unload_custom_font(weather_font);
-    fonts_unload_custom_font(awesome_font);
+    fonts_unload_custom_font(custom_font);
 }
 
 void set_face_fonts() {
@@ -325,16 +338,17 @@ void set_face_fonts() {
     text_layer_set_font(date, medium_font);
     text_layer_set_font(alt_time, base_font);
     text_layer_set_font(battery, base_font);
-    text_layer_set_font(bluetooth, awesome_font);
-    text_layer_set_font(update, awesome_font);
+    text_layer_set_font(bluetooth, custom_font);
+    text_layer_set_font(update, custom_font);
     text_layer_set_font(weather, weather_font);
-    text_layer_set_font(min_icon, awesome_font);
-    text_layer_set_font(max_icon, awesome_font);
+    text_layer_set_font(min_icon, custom_font);
+    text_layer_set_font(max_icon, custom_font);
     text_layer_set_font(temp_cur, base_font);
     text_layer_set_font(temp_min, base_font);
     text_layer_set_font(temp_max, base_font);
     text_layer_set_font(speed, base_font);
-    text_layer_set_font(direction, awesome_font);
+    text_layer_set_font(direction, custom_font);
+    text_layer_set_font(wind_unit, custom_font);
 
     #if defined(PBL_HEALTH)
     text_layer_set_font(steps, base_font);
@@ -383,6 +397,7 @@ void set_colors(Window *window) {
     text_layer_set_text_color(max_icon, max_color);
 
     text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
+    text_layer_set_text_color(wind_unit, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
     text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
 
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
@@ -527,4 +542,9 @@ void set_wind_speed_layer_text(char* text) {
 void set_wind_direction_layer_text(char* text) {
     strcpy(direction_text, text);
     text_layer_set_text(direction, direction_text);
+}
+
+void set_wind_unit_layer_text(char* text) {
+    strcpy(wind_unit_text, text);
+    text_layer_set_text(wind_unit, wind_unit_text);
 }
