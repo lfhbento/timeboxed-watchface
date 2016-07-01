@@ -143,7 +143,7 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var day = now.getDate();
                 var dayUTC = now.getUTCDate();
 
-                var resultIndex = (now.getDate() === now.getUTCDate() ? 1 : (now.getTimezoneOffset() > 0 ? 0 : 2));
+                var resultIndex = 0;
                 var res = resp.query.results.channel;
                 var results = res.item;
                 var wind = res.wind;
@@ -151,8 +151,9 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var temp = Math.round(useCelsius ? fahrenheitToCelsius(results.condition.temp) : results.condition.temp);
                 var min = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].low) : results.forecast[resultIndex].low);
                 var max = Math.round(useCelsius ? fahrenheitToCelsius(results.forecast[resultIndex].high) : results.forecast[resultIndex].high);
-                var condition = y_iconToId[results.condition.code];
-                var feels = Math.round(useCelsius ? fahrenheitToCelsius(wind.chill) : wind.chill);
+                var condition = y_iconToId[parseInt(results.condition.code, 10)];
+                console.log(results.condition.code);
+                var feels = Math.round(useCelsius ? fahrenheitToCelsius(parseInt(wind.chill, 10)) : wind.chill);
                 var speed = Math.round(wind.speed);
                 var direction = Math.round(wind.direction);
 
