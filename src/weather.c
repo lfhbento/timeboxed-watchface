@@ -203,7 +203,6 @@ void toggle_weather(bool from_configs) {
 
             int speed = persist_read_int(KEY_SPEED);
             int direction = persist_read_int(KEY_DIRECTION);
-            speed = 22;
             update_wind_values(speed, direction);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));

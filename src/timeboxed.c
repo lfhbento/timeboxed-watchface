@@ -203,6 +203,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_CALCOLOR, calColor->value->int32);
     }
 
+    Tuple *sleepColor = dict_find(iterator, KEY_SLEEPCOLOR);
+    if (sleepColor) {
+        persist_write_int(KEY_SLEEPCOLOR, sleepColor->value->int32);
+    }
+
+    Tuple *deepColor = dict_find(iterator, KEY_DEEPCOLOR);
+    if (deepColor) {
+        persist_write_int(KEY_DEEPCOLOR, deepColor->value->int32);
+    }
+
     Tuple *stepsBehindColor = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
     if (stepsBehindColor) {
         persist_write_int(KEY_STEPSBEHINDCOLOR, stepsBehindColor->value->int32);
@@ -370,7 +380,7 @@ static void watchface_load(Window *window) {
 
     create_text_layers(window);
 
-    min_counter = 20; // after loading, get the next weather update in 10 min
+    min_counter = 30; // after loading, get the next weather update
 
     load_timezone_from_storage();
 

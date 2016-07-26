@@ -48,8 +48,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(
         'http://www.lbento.space/pebble-apps/timeboxed/config/?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
-        '&l=' + Pebble.getActiveWatchInfo().language +
-        '&nonce=' + new Date().getTime());
+        '&l=' + Pebble.getActiveWatchInfo().language)
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
