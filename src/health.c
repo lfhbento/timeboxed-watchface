@@ -17,11 +17,11 @@ static bool useCalories;
 static bool update_queued;
 static bool is_sleeping;
 static bool sleep_status_updated;
-static char steps_text[16];
-static char cal_text[16];
-static char dist_text[16];
-static char sleep_text[16];
-static char deep_text[16];
+static char steps_text[8];
+static char cal_text[10];
+static char dist_text[10];
+static char sleep_text[8];
+static char deep_text[8];
 
 static void clear_health_fields() {
     set_steps_layer_text("");
@@ -63,10 +63,8 @@ static void get_steps_data() {
             health_service_metric_averaged_accessible(metric_steps, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
 
         if (mask_steps_average & HealthServiceAccessibilityMaskAvailable) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average steps");
             steps_last_week = (int)health_service_sum_averaged(metric_steps, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average steps");
             for (int i = 7; i <= 28; i = i+7) {
                 steps_last_week += (int)health_service_sum(metric_steps, start - i*one_day, end - i*one_day);
             }
@@ -104,10 +102,8 @@ static void get_dist_data() {
             health_service_metric_averaged_accessible(metric_dist, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
 
         if (mask_dist_average & HealthServiceAccessibilityMaskAvailable) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average dist");
             dist_last_week = (int)health_service_sum_averaged(metric_dist, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average dist");
             for (int i = 7; i <= 28; i = i+7) {
                 dist_last_week += (int)health_service_sum(metric_dist, start - i*one_day, end - i*one_day);
             }
@@ -157,11 +153,9 @@ static void get_cal_data() {
             health_service_metric_averaged_accessible(metric_cal_act, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
 
         if ((mask_cal_rest_average & HealthServiceAccessibilityMaskAvailable) || mask_cal_act_average & HealthServiceAccessibilityMaskAvailable) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average calories");
             cal_last_week += (int)health_service_sum_averaged(metric_cal_rest, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
             cal_last_week += (int)health_service_sum_averaged(metric_cal_act, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average calories");
             for (int i = 7; i <= 28; i = i+7) {
                 cal_last_week += (int)health_service_sum(metric_cal_rest, start - i*one_day, end - i*one_day);
                 cal_last_week += (int)health_service_sum(metric_cal_act, start - i*one_day, end - i*one_day);
@@ -198,10 +192,8 @@ static void get_sleep_data() {
 
         sleep_last_week = 0;
         if (mask_sleep_average & HealthServiceAccessibilityMaskAvailable) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average sleep");
             sleep_last_week = (int)health_service_sum_averaged(metric_sleep, start, start + 24*SECONDS_PER_HOUR-1, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average sleep");
             for (int i = 1; i <= 7; i++) {
                 sleep_last_week += (int)health_service_sum(metric_sleep, start - i*one_day, start - (i-1)*one_day);
             }
@@ -239,10 +231,8 @@ static void get_deep_data() {
 
         deep_last_week = 0;
         if (mask_deep_average & HealthServiceAccessibilityMaskAvailable) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API average deep sleep");
             deep_last_week = (int)health_service_sum_averaged(metric_deep, start, start + 24*SECONDS_PER_HOUR-1, HealthServiceTimeScopeDailyWeekdayOrWeekend);
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using manual average deep sleep");
             for (int i = 1; i <= 7; i++) {
                 deep_last_week += (int)health_service_sum(metric_deep, start - i*one_day, start - (i-1)*one_day);
             }
@@ -285,7 +275,6 @@ void get_health_data() {
         if (is_module_enabled(MODULE_DEEP)) {
             get_deep_data();
         }
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health data updated. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     }
 }
 
@@ -347,10 +336,8 @@ void toggle_health(bool from_configs) {
     if (health_enabled) {
         MeasurementSystem distMeasure = health_service_get_measurement_system_for_display(HealthMetricWalkedDistanceMeters);
         if (distMeasure != MeasurementSystemUnknown) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using API measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             useKm = distMeasure == MeasurementSystemMetric;
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Using config measure system. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             useKm = is_use_km_enabled();
         }
 
@@ -393,11 +380,6 @@ bool is_user_sleeping() {
         if (!sleep_status_updated) {
             sleep_status_updated = true;
             HealthActivityMask activities = health_service_peek_current_activities();
-            APP_LOG(APP_LOG_LEVEL_DEBUG,
-                "Sleeping data. %d %d %d",
-                (int)activities & HealthActivitySleep,
-                (int)activities & HealthActivityRestfulSleep,
-                (int)activities & HealthActivitySleep || activities & HealthActivityRestfulSleep);
             is_sleeping = activities & HealthActivitySleep || activities & HealthActivityRestfulSleep;
         }
     } else {

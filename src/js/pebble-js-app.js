@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.2";
+var currentVersion = "3.3";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -321,6 +321,10 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
             var speed = Math.round(resp.currently.windSpeed);
             var direction = Math.round(resp.currently.windBearing);
 
+            if (typeof(condition) === 'undefined') {
+                condition = 0;
+            }
+
             sendData(temp, max, min, condition, feels, speed, direction);
         } catch (ex) {
             console.log(ex.stack);
@@ -356,6 +360,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             var speed = Math.round(resp.wind.speed * 2.23694);
             var direction = resp.wind.deg;
             var day = new Date(resp.dt * 1000);
+
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }

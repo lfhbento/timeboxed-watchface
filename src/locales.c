@@ -49,7 +49,6 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
     char* weekday = WEEKDAYS[selected_locale][tick_time->tm_wday];
     char* month = MONTHS[selected_locale][tick_time->tm_mon];
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting date: %s %s %d.  %d%03d", weekday, month, tick_time->tm_mday, (int)time(NULL), (int)time_ms(NULL, NULL));
     switch(selected_format) {
         case FORMAT_WMD:
             snprintf(buffer, buf_size, "%s%s%s%s%02d", weekday, SEPARATORS[separator], month, SEPARATORS[separator], tick_time->tm_mday);
@@ -63,5 +62,4 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
 void load_locale() {
     selected_locale = persist_exists(KEY_LOCALE) ? persist_read_int(KEY_LOCALE) : LC_ENGLISH;
     selected_format = persist_exists(KEY_DATEFORMAT) ? persist_read_int(KEY_DATEFORMAT): FORMAT_WMD;
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Locale loaded: %d %d.  %d%03d", selected_locale, selected_format, (int)time(NULL), (int)time_ms(NULL, NULL));
 }

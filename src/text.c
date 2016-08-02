@@ -85,7 +85,6 @@ uint8_t get_loaded_font() {
 }
 
 void create_text_layers(Window* window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Creating text layers. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
@@ -106,7 +105,6 @@ void create_text_layers(Window* window) {
             text_align = GTextAlignmentRight;
             break;
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Alignment set: %d. %d%03d", text_align, (int)time(NULL), (int)time_ms(NULL, NULL));
 
     struct TextPositions text_positions;
     get_text_positions(selected_font, text_align, &text_positions);
@@ -140,7 +138,7 @@ void create_text_layers(Window* window) {
 
     int weather_slot = get_slot_for_module(MODULE_WEATHER);
     GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font);
-    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
+    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, 38), 50));
     text_layer_set_background_color(weather, GColorClear);
     text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
@@ -244,12 +242,9 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(sleep));
     layer_add_child(window_layer, text_layer_get_layer(deep));
     #endif
-
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Text layers created. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void destroy_text_layers() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Destroying text layers. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_destroy(hours);
     text_layer_destroy(date);
     text_layer_destroy(alt_time);
@@ -279,37 +274,31 @@ void load_face_fonts() {
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
 
     if (selected_font == SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading system fonts. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
         medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
         base_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
         loaded_font = SYSTEM_FONT;
     } else if (selected_font == ARCHIVO_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Archivo font. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_28));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
         loaded_font = ARCHIVO_FONT;
     } else if (selected_font == DIN_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading DIN font. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_58));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_26));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_20));
         loaded_font = DIN_FONT;
     } else if (selected_font == PROTOTYPE_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Prototype font. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_48));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_22));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_16));
         loaded_font = PROTOTYPE_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font (big). %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_32));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
         loaded_font = BLOCKO_BIG_FONT;
     } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading Blocko font. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_16));
@@ -318,12 +307,10 @@ void load_face_fonts() {
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
     custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts loaded. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void unload_face_fonts() {
     if (loaded_font != SYSTEM_FONT) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading custom fonts. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         fonts_unload_custom_font(time_font);
         fonts_unload_custom_font(medium_font);
         fonts_unload_custom_font(base_font);
@@ -333,7 +320,6 @@ void unload_face_fonts() {
 }
 
 void set_face_fonts() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting fonts. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     text_layer_set_font(hours, time_font);
     text_layer_set_font(date, medium_font);
     text_layer_set_font(alt_time, base_font);
@@ -358,15 +344,12 @@ void set_face_fonts() {
     text_layer_set_font(deep, base_font);
     #endif
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Fonts set. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 void set_colors(Window *window) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defining colors. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
     enable_advanced = is_advanced_colors_enabled();
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Advanced colors %d", enable_advanced);
     GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
     GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;
 
@@ -404,7 +387,6 @@ void set_colors(Window *window) {
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Defined colors. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
 }
 
 #if defined(PBL_HEALTH)

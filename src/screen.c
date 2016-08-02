@@ -31,10 +31,8 @@ void redraw_screen(Window *watchface) {
 
 void bt_handler(bool connected) {
     if (connected) {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is connected.");
         set_bluetooth_layer_text("");
     } else {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone is not connected.");
         if (is_bluetooth_vibrate_enabled() && !is_user_sleeping()) {
             vibes_long_pulse();
         }
@@ -56,7 +54,6 @@ void battery_handler(BatteryChargeState charge_state) {
 }
 
 void check_for_updates() {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Checking for updates. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_uint8(iter, KEY_HASUPDATE, 1);
@@ -64,7 +61,6 @@ void check_for_updates() {
 }
 
 void notify_update(int update_available) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Notifying user. (%d) %d%03d", update_available, (int)time(NULL), (int)time_ms(NULL, NULL));
     if (update_available) {
         set_update_color();
     }

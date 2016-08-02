@@ -65,8 +65,6 @@ static char* wind_directions[] = {
 void update_weather(void) {
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
-
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     app_message_outbox_send();
 }
 
@@ -110,7 +108,6 @@ static char* get_wind_direction(int degrees) {
 
 void update_weather_values(int temp_val, int weather_val) {
     if (is_module_enabled(MODULE_WEATHER)) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         char temp_pattern[4];
         char temp_text[8];
         char weather_text[4];
@@ -126,14 +123,16 @@ void update_weather_values(int temp_val, int weather_val) {
 
         set_temp_cur_layer_text(temp_text);
         set_weather_layer_text(weather_text);
+    } else {
+        set_temp_cur_layer_text("");
+        set_weather_layer_text("");
     }
 }
 
 void update_forecast_values(int max_val, int min_val) {
     if (is_module_enabled(MODULE_FORECAST)) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating forecast values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        char max_text[8];
-        char min_text[8];
+        char max_text[6];
+        char min_text[6];
 
         snprintf(max_text, sizeof(max_text), "%d", max_val);
         snprintf(min_text, sizeof(min_text), "%d", min_val);
@@ -142,14 +141,18 @@ void update_forecast_values(int max_val, int min_val) {
         set_temp_min_layer_text(min_text);
         set_max_icon_layer_text("y");
         set_min_icon_layer_text("z");
+    } else {
+        set_temp_max_layer_text("");
+        set_temp_min_layer_text("");
+        set_max_icon_layer_text("");
+        set_min_icon_layer_text("");
     }
 }
 
 void update_wind_values(int speed, int direction) {
     if (is_module_enabled(MODULE_WIND)) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating wind values... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-        char wind_speed[10];
-        char wind_dir[4];
+        char wind_speed[4];
+        char wind_dir[2];
         char *wind_unit;
 
         strcpy(wind_dir, get_wind_direction(direction));
@@ -167,6 +170,10 @@ void update_wind_values(int speed, int direction) {
         set_wind_direction_layer_text(wind_dir);
         set_wind_speed_layer_text(wind_speed);
         set_wind_unit_layer_text(wind_unit);
+    } else {
+        set_wind_direction_layer_text("");
+        set_wind_speed_layer_text("");
+        set_wind_unit_layer_text("");
     }
 }
 
@@ -184,7 +191,6 @@ void toggle_weather(bool from_configs) {
 
         use_celsius = is_use_celsius_enabled();
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather is enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (from_configs) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0);
@@ -219,6 +225,9 @@ void toggle_weather(bool from_configs) {
         set_weather_layer_text("");
         set_max_icon_layer_text("");
         set_min_icon_layer_text("");
+        set_wind_direction_layer_text("");
+        set_wind_speed_layer_text("");
+        set_wind_unit_layer_text("");
     }
 }
 
