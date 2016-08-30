@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.3";
+var currentVersion = "3.4";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -358,7 +358,8 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             var condition = ow_iconToId[resp.weather[0].icon];
             var feels = temp;
             var speed = Math.round(resp.wind.speed * 2.23694);
-            var direction = resp.wind.deg;
+            var direction = parseInt(resp.wind.deg, 10) || 0;
+            console.log(responseText);
             var day = new Date(resp.dt * 1000);
 
             if (typeof(condition) === 'undefined') {
@@ -433,13 +434,13 @@ function kelvinToFahrenheit(temp) {
 
 function sendData(temp, max, min, condition, feels, speed, direction) {
     var data = {
-        'KEY_TEMP': temp,
-        'KEY_MAX': max,
-        'KEY_MIN': min,
-        'KEY_WEATHER': condition,
-        'KEY_FEELS': feels,
-        'KEY_SPEED': speed,
-        'KEY_DIRECTION': direction,
+        'KEY_TEMP': temp || 0,
+        'KEY_MAX': max || 0,
+        'KEY_MIN': min || 0,
+        'KEY_WEATHER': condition || 0,
+        'KEY_FEELS': feels || 0,
+        'KEY_SPEED': speed || 0,
+        'KEY_DIRECTION': direction || 0,
     };
 
     console.log(JSON.stringify(data));
