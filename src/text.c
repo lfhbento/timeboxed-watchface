@@ -86,12 +86,17 @@ uint8_t get_loaded_font() {
 
 void create_text_layers(Window* window) {
     Layer *window_layer = window_get_root_layer(window);
-    GRect bounds = layer_get_bounds(window_layer);
+    GRect full_bounds = layer_get_bounds(window_layer);
+    GRect bounds = layer_get_unobstructed_bounds(window_layer);
 
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
 
     int alignment = PBL_IF_ROUND_ELSE(ALIGN_CENTER, persist_exists(KEY_TEXTALIGN) ? persist_read_int(KEY_TEXTALIGN) : ALIGN_RIGHT);
     int mode = is_simple_mode_enabled() ? MODE_SIMPLE : MODE_NORMAL;
+
+    int width = bounds.size.w;
+    int height = bounds.size.h;
+    int full_height = full_bounds.size.h;
 
     GTextAlignment text_align = GTextAlignmentRight;
     switch (alignment) {
@@ -107,9 +112,8 @@ void create_text_layers(Window* window) {
     }
 
     struct TextPositions text_positions;
-    get_text_positions(selected_font, text_align, &text_positions);
+    get_text_positions(selected_font, text_align, &text_positions, width, height);
 
-    int width = bounds.size.w;
     int slot_width = is_simple_mode_enabled() ? width : 68;
 
     hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
@@ -119,36 +123,41 @@ void create_text_layers(Window* window) {
     date = text_layer_create(GRect(text_positions.date.x, text_positions.date.y, width, 50));
     text_layer_set_background_color(date, GColorClear);
     text_layer_set_text_alignment(date, text_align);
+    //layer_set_hidden(text_layer_get_layer(date), height != full_height);
 
     alt_time = text_layer_create(GRect(text_positions.alt_time.x, text_positions.alt_time.y, width, 50));
     text_layer_set_background_color(alt_time, GColorClear);
     text_layer_set_text_alignment(alt_time, text_align);
+    layer_set_hidden(text_layer_get_layer(alt_time), height != full_height);
 
     battery = text_layer_create(GRect(text_positions.battery.x, text_positions.battery.y, width, 50));
     text_layer_set_background_color(battery, GColorClear);
     text_layer_set_text_alignment(battery, text_align);
+    layer_set_hidden(text_layer_get_layer(battery), height != full_height);
 
     bluetooth = text_layer_create(GRect(text_positions.bluetooth.x, text_positions.bluetooth.y, width, 50));
     text_layer_set_background_color(bluetooth, GColorClear);
     text_layer_set_text_alignment(bluetooth, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
+    layer_set_hidden(text_layer_get_layer(bluetooth), height != full_height);
 
     update = text_layer_create(GRect(text_positions.updates.x, text_positions.updates.y, width, 50));
     text_layer_set_background_color(update, GColorClear);
     text_layer_set_text_alignment(update, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
+    layer_set_hidden(text_layer_get_layer(update), height != full_height);
 
     int weather_slot = get_slot_for_module(MODULE_WEATHER);
-    GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font);
+    GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font, width, height);
     weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, 38), 50));
     text_layer_set_background_color(weather, GColorClear);
     text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
-    GPoint temp_pos = get_pos_for_item(weather_slot, TEMP_ITEM, mode, selected_font);
+    GPoint temp_pos = get_pos_for_item(weather_slot, TEMP_ITEM, mode, selected_font, width, height);
     temp_cur = text_layer_create(GRect(temp_pos.x, temp_pos.y, width, 50));
     text_layer_set_background_color(temp_cur, GColorClear);
     text_layer_set_text_alignment(temp_cur, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 
     int forecast_slot = get_slot_for_module(MODULE_FORECAST);
-    GPoint min_pos = get_pos_for_item(forecast_slot, TEMPMIN_ITEM, mode, selected_font);
+    GPoint min_pos = get_pos_for_item(forecast_slot, TEMPMIN_ITEM, mode, selected_font, width, height);
     temp_min = text_layer_create(GRect(min_pos.x, min_pos.y, width, 50));
     text_layer_set_background_color(temp_min, GColorClear);
     text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
@@ -157,7 +166,7 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(min_icon, GColorClear);
     text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
 
-    GPoint max_pos = get_pos_for_item(forecast_slot, TEMPMAX_ITEM, mode, selected_font);
+    GPoint max_pos = get_pos_for_item(forecast_slot, TEMPMAX_ITEM, mode, selected_font, width, height);
     temp_max = text_layer_create(GRect(max_pos.x, max_pos.y, width, 50));
     text_layer_set_background_color(temp_max, GColorClear);
     text_layer_set_text_alignment(temp_max, GTextAlignmentLeft);
@@ -167,52 +176,52 @@ void create_text_layers(Window* window) {
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
     int wind_slot = get_slot_for_module(MODULE_WIND);
-    GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font);
+    GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font, width, height);
     speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, 42, 50));
     text_layer_set_background_color(speed, GColorClear);
     text_layer_set_text_alignment(speed, GTextAlignmentRight);
 
-    GPoint direction_pos = get_pos_for_item(wind_slot, DIRECTION_ITEM, mode, selected_font);
+    GPoint direction_pos = get_pos_for_item(wind_slot, DIRECTION_ITEM, mode, selected_font, width, height);
     direction = text_layer_create(GRect(direction_pos.x, direction_pos.y, width, 50));
     text_layer_set_background_color(direction, GColorClear);
     text_layer_set_text_alignment(direction, GTextAlignmentLeft);
     
-    GPoint wind_unit_pos = get_pos_for_item(wind_slot, WIND_UNIT_ITEM, mode, selected_font);
+    GPoint wind_unit_pos = get_pos_for_item(wind_slot, WIND_UNIT_ITEM, mode, selected_font, width, height);
     wind_unit = text_layer_create(GRect(wind_unit_pos.x, wind_unit_pos.y, width, 50));
     text_layer_set_background_color(wind_unit, GColorClear);
     text_layer_set_text_alignment(wind_unit, GTextAlignmentLeft);
 
     #if defined(PBL_HEALTH)
     int steps_slot = get_slot_for_module(MODULE_STEPS);
-    GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font);
+    GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font, width, height);
     steps = text_layer_create(GRect(steps_pos.x, steps_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(steps, GColorClear);
     text_layer_set_text_alignment(steps, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (steps_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
 
     int dist_slot = get_slot_for_module(MODULE_DIST);
-    GPoint dist_pos = get_pos_for_item(dist_slot, DIST_ITEM, mode, selected_font);
+    GPoint dist_pos = get_pos_for_item(dist_slot, DIST_ITEM, mode, selected_font, width, height);
     dist = text_layer_create(GRect(dist_pos.x, dist_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(dist, GColorClear);
     text_layer_set_text_alignment(dist, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (dist_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
 
     int cal_slot = get_slot_for_module(MODULE_CAL);
-    GPoint cal_pos = get_pos_for_item(cal_slot, CAL_ITEM, mode, selected_font);
+    GPoint cal_pos = get_pos_for_item(cal_slot, CAL_ITEM, mode, selected_font, width, height);
     cal = text_layer_create(GRect(cal_pos.x, cal_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(cal, GColorClear);
     text_layer_set_text_alignment(cal, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (cal_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
 
     int sleep_slot = get_slot_for_module(MODULE_SLEEP);
-    GPoint sleep_pos = get_pos_for_item(sleep_slot, SLEEP_ITEM, mode, selected_font);
+    GPoint sleep_pos = get_pos_for_item(sleep_slot, SLEEP_ITEM, mode, selected_font, width, height);
     sleep = text_layer_create(GRect(sleep_pos.x, sleep_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sleep, GColorClear);
     text_layer_set_text_alignment(sleep, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (sleep_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
 
     int deep_slot = get_slot_for_module(MODULE_DEEP);
-    GPoint deep_pos = get_pos_for_item(deep_slot, DEEP_ITEM, mode, selected_font);
+    GPoint deep_pos = get_pos_for_item(deep_slot, DEEP_ITEM, mode, selected_font, width, height);
     deep = text_layer_create(GRect(deep_pos.x, deep_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(deep, GColorClear);
     text_layer_set_text_alignment(deep, PBL_IF_ROUND_ELSE(
@@ -272,7 +281,7 @@ void destroy_text_layers() {
 
 void load_face_fonts() {
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
-
+    selected_font = LECO_FONT;
     if (selected_font == SYSTEM_FONT) {
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
         medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
@@ -298,6 +307,11 @@ void load_face_fonts() {
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_32));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
         loaded_font = BLOCKO_BIG_FONT;
+    } else if (selected_font == LECO_FONT) {
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_48));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_20));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_14));
+        loaded_font = LECO_FONT;
     } else {
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));

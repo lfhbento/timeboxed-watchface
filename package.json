@@ -1,5 +1,5 @@
 {
-  "version": "3.4.0",
+  "version": "3.5.0",
   "author": "LFHB",
   "private": true,
   "dependencies": {},
@@ -65,6 +65,27 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_56"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/leco-regular.ttf",
+          "name": "FONT_LECO_14"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/leco-regular.ttf",
+          "name": "FONT_LECO_20"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/leco-regular.ttf",
+          "name": "FONT_LECO_48"
         },
         {
           "type": "font",

@@ -91,6 +91,7 @@
 #define ARCHIVO_FONT 3
 #define DIN_FONT 4
 #define PROTOTYPE_FONT 5
+#define LECO_FONT 6
 
 #define ALIGN_LEFT 0
 #define ALIGN_CENTER 1

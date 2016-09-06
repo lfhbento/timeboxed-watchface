@@ -283,6 +283,8 @@ void health_handler(HealthEventType event, void *context) {
         case HealthEventSignificantUpdate:
         case HealthEventMovementUpdate:
         case HealthEventSleepUpdate:
+        case HealthEventMetricAlert:
+        case HealthEventHeartRateUpdate:
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting update from event. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             queue_health_update();
             break;

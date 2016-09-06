@@ -13,8 +13,7 @@ struct TextPositions {
 };
 
 GPoint create_point(int x, int y);
-GPoint get_pos_for_item(int slot, int item, int mode, int font);
-void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions);
-void init_positions();
+GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int height);
+void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions, int width, int height);
 
 #endif

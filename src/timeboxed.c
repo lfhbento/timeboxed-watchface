@@ -369,6 +369,16 @@ static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResul
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
+static void unobstructed_area_handle_changes() {
+    destroy_text_layers();
+    create_text_layers(watchface);
+    load_screen(false, watchface);
+}
+
+static void unobstructed_area_did_change(void * context) {
+    unobstructed_area_handle_changes();
+}
+
 static void watchface_load(Window *window) {
     create_text_layers(window);
 
@@ -427,6 +437,12 @@ static void init(void) {
         .load = watchface_load,
         .unload = watchface_unload,
     });
+
+    UnobstructedAreaHandlers unobstructed_handlers = {
+        .did_change = unobstructed_area_did_change,
+    };
+
+    unobstructed_area_service_subscribe(unobstructed_handlers , NULL);
 
     battery_state_service_subscribe(battery_handler);
 
