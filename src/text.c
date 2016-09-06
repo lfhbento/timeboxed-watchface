@@ -281,7 +281,7 @@ void destroy_text_layers() {
 
 void load_face_fonts() {
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
-    selected_font = LECO_FONT;
+
     if (selected_font == SYSTEM_FONT) {
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
         medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);

@@ -224,7 +224,8 @@
       "KEY_SLEEPCOLOR": 66,
       "KEY_SLEEPBEHINDCOLOR": 67,
       "KEY_DEEPCOLOR": 68,
-      "KEY_DEEPBEHINDCOLOR": 69
+      "KEY_DEEPBEHINDCOLOR": 69,
+      "KEY_QUICKVIEW": 70
     },
     "enableMultiJS": false,
     "displayName": "timeboxed",
