@@ -400,11 +400,11 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
 }
 
 function checkForUpdates() {
-    var url = 'http://www.lbento.space/pebble-apps/timeboxed/version.json';
+    var url = 'http://pblweb.com/api/v1/version/1354d7dc-b9e5-420d-9edf-533ee2fd4520.json?current=' + currentVersion;
     xhrRequest(url, 'GET', function(responseText) {
         try {
             var resp = JSON.parse(responseText);
-            var updateAvailable = resp.version !== currentVersion;
+            var updateAvailable = resp.newer;
             console.log('Current version: ' + currentVersion + ', Latest version: ' + resp.version);
             sendUpdateData(updateAvailable);
         } catch (ex) {

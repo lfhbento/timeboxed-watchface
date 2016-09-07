@@ -310,7 +310,7 @@ void load_face_fonts() {
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
         loaded_font = BLOCKO_BIG_FONT;
     } else if (selected_font == LECO_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_48));
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_47));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_21));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_14));
         loaded_font = LECO_FONT;

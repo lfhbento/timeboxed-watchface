@@ -85,7 +85,7 @@
           "characterRegex": "[0-9:! ]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_48"
+          "name": "FONT_LECO_47"
         },
         {
           "type": "font",

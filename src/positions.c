@@ -91,8 +91,8 @@ static void get_text_positions_leco(GTextAlignment align, struct TextPositions* 
     positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 6));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 46));
     positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 28));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 26, midpoint + 34, midpoint - 26)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 8, midpoint + 34, midpoint - 8)));
 }
 
 void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions, int width, int height) {
