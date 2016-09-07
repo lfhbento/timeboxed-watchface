@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <ctype.h>
 #include "text.h"
 #include "keys.h"
 #include "configs.h"
@@ -452,6 +453,11 @@ void set_hours_layer_text(char* text) {
 
 void set_date_layer_text(char* text) {
     strcpy(date_text, text);
+    if (loaded_font == LECO_FONT) {
+        for (unsigned char i = 0; date_text[i]; ++i) {
+            date_text[i] = toupper((unsigned char)date_text[i]);
+        }
+    }
     text_layer_set_text(date, date_text);
 }
 
