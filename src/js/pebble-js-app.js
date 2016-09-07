@@ -45,8 +45,10 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    Pebble.openURL(
-        'http://www.lbento.space/pebble-apps/timeboxed/config/?v=' + currentVersion +
+    var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/';
+    //url = 'http://localhost:8080';
+    Pebble.openURL(url +
+        '?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language)
 });
@@ -74,7 +76,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
         }
         if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' ||
                 key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1 ||
-                key === 'KEY_SPEEDUNIT') {
+                key === 'KEY_SPEEDUNIT' || key === 'KEY_DATESEPARATOR') {
             value = parseInt(value, 10);
         }
         dict[key] = value;

@@ -20,6 +20,7 @@ bool is_sleep_data_enabled();
 bool is_use_calories_enabled();
 bool is_simple_mode_enabled();
 bool is_timezone_enabled();
+bool is_quickview_disabled();
 
 int get_wind_speed_unit();
 

@@ -72,6 +72,7 @@
 #define KEY_DEEPCOLOR 68
 #define KEY_DEEPBEHINDCOLOR 69
 #define KEY_QUICKVIEW 70
+#define KEY_DATESEPARATOR 71
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -85,6 +86,7 @@
 #define FLAG_CALORIES 0x0200
 #define FLAG_SIMPLEMODE 0x0400
 #define FLAG_TIMEZONES 0x0800
+#define FLAG_QUICKVIEW 0x1000
 
 #define BLOCKO_FONT 0
 #define BLOCKO_BIG_FONT 1
@@ -115,6 +117,13 @@
 
 #define FORMAT_WMD 0
 #define FORMAT_WDM 1
+#define FORMAT_WD 2
+#define FORMAT_DM 3
+#define FORMAT_MD 4
+#define FORMAT_DSM 5
+#define FORMAT_SMD 6
+#define FORMAT_WDSM 7
+#define FORMAT_WSMD 8
 
 #define SLOT_A 0
 #define SLOT_B 1
@@ -148,6 +157,8 @@
 #define SPEED_ITEM 9
 #define DIRECTION_ITEM 10
 #define WIND_UNIT_ITEM 11
+#define TEMPMINICON_ITEM 12
+#define TEMPMAXICON_ITEM 13
 
 #define UNIT_MPH 0
 #define UNIT_KPH 1

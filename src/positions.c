@@ -87,8 +87,8 @@ static void get_text_positions_prototype(GTextAlignment align, struct TextPositi
 
 static void get_text_positions_leco(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(46, midpoint - 41));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, midpoint + 6));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(51, midpoint - 41));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 6));
     positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 46));
     positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 28));
     positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
@@ -169,13 +169,13 @@ static GPoint get_temp_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(18, 40), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(16, 40), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(15, 39), 3);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -197,13 +197,41 @@ static GPoint get_tempmin_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(68, 10), 3);
             }
             break;
         default:
             return create_point(0, 0);
     }
     
+    return create_point(0, 0);
+};
+
+static GPoint get_tempminicon_positions(int mode, int font, int width, int height) {
+    // min temperature
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(59, 1), 1);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
     return create_point(0, 0);
 };
 
@@ -226,6 +254,34 @@ static GPoint get_tempmax_positions(int mode, int font, int width, int height) {
                     return create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
                 case LECO_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+    
+    return create_point(0, 0);
+};
+
+static GPoint get_tempmaxicon_positions(int mode, int font, int width, int height) {
+    // max temperature
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(99, 36), 1);
             }
             break;
         default:
@@ -490,43 +546,49 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
     GPoint slot_pos = get_slot_positions(mode, slot, width, height);
     GPoint item_pos;
     switch (item) {
-        case 0:
+        case WEATHER_ITEM:
             item_pos = get_weather_positions(mode, font, width, height);
             break;
-        case 1:
+        case TEMP_ITEM:
             item_pos = get_temp_positions(mode, font, width, height);
             break;
-        case 2:
+        case TEMPMIN_ITEM:
             item_pos = get_tempmin_positions(mode, font, width, height);
             break;
-        case 3:
+        case TEMPMAX_ITEM:
             item_pos = get_tempmax_positions(mode, font, width, height);
             break;
         #if defined(PBL_HEALTH)
-        case 4:
+        case STEPS_ITEM:
             item_pos = get_steps_positions(mode, font, width, height);
             break;
-        case 5:
+        case DIST_ITEM:
             item_pos = get_dist_positions(mode, font, width, height);
             break;
-        case 6:
+        case CAL_ITEM:
             item_pos = get_cal_positions(mode, font, width, height);
             break;
-        case 7:
+        case SLEEP_ITEM:
             item_pos = get_sleep_positions(mode, font, width, height);
             break;
-        case 8:
+        case DEEP_ITEM:
             item_pos = get_deep_positions(mode, font, width, height);
             break;
         #endif
-        case 9:
+        case SPEED_ITEM:
             item_pos = get_speed_positions(mode, font, width, height);
             break;
-        case 10:
+        case DIRECTION_ITEM:
             item_pos = get_direction_positions(mode, font, width, height);
             break;
-        case 11:
+        case WIND_UNIT_ITEM:
             item_pos = get_wind_unit_positions(mode, font, width, height);
+            break;
+        case TEMPMINICON_ITEM:
+            item_pos = get_tempminicon_positions(mode, font, width, height);
+            break;
+        case TEMPMAXICON_ITEM:
+            item_pos = get_tempmaxicon_positions(mode, font, width, height);
             break;
     }
     return create_point(slot_pos.x + item_pos.x, slot_pos.y + item_pos.y);

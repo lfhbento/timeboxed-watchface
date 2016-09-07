@@ -301,6 +301,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         if (enabled) configs += FLAG_SIMPLEMODE;
     }
 
+    Tuple *quickview = dict_find(iterator, KEY_QUICKVIEW);
+    if (quickview) {
+        bool disabled = quickview->value->int8;
+        if (!disabled) configs += FLAG_QUICKVIEW;
+    }
+
     Tuple *slotA = dict_find(iterator, KEY_SLOTA);
     if (slotA) {
         int value = slotA->value->int8;
@@ -351,6 +357,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_SLEEPSLOTD, value);
     }
 
+    Tuple *dateSeparator = dict_find(iterator, KEY_DATESEPARATOR);
+    if (dateSeparator) {
+        persist_write_int(KEY_DATESEPARATOR, dateSeparator->value->int8);
+    }
+
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
     set_timezone(tz_name, tz_hour, tz_minute);
@@ -376,7 +387,9 @@ static void unobstructed_area_handle_changes() {
 }
 
 static void unobstructed_area_did_change(void * context) {
-    unobstructed_area_handle_changes();
+    if (!is_quickview_disabled()) {
+        unobstructed_area_handle_changes();
+    }
 }
 
 static void watchface_load(Window *window) {

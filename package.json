@@ -78,7 +78,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_20"
+          "name": "FONT_LECO_21"
         },
         {
           "type": "font",
@@ -225,7 +225,8 @@
       "KEY_SLEEPBEHINDCOLOR": 67,
       "KEY_DEEPCOLOR": 68,
       "KEY_DEEPBEHINDCOLOR": 69,
-      "KEY_QUICKVIEW": 70
+      "KEY_QUICKVIEW": 70,
+      "KEY_DATESEPARATOR": 71
     },
     "enableMultiJS": false,
     "displayName": "timeboxed",

@@ -121,6 +121,10 @@ bool is_timezone_enabled() {
     return get_config_toggles() & FLAG_TIMEZONES;
 }
 
+bool is_quickview_disabled() {
+    return get_config_toggles() & FLAG_QUICKVIEW;
+}
+
 int get_slot_for_module(int module) {
     if (!modules_loaded) {
         load_modules();

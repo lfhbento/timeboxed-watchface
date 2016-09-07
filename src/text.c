@@ -162,7 +162,8 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(temp_min, GColorClear);
     text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
 
-    min_icon = text_layer_create(GRect(min_pos.x - 10, min_pos.y + 1, width, 50));
+    GPoint min_icon_pos = get_pos_for_item(forecast_slot, TEMPMINICON_ITEM, mode, selected_font, width, height);
+    min_icon = text_layer_create(GRect(min_icon_pos.x, min_icon_pos.y, width, 50));
     text_layer_set_background_color(min_icon, GColorClear);
     text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
 
@@ -171,7 +172,8 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(temp_max, GColorClear);
     text_layer_set_text_alignment(temp_max, GTextAlignmentLeft);
 
-    max_icon = text_layer_create(GRect(max_pos.x - 10, max_pos.y + 1, width, 50));
+    GPoint max_icon_pos = get_pos_for_item(forecast_slot, TEMPMAXICON_ITEM, mode, selected_font, width, height);
+    max_icon = text_layer_create(GRect(max_icon_pos.x, max_icon_pos.y, width, 50));
     text_layer_set_background_color(max_icon, GColorClear);
     text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
@@ -309,7 +311,7 @@ void load_face_fonts() {
         loaded_font = BLOCKO_BIG_FONT;
     } else if (selected_font == LECO_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_48));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_20));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_21));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_14));
         loaded_font = LECO_FONT;
     } else {
