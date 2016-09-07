@@ -139,6 +139,7 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
 
         xhrRequest(url, 'GET', function(responseText) {
             try {
+                var sunrise, sunset;
                 var resp = JSON.parse(responseText);
                 var now = new Date();
                 var day = now.getDate();
@@ -158,6 +159,17 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 var speed = Math.round(wind.speed);
                 var direction = Math.round(wind.direction);
 
+                try {
+                    sunrise = formatYahooTime(res.astronomy.sunrise);
+                    sunset = formatYahooTime(res.astronomy.sunset);
+                    console.log('sunrise: ' + sunrise);
+                    console.log('sunset: ' + sunset);
+                } catch (ex) {
+                    console.log('error retrieving sunrise/sunset');
+                    sunrise = '-';
+                    sunset = '-';
+                }
+
                 if (typeof(condition) === 'undefined') {
                     condition = 0;
                 }
@@ -173,6 +185,21 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
         console.log('No woeid found, falling back to open weather');
         fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
     }
+}
+
+function formatYahooTime(time) {
+    var set_time = time.split(' ')[0].split(':');
+    var hours = parseInt(set_time[0], 10);
+    var minutes = parseInt(set_time[1], 10);
+
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+    if (time.split(' ')[1] === 'pm') {
+        hours += 12;
+    }
+
+    return hours + ':' + minutes;
 }
 
 function fetchYahooData(pos, useCelsius, overrideLocation) {
@@ -223,7 +250,7 @@ function getWoeidAndExecuteQuery(pos, useCelsius) {
 }
 
 function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation) {
-    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/q/';
+    var url = 'http://api.wunderground.com/api/' + weatherKey + '/conditions/forecast/astronomy/q/';
     if (!overrideLocation) {
         url += pos.coords.latitude + ',' + pos.coords.longitude + '.json';
     } else {
@@ -234,6 +261,7 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
 
     xhrRequest(url, 'GET', function(responseText) {
         try {
+            var sunrise, sunset;
             var resp = JSON.parse(responseText);
             var results = resp.current_observation;
             var temp = Math.round((useCelsius ? results.temp_c : results.temp_f));
@@ -246,6 +274,17 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             var feels = Math.round((useCelsius ? results.feelslike_c : results.feelslike_f));
             var speed = Math.round(results.wind_mph);
             var direction = results.wind_degrees;
+
+            try {
+                sunrise = resp.sun_phase.sunrise.hour + ':' + resp.sun_phase.sunrise.minute;
+                sunset = resp.sun_phase.sunset.hour + ':' + resp.sun_phase.sunset.minute;
+                console.log('sunrise: ' + sunrise);
+                console.log('sunset: ' + sunset);
+            } catch (ex) {
+                console.log('error retrieving sunrise/sunset');
+                sunrise = '-';
+                sunset = '-';
+            }
 
             if (typeof(condition) === 'undefined') {
                 condition = 0;
@@ -313,6 +352,7 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
     console.log(url);
     xhrRequest(url, 'GET', function(responseText) {
         try {
+            var sunrise, sunset;
             var resp = JSON.parse(responseText);
             var temp = Math.round((useCelsius ? fahrenheitToCelsius(resp.currently.temperature) : resp.currently.temperature));
             var max = Math.round((useCelsius ? fahrenheitToCelsius(resp.daily.data[0].temperatureMax) : resp.daily.data[0].temperatureMax));
@@ -322,6 +362,17 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
             var feels = Math.round((useCelsius ? fahrenheitToCelsius(resp.currently.apparentTemperature) : resp.currently.apparentTemperature));
             var speed = Math.round(resp.currently.windSpeed);
             var direction = Math.round(resp.currently.windBearing);
+
+            try {
+                sunrise = formatTimestamp(parseInt(resp.daily.data[0].sunriseTime, 10));
+                sunset = formatTimestamp(parseInt(resp.daily.data[0].sunsetTime, 10));
+                console.log('sunrise: ' + sunrise);
+                console.log('sunset: ' + sunset);
+            } catch (ex) {
+                console.log('error retrieving sunrise/sunset');
+                sunrise = '-';
+                sunset = '-';
+            }
 
             if (typeof(condition) === 'undefined') {
                 condition = 0;
@@ -335,6 +386,17 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
         }
 
     });
+}
+
+function formatTimestamp(timestamp) {
+    var date = new Date(timestamp * 1000);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+
+    return hours + ':' + minutes;
 }
 
 function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
@@ -355,6 +417,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
     xhrRequest(url, 'GET', function(responseText) {
         try {
             console.log('Retrieving current weather from OpenWeatherMap');
+            var sunrise, sunset;
             var resp = JSON.parse(responseText);
             var temp = useCelsius ? kelvinToCelsius(resp.main.temp) : kelvinToFahrenheit(resp.main.temp);
             var condition = ow_iconToId[resp.weather[0].icon];
@@ -363,6 +426,17 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
             var direction = parseInt(resp.wind.deg, 10) || 0;
             console.log(responseText);
             var day = new Date(resp.dt * 1000);
+
+            try {
+                sunrise = formatTimestamp(parseInt(resp.sys.sunrise, 10));
+                sunset = formatTimestamp(parseInt(resp.sys.sunset, 10));
+                console.log('sunrise: ' + sunrise);
+                console.log('sunset: ' + sunset);
+            } catch (ex) {
+                console.log('error retrieving sunrise/sunset');
+                sunrise = '-';
+                sunset = '-';
+            }
 
             if (typeof(condition) === 'undefined') {
                 condition = 0;
