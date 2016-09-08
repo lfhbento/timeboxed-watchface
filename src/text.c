@@ -315,6 +315,11 @@ void load_face_fonts() {
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_21));
         base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_14));
         loaded_font = LECO_FONT;
+    } else if (selected_font == KONSTRUCT_FONT) {
+        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_32));
+        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_16));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_10));
+        loaded_font = KONSTRUCT_FONT;
     } else {
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
@@ -453,7 +458,7 @@ void set_hours_layer_text(char* text) {
 
 void set_date_layer_text(char* text) {
     strcpy(date_text, text);
-    if (loaded_font == LECO_FONT) {
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; date_text[i]; ++i) {
             date_text[i] = toupper((unsigned char)date_text[i]);
         }

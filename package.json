@@ -91,6 +91,27 @@
           "type": "font",
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
+          "file": "fonts/konstruct.ttf",
+          "name": "FONT_KONSTRUCT_10"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/konstruct.ttf",
+          "name": "FONT_KONSTRUCT_16"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:! ]",
+          "compatibility": "2.7",
+          "file": "fonts/konstruct.ttf",
+          "name": "FONT_KONSTRUCT_32"
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_18"
         },
