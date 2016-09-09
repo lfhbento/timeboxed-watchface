@@ -4,7 +4,6 @@
 #include "health.h"
 #include "weather.h"
 #include "locales.h"
-#include "time.h"
 #include "configs.h"
 #include "keys.h"
 

@@ -97,10 +97,10 @@ static void get_text_positions_leco(GTextAlignment align, struct TextPositions* 
 
 static void get_text_positions_konstruct(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, midpoint - 29));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 3));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 36));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 20));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, midpoint - 30));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 4));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 39));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 22));
     positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
     positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
@@ -222,7 +222,7 @@ static GPoint get_tempmin_positions(int mode, int font, int width, int height) {
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -282,7 +282,7 @@ static GPoint get_tempmax_positions(int mode, int font, int width, int height) {
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -312,7 +312,7 @@ static GPoint get_tempmaxicon_positions(int mode, int font, int width, int heigh
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -337,13 +337,13 @@ static GPoint get_steps_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 8);
+                    return create_point(0, 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -367,13 +367,13 @@ static GPoint get_dist_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 8);
+                    return create_point(0, 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -397,13 +397,13 @@ static GPoint get_cal_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 8);
+                    return create_point(0, 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -427,13 +427,13 @@ static GPoint get_sleep_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 8);
+                    return create_point(0, 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -457,13 +457,13 @@ static GPoint get_deep_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 8);
+                    return create_point(0, 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 #endif
@@ -488,13 +488,13 @@ static GPoint get_speed_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(56, 6), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(56, 6), 8);
+                    return create_point(PBL_IF_ROUND_ELSE(56, 6), 9);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -518,13 +518,13 @@ static GPoint get_direction_positions(int mode, int font, int width, int height)
                 case LECO_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(56, 4), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(56, 4), 8);
+                    return create_point(PBL_IF_ROUND_ELSE(56, 4), 5);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
     return create_point(0, 0);
 };
 
@@ -548,13 +548,133 @@ static GPoint get_wind_unit_positions(int mode, int font, int width, int height)
                 case LECO_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(100, 48), 1);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(100, 48), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(100, 48), 2);
             }
             break;
         default:
             return create_point(0, 0);
     }
-    
+
+    return create_point(0, 0);
+};
+
+static GPoint get_sunrise_positions(int mode, int font, int width, int height) {
+    // sunrise
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(26, 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(26, 3);
+                case SYSTEM_FONT:
+                    return create_point(26, 3);
+                case ARCHIVO_FONT:
+                    return create_point(26, 3);
+                case DIN_FONT:
+                    return create_point(26, 3);
+                case PROTOTYPE_FONT:
+                    return create_point(26, 3);
+                case LECO_FONT:
+                    return create_point(26, 5);
+                case KONSTRUCT_FONT:
+                    return create_point(26, 9);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
+static GPoint get_sunrise_icon_positions(int mode, int font, int width, int height) {
+    // sunrise icon
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(-4, 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(-4, 4);
+                case SYSTEM_FONT:
+                    return create_point(-4, 4);
+                case ARCHIVO_FONT:
+                    return create_point(-4, 3);
+                case DIN_FONT:
+                    return create_point(-4, 5);
+                case PROTOTYPE_FONT:
+                    return create_point(-4, 3);
+                case LECO_FONT:
+                    return create_point(-4, 4);
+                case KONSTRUCT_FONT:
+                    return create_point(-4, 5);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
+static GPoint get_sunset_positions(int mode, int font, int width, int height) {
+    // sunset
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(-22, 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(-22, 3);
+                case SYSTEM_FONT:
+                    return create_point(-22, 3);
+                case ARCHIVO_FONT:
+                    return create_point(-22, 3);
+                case DIN_FONT:
+                    return create_point(-22, 3);
+                case PROTOTYPE_FONT:
+                    return create_point(-22, 3);
+                case LECO_FONT:
+                    return create_point(-22, 5);
+                case KONSTRUCT_FONT:
+                    return create_point(-22, 9);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
+static GPoint get_sunset_icon_positions(int mode, int font, int width, int height) {
+    // sunset icon
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(0, 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(0, 4);
+                case SYSTEM_FONT:
+                    return create_point(0, 4);
+                case ARCHIVO_FONT:
+                    return create_point(0, 3);
+                case DIN_FONT:
+                    return create_point(0, 5);
+                case PROTOTYPE_FONT:
+                    return create_point(0, 3);
+                case LECO_FONT:
+                    return create_point(0, 4);
+                case KONSTRUCT_FONT:
+                    return create_point(0, 5);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
     return create_point(0, 0);
 };
 
@@ -630,6 +750,18 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
             break;
         case TEMPMAXICON_ITEM:
             item_pos = get_tempmaxicon_positions(mode, font, width, height);
+            break;
+        case SUNRISE_ITEM:
+            item_pos = get_sunrise_positions(mode, font, width, height);
+            break;
+        case SUNSET_ITEM:
+            item_pos = get_sunset_positions(mode, font, width, height);
+            break;
+        case SUNRISEICON_ITEM:
+            item_pos = get_sunrise_icon_positions(mode, font, width, height);
+            break;
+        case SUNSETICON_ITEM:
+            item_pos = get_sunset_icon_positions(mode, font, width, height);
             break;
     }
     return create_point(slot_pos.x + item_pos.x, slot_pos.y + item_pos.y);

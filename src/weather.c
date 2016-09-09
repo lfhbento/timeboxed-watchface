@@ -1,7 +1,9 @@
 #include <pebble.h>
+#include <time.h>
 #include "keys.h"
 #include "text.h"
 #include "configs.h"
+#include "clock.h"
 
 static bool weather_enabled;
 static bool use_celsius;
@@ -149,6 +151,34 @@ void update_forecast_values(int max_val, int min_val) {
     }
 }
 
+void update_sunrise(int sunrise) {
+    if (is_module_enabled(MODULE_SUNRISE)) {
+        char sunrise_text[6];
+        time_t temp = (time_t)sunrise;
+        struct tm *tick_time = localtime(&temp);
+        set_hours(tick_time, sunrise_text, sizeof(sunrise_text));
+        set_sunrise_layer_text(sunrise_text);
+        set_sunrise_icon_layer_text("\U0000F051");
+    } else {
+        set_sunrise_layer_text("");
+        set_sunrise_icon_layer_text("");
+    }
+}
+
+void update_sunset(int sunset) {
+    if (is_module_enabled(MODULE_SUNSET)) {
+        char sunset_text[6];
+        time_t temp = (time_t)sunset;
+        struct tm *tick_time = localtime(&temp);
+        set_hours(tick_time, sunset_text, sizeof(sunset_text));
+        set_sunset_layer_text(sunset_text);
+        set_sunset_icon_layer_text("\U0000F052");
+    } else {
+        set_sunset_layer_text("");
+        set_sunset_icon_layer_text("");
+    }
+}
+
 void update_wind_values(int speed, int direction) {
     if (is_module_enabled(MODULE_WIND)) {
         char wind_speed[4];
@@ -181,7 +211,9 @@ static bool get_weather_enabled() {
     bool weather_module_available =
         is_module_enabled(MODULE_WEATHER) ||
         is_module_enabled(MODULE_FORECAST) ||
-        is_module_enabled(MODULE_WIND);
+        is_module_enabled(MODULE_WIND) ||
+        is_module_enabled(MODULE_SUNRISE) ||
+        is_module_enabled(MODULE_SUNSET);
     return is_weather_toggle_enabled() || weather_module_available;
 }
 
@@ -196,6 +228,8 @@ void toggle_weather(bool from_configs) {
             update_weather_values(0, 0);
             update_forecast_values(0, 0);
             update_wind_values(0, 16);
+            update_sunrise(0);
+            update_sunset(0);
             update_weather();
         } else if (persist_exists(KEY_TEMP)) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
@@ -210,11 +244,19 @@ void toggle_weather(bool from_configs) {
             int speed = persist_read_int(KEY_SPEED);
             int direction = persist_read_int(KEY_DIRECTION);
             update_wind_values(speed, direction);
+
+            int sunrise = persist_read_int(KEY_SUNRISE);
+            update_sunrise(sunrise);
+
+            int sunset = persist_read_int(KEY_SUNSET);
+            update_sunset(sunset);
         } else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             update_weather_values(0, 0);
             update_forecast_values(0, 0);
             update_wind_values(0, 16);
+            update_sunrise(0);
+            update_sunset(0);
             update_weather();
         }
     } else {
@@ -228,10 +270,13 @@ void toggle_weather(bool from_configs) {
         set_wind_direction_layer_text("");
         set_wind_speed_layer_text("");
         set_wind_unit_layer_text("");
+        set_sunrise_layer_text("");
+        set_sunrise_icon_layer_text("");
+        set_sunset_icon_layer_text("");
     }
 }
 
-void store_weather_values(int temp, int max, int min, int weather, int speed, int direction) {
+void store_weather_values(int temp, int max, int min, int weather, int speed, int direction, int sunrise, int sunset) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%03d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
     persist_write_int(KEY_TEMP, temp);
     persist_write_int(KEY_MAX, max);
@@ -239,6 +284,8 @@ void store_weather_values(int temp, int max, int min, int weather, int speed, in
     persist_write_int(KEY_WEATHER, weather);
     persist_write_int(KEY_SPEED, speed);
     persist_write_int(KEY_DIRECTION, direction);
+    persist_write_int(KEY_SUNRISE, sunrise);
+    persist_write_int(KEY_SUNSET, sunset);
 }
 
 bool is_weather_enabled() {

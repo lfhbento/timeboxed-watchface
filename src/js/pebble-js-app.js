@@ -166,15 +166,15 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                     console.log('sunset: ' + sunset);
                 } catch (ex) {
                     console.log('error retrieving sunrise/sunset');
-                    sunrise = '-';
-                    sunset = '-';
+                    sunrise = 0;
+                    sunset = 0;
                 }
 
                 if (typeof(condition) === 'undefined') {
                     condition = 0;
                 }
 
-                sendData(temp, max, min, condition, feels, speed, direction);
+                sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
             } catch (ex) {
                 console.log(ex);
                 console.log('Yahoo weather failed, falling back to open weather');
@@ -188,18 +188,19 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
 }
 
 function formatYahooTime(time) {
-    var set_time = time.split(' ')[0].split(':');
-    var hours = parseInt(set_time[0], 10);
-    var minutes = parseInt(set_time[1], 10);
+    var setTime = time.split(' ')[0].split(':');
+    var hours = parseInt(setTime[0], 10);
+    var minutes = parseInt(setTime[1], 10);
 
-    if (minutes < 10) {
-        minutes = '0' + minutes;
-    }
     if (time.split(' ')[1] === 'pm') {
         hours += 12;
     }
 
-    return hours + ':' + minutes;
+    var newTime = Date.now();
+    newTime.setHours(hours);
+    newTime.setMinutes(minutes);
+
+    return newTime.getTime() / 1000;
 }
 
 function fetchYahooData(pos, useCelsius, overrideLocation) {
@@ -276,21 +277,21 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             var direction = results.wind_degrees;
 
             try {
-                sunrise = resp.sun_phase.sunrise.hour + ':' + resp.sun_phase.sunrise.minute;
-                sunset = resp.sun_phase.sunset.hour + ':' + resp.sun_phase.sunset.minute;
+                sunrise = formatWeatherUndergroundDate(resp.sun_phase.sunrise.hour, resp.sun_phase.sunrise.minute);
+                sunset = formatWeatherUndergroundDate(resp.sun_phase.sunset.hour, resp.sun_phase.sunset.minute);
                 console.log('sunrise: ' + sunrise);
                 console.log('sunset: ' + sunset);
             } catch (ex) {
                 console.log('error retrieving sunrise/sunset');
-                sunrise = '-';
-                sunset = '-';
+                sunrise = 0;
+                sunset = 0;
             }
 
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
 
-            sendData(temp, max, min, condition, feels, speed, direction);
+            sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
 
         } catch(ex) {
             console.log(ex.stack);
@@ -298,6 +299,14 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
             fetchYahooData(pos, useCelsius, overrideLocation);
         }
     });
+}
+
+function formatWeatherUndergroundDate(hour, minute) {
+    var time = Date.now();
+    time.setHours(parseInt(hours, 10));
+    time.setMinutes(parseInt(minutes, 10));
+
+    return time.getTime() / 1000;
 }
 
 function fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation) {
@@ -370,15 +379,15 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
                 console.log('sunset: ' + sunset);
             } catch (ex) {
                 console.log('error retrieving sunrise/sunset');
-                sunrise = '-';
-                sunset = '-';
+                sunrise = 0;
+                sunset = 0;
             }
 
             if (typeof(condition) === 'undefined') {
                 condition = 0;
             }
 
-            sendData(temp, max, min, condition, feels, speed, direction);
+            sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
         } catch (ex) {
             console.log(ex.stack);
             console.log('Falling back to Yahoo');
@@ -389,14 +398,7 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
 }
 
 function formatTimestamp(timestamp) {
-    var date = new Date(timestamp * 1000);
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    if (minutes < 10) {
-        minutes = '0' + minutes;
-    }
-
-    return hours + ':' + minutes;
+    return parseInt(timestamp, 10);
 }
 
 function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
@@ -434,8 +436,8 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
                 console.log('sunset: ' + sunset);
             } catch (ex) {
                 console.log('error retrieving sunrise/sunset');
-                sunrise = '-';
-                sunset = '-';
+                sunrise = 0;
+                sunset = 0;
             }
 
             if (typeof(condition) === 'undefined') {
@@ -459,7 +461,7 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
                         }
                     }
 
-                    sendData(temp, max, min, condition, feels, speed, direction);
+                    sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
                 } catch (ex) {
                     console.log('Failure requesting forecast data from OpenWeatherMap');
                     console.log(ex.stack);
@@ -508,7 +510,7 @@ function kelvinToFahrenheit(temp) {
     return Math.round(temp * 1.8 - 459.67);
 }
 
-function sendData(temp, max, min, condition, feels, speed, direction) {
+function sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset) {
     var data = {
         'KEY_TEMP': temp || 0,
         'KEY_MAX': max || 0,
@@ -517,6 +519,8 @@ function sendData(temp, max, min, condition, feels, speed, direction) {
         'KEY_FEELS': feels || 0,
         'KEY_SPEED': speed || 0,
         'KEY_DIRECTION': direction || 0,
+        'KEY_SUNRISE': sunrise || 0,
+        'KEY_SUNSET': sunset || 0
     };
 
     console.log(JSON.stringify(data));

@@ -8,6 +8,7 @@
 #include "configs.h"
 #include "positions.h"
 #include "screen.h"
+#include "clock.h"
 
 static Window *watchface;
 
@@ -36,6 +37,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     //Tuple *feels_tuple = dict_find(iterator, KEY_FEELS);
     Tuple *speed_tuple = dict_find(iterator, KEY_SPEED);
     Tuple *direction_tuple = dict_find(iterator, KEY_DIRECTION);
+    Tuple *sunrise_tuple = dict_find(iterator, KEY_SUNRISE);
+    Tuple *sunset_tuple = dict_find(iterator, KEY_SUNSET);
 
     if (temp_tuple && max_tuple && min_tuple && weather_tuple && is_weather_enabled()) {
         int temp_val = (int)temp_tuple->value->int32;
@@ -50,9 +53,14 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         int speed_val = (int)speed_tuple->value->int32;
         int direction_val = (int)direction_tuple->value->int32;
 
+        int sunrise_val = (int)sunrise_tuple->value->int32;
+        int sunset_val = (int)sunset_tuple->value->int32;
+
         //update_feels_value(feels_val);
         update_wind_values(speed_val, direction_val);
-        store_weather_values(temp_val, max_val, min_val, weather_val, speed_val, direction_val);
+        update_sunrise(sunrise_val);
+        update_sunset(sunset_val);
+        store_weather_values(temp_val, max_val, min_val, weather_val, speed_val, direction_val, sunrise_val, sunset_val);
         return;
     }
 
@@ -183,6 +191,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *windSpeedColor = dict_find(iterator, KEY_WINDSPEEDCOLOR);
     if (windSpeedColor) {
         persist_write_int(KEY_WINDSPEEDCOLOR, windSpeedColor->value->int32);
+    }
+ 
+    Tuple *sunriseColor = dict_find(iterator, KEY_SUNRISECOLOR);
+    if (sunriseColor) {
+        persist_write_int(KEY_SUNRISECOLOR, sunriseColor->value->int32);
+    }
+ 
+    Tuple *sunsetColor = dict_find(iterator, KEY_SUNSETCOLOR);
+    if (sunsetColor) {
+        persist_write_int(KEY_SUNSETCOLOR, sunsetColor->value->int32);
     }
 
     #if defined(PBL_HEALTH)
@@ -465,7 +483,7 @@ static void init(void) {
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
-    app_message_open(512, 64);
+    app_message_open(640, 64);
 
     connection_service_subscribe((ConnectionHandlers) {
 	.pebble_app_connection_handler = bt_handler

@@ -29,11 +29,16 @@ static TextLayer *update;
 static TextLayer *direction;
 static TextLayer *speed;
 static TextLayer *wind_unit;
+static TextLayer *sunrise;
+static TextLayer *sunrise_icon;
+static TextLayer *sunset;
+static TextLayer *sunset_icon;
 
 static GFont time_font;
 static GFont medium_font;
 static GFont base_font;
 static GFont weather_font;
+static GFont weather_font_small;
 static GFont custom_font;
 
 static GColor base_color;
@@ -69,6 +74,10 @@ static char weather_text[4];
 static char direction_text[4];
 static char speed_text[8];
 static char wind_unit_text[2];
+static char sunrise_text[8];
+static char sunrise_icon_text[4];
+static char sunset_text[8];
+static char sunset_icon_text[4];
 
 #if defined(PBL_HEALTH)
 static char steps_text[16];
@@ -115,7 +124,7 @@ void create_text_layers(Window* window) {
     struct TextPositions text_positions;
     get_text_positions(selected_font, text_align, &text_positions, width, height);
 
-    int slot_width = is_simple_mode_enabled() ? width : 68;
+    int slot_width = is_simple_mode_enabled() ? width : width/2 - 4;
 
     hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
     text_layer_set_background_color(hours, GColorClear);
@@ -194,6 +203,28 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(wind_unit, GColorClear);
     text_layer_set_text_alignment(wind_unit, GTextAlignmentLeft);
 
+    int sunrise_slot = get_slot_for_module(MODULE_SUNRISE);
+    GPoint sunrise_pos = get_pos_for_item(sunrise_slot, SUNRISE_ITEM, mode, selected_font, width, height);
+    sunrise = text_layer_create(GRect(sunrise_pos.x, sunrise_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    text_layer_set_background_color(sunrise, GColorClear);
+    text_layer_set_text_alignment(sunrise, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+    
+    GPoint sunrise_icon_pos = get_pos_for_item(sunrise_slot, SUNRISEICON_ITEM, mode, selected_font, width, height);
+    sunrise_icon = text_layer_create(GRect(sunrise_icon_pos.x, sunrise_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
+    text_layer_set_background_color(sunrise_icon, GColorClear);
+    text_layer_set_text_alignment(sunrise_icon, GTextAlignmentCenter);
+
+    int sunset_slot = get_slot_for_module(MODULE_SUNSET);
+    GPoint sunset_pos = get_pos_for_item(sunset_slot, SUNSET_ITEM, mode, selected_font, width, height);
+    sunset = text_layer_create(GRect(sunset_pos.x, sunset_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    text_layer_set_background_color(sunset, GColorClear);
+    text_layer_set_text_alignment(sunset, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    
+    GPoint sunset_icon_pos = get_pos_for_item(sunset_slot, SUNSETICON_ITEM, mode, selected_font, width, height);
+    sunset_icon = text_layer_create(GRect(sunset_icon_pos.x, sunset_icon_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    text_layer_set_background_color(sunset_icon, GColorClear);
+    text_layer_set_text_alignment(sunset_icon, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+
     #if defined(PBL_HEALTH)
     int steps_slot = get_slot_for_module(MODULE_STEPS);
     GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font, width, height);
@@ -246,6 +277,10 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(speed));
     layer_add_child(window_layer, text_layer_get_layer(direction));
     layer_add_child(window_layer, text_layer_get_layer(wind_unit));
+    layer_add_child(window_layer, text_layer_get_layer(sunrise));
+    layer_add_child(window_layer, text_layer_get_layer(sunrise_icon));
+    layer_add_child(window_layer, text_layer_get_layer(sunset));
+    layer_add_child(window_layer, text_layer_get_layer(sunset_icon));
 
     #if defined(PBL_HEALTH)
     layer_add_child(window_layer, text_layer_get_layer(steps));
@@ -272,6 +307,10 @@ void destroy_text_layers() {
     text_layer_destroy(speed);
     text_layer_destroy(direction);
     text_layer_destroy(wind_unit);
+    text_layer_destroy(sunrise);
+    text_layer_destroy(sunrise_icon);
+    text_layer_destroy(sunset);
+    text_layer_destroy(sunset_icon);
 
     #if defined(PBL_HEALTH)
     text_layer_destroy(steps);
@@ -318,7 +357,7 @@ void load_face_fonts() {
     } else if (selected_font == KONSTRUCT_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_32));
         medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_16));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_10));
+        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_11));
         loaded_font = KONSTRUCT_FONT;
     } else {
         time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
@@ -328,6 +367,7 @@ void load_face_fonts() {
     }
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
+    weather_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_18));
     custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
 }
 
@@ -338,6 +378,7 @@ void unload_face_fonts() {
         fonts_unload_custom_font(base_font);
     }
     fonts_unload_custom_font(weather_font);
+    fonts_unload_custom_font(weather_font_small);
     fonts_unload_custom_font(custom_font);
 }
 
@@ -357,6 +398,10 @@ void set_face_fonts() {
     text_layer_set_font(speed, base_font);
     text_layer_set_font(direction, custom_font);
     text_layer_set_font(wind_unit, custom_font);
+    text_layer_set_font(sunrise, base_font);
+    text_layer_set_font(sunrise_icon, weather_font_small);
+    text_layer_set_font(sunset, base_font);
+    text_layer_set_font(sunset_icon, weather_font_small);
 
     #if defined(PBL_HEALTH)
     text_layer_set_font(steps, base_font);
@@ -404,6 +449,13 @@ void set_colors(Window *window) {
     text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
     text_layer_set_text_color(wind_unit, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
     text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
+
+    GColor sunrise_color = enable_advanced && persist_read_int(KEY_SUNRISECOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNRISECOLOR)) : base_color;
+    GColor sunset_color = enable_advanced && persist_read_int(KEY_SUNSETCOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNSETCOLOR)) : base_color;
+    text_layer_set_text_color(sunrise, sunrise_color); 
+    text_layer_set_text_color(sunrise_icon, sunrise_color);
+    text_layer_set_text_color(sunset, sunset_color);
+    text_layer_set_text_color(sunset_icon, sunset_color);
 
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
@@ -504,21 +556,41 @@ void set_steps_layer_text(char* text) {
 
 void set_dist_layer_text(char* text) {
     strcpy(dist_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; dist_text[i]; ++i) {
+            dist_text[i] = toupper((unsigned char)dist_text[i]);
+        }
+    }
     text_layer_set_text(dist, dist_text);
 }
 
 void set_cal_layer_text(char* text) {
     strcpy(cal_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; cal_text[i]; ++i) {
+            cal_text[i] = toupper((unsigned char)cal_text[i]);
+        }
+    }
     text_layer_set_text(cal, cal_text);
 }
 
 void set_sleep_layer_text(char* text) {
     strcpy(sleep_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; sleep_text[i]; ++i) {
+            sleep_text[i] = toupper((unsigned char)sleep_text[i]);
+        }
+    }
     text_layer_set_text(sleep, sleep_text);
 }
 
 void set_deep_layer_text(char* text) {
     strcpy(deep_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; deep_text[i]; ++i) {
+            deep_text[i] = toupper((unsigned char)deep_text[i]);
+        }
+    }
     text_layer_set_text(deep, deep_text);
 }
 #endif
@@ -556,4 +628,24 @@ void set_wind_direction_layer_text(char* text) {
 void set_wind_unit_layer_text(char* text) {
     strcpy(wind_unit_text, text);
     text_layer_set_text(wind_unit, wind_unit_text);
+}
+
+void set_sunrise_layer_text(char* text) {
+    strcpy(sunrise_text, text);
+    text_layer_set_text(sunrise, sunrise_text);
+}
+
+void set_sunrise_icon_layer_text(char* text) {
+    strcpy(sunrise_icon_text, text);
+    text_layer_set_text(sunrise_icon, sunrise_icon_text);
+}
+
+void set_sunset_layer_text(char* text) {
+    strcpy(sunset_text, text);
+    text_layer_set_text(sunset, sunset_text);
+}
+
+void set_sunset_icon_layer_text(char* text) {
+    strcpy(sunset_icon_text, text);
+    text_layer_set_text(sunset_icon, sunset_icon_text);
 }

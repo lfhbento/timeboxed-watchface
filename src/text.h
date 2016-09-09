@@ -47,5 +47,9 @@ void set_update_layer_text(char*);
 void set_wind_speed_layer_text(char*);
 void set_wind_direction_layer_text(char*);
 void set_wind_unit_layer_text(char*);
+void set_sunrise_layer_text(char*);
+void set_sunrise_icon_layer_text(char*);
+void set_sunset_layer_text(char*);
+void set_sunset_icon_layer_text(char*);
 
 #endif

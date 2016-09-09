@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include <ctype.h>
+#include <time.h>
 #include "text.h"
+#include "clock.h"
 #include "locales.h"
 #include "configs.h"
 #include "keys.h"
@@ -8,6 +10,20 @@
 static signed int tz_hour;
 static uint8_t tz_minute;
 static char tz_name[TZ_LEN];
+
+void set_hours(struct tm* tick_time, char* hour_text, int hour_text_len) {
+    if (is_leading_zero_disabled()) {
+        strftime(hour_text, hour_text_len, (clock_is_24h_style() ? "%k:%M" : "%l:%M"), tick_time);
+        if (hour_text[0] == ' ') {
+            for (int i = 0; i < 12; ++i) {
+                hour_text[i] = hour_text[i+1];
+            }
+            hour_text[12] = '\0';
+        }
+    } else {
+        strftime(hour_text, hour_text_len, (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
+    }
+}
 
 void update_time() {
     // Get a tm structure
@@ -22,17 +38,7 @@ void update_time() {
     char hour_text[13];
     char date_text[13];
 
-    if (is_leading_zero_disabled()) {
-        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M"), tick_time);
-        if (hour_text[0] == ' ') {
-            for (int i = 0; i < 12; ++i) {
-                hour_text[i] = hour_text[i+1];
-            }
-            hour_text[12] = '\0';
-        }
-    } else {
-        strftime(hour_text, sizeof(hour_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
-    }
+    set_hours(tick_time, hour_text, sizeof(hour_text));
 
     if (is_timezone_enabled()) {
         if (is_leading_zero_disabled()) {
