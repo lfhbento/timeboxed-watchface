@@ -184,9 +184,9 @@ static GPoint get_temp_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(18, 40), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(15, 39), 3);
-                case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(15, 39), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(15, 39), 9);
             }
             break;
         default:
@@ -214,9 +214,9 @@ static GPoint get_tempmin_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(70, 12), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(68, 10), 3);
-                case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(68, 10), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(68, 10), 9);
             }
             break;
         default:
@@ -244,9 +244,9 @@ static GPoint get_tempminicon_positions(int mode, int font, int width, int heigh
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(60, 2), 4);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(59, 1), 1);
+                    return create_point(PBL_IF_ROUND_ELSE(59, 1), 3);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(59, 1), 1);
+                    return create_point(PBL_IF_ROUND_ELSE(59, 1), 5);
             }
             break;
         default:
@@ -274,9 +274,9 @@ static GPoint get_tempmax_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(108, 45), 3);
-                case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(108, 45), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(108, 45), 9);
             }
             break;
         default:
@@ -304,9 +304,9 @@ static GPoint get_tempmaxicon_positions(int mode, int font, int width, int heigh
                 case PROTOTYPE_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(98, 35), 4);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(99, 36), 1);
+                    return create_point(PBL_IF_ROUND_ELSE(99, 36), 3);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(99, 36), 1);
+                    return create_point(PBL_IF_ROUND_ELSE(99, 36), 5);
             }
             break;
         default:
