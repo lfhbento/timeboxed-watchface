@@ -99,7 +99,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
-          "name": "FONT_KONSTRUCT_11"
+          "name": "FONT_KONSTRUCT_10"
         },
         {
           "type": "font",
