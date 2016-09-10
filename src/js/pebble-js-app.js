@@ -196,7 +196,7 @@ function formatYahooTime(time) {
         hours += 12;
     }
 
-    var newTime = Date.now();
+    var newTime = new Date();
     newTime.setHours(hours);
     newTime.setMinutes(minutes);
 
@@ -282,7 +282,7 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
                 console.log('sunrise: ' + sunrise);
                 console.log('sunset: ' + sunset);
             } catch (ex) {
-                console.log('error retrieving sunrise/sunset');
+                console.log('error retrieving sunrise/sunset ' + ex);
                 sunrise = 0;
                 sunset = 0;
             }
@@ -301,8 +301,8 @@ function fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocati
     });
 }
 
-function formatWeatherUndergroundDate(hour, minute) {
-    var time = Date.now();
+function formatWeatherUndergroundDate(hours, minutes) {
+    var time = new Date();
     time.setHours(parseInt(hours, 10));
     time.setMinutes(parseInt(minutes, 10));
 
