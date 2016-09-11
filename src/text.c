@@ -99,7 +99,7 @@ void create_text_layers(Window* window) {
     GRect full_bounds = layer_get_bounds(window_layer);
     GRect bounds = layer_get_unobstructed_bounds(window_layer);
 
-    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
+    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : LECO_FONT;
 
     int alignment = PBL_IF_ROUND_ELSE(ALIGN_CENTER, persist_exists(KEY_TEXTALIGN) ? persist_read_int(KEY_TEXTALIGN) : ALIGN_RIGHT);
     int mode = is_simple_mode_enabled() ? MODE_SIMPLE : MODE_NORMAL;
@@ -207,23 +207,23 @@ void create_text_layers(Window* window) {
     GPoint sunrise_pos = get_pos_for_item(sunrise_slot, SUNRISE_ITEM, mode, selected_font, width, height);
     sunrise = text_layer_create(GRect(sunrise_pos.x, sunrise_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunrise, GColorClear);
-    text_layer_set_text_alignment(sunrise, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+    text_layer_set_text_alignment(sunrise, GTextAlignmentLeft);
     
     GPoint sunrise_icon_pos = get_pos_for_item(sunrise_slot, SUNRISEICON_ITEM, mode, selected_font, width, height);
     sunrise_icon = text_layer_create(GRect(sunrise_icon_pos.x, sunrise_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
     text_layer_set_background_color(sunrise_icon, GColorClear);
-    text_layer_set_text_alignment(sunrise_icon, GTextAlignmentCenter);
+    text_layer_set_text_alignment(sunrise_icon, GTextAlignmentLeft);
 
     int sunset_slot = get_slot_for_module(MODULE_SUNSET);
     GPoint sunset_pos = get_pos_for_item(sunset_slot, SUNSET_ITEM, mode, selected_font, width, height);
     sunset = text_layer_create(GRect(sunset_pos.x, sunset_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunset, GColorClear);
-    text_layer_set_text_alignment(sunset, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(sunset, GTextAlignmentRight);
     
     GPoint sunset_icon_pos = get_pos_for_item(sunset_slot, SUNSETICON_ITEM, mode, selected_font, width, height);
     sunset_icon = text_layer_create(GRect(sunset_icon_pos.x, sunset_icon_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunset_icon, GColorClear);
-    text_layer_set_text_alignment(sunset_icon, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentRight));
+    text_layer_set_text_alignment(sunset_icon, GTextAlignmentRight);
 
     #if defined(PBL_HEALTH)
     int steps_slot = get_slot_for_module(MODULE_STEPS);
@@ -322,7 +322,7 @@ void destroy_text_layers() {
 }
 
 void load_face_fonts() {
-    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : BLOCKO_FONT;
+    int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : LECO_FONT;
 
     if (selected_font == SYSTEM_FONT) {
         time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
@@ -367,7 +367,7 @@ void load_face_fonts() {
     }
 
     weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
-    weather_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_18));
+    weather_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_16));
     custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
 }
 

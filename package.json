@@ -22,7 +22,7 @@
           "characterRegex": "[\uf051\uf052]",
           "compatibility": "2.7",
           "file": "fonts/weathericons-regular-webfont.ttf",
-          "name": "FONT_WEATHER_18"
+          "name": "FONT_WEATHER_16"
         },
         {
           "type": "font",

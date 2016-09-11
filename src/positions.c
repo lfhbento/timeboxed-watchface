@@ -27,82 +27,82 @@ static int get_pos(int alignment, int left_pos, int center_pos, int right_pos) {
 
 static void get_text_positions_blocko(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(46, midpoint - 46));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, midpoint + 6));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 46));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 28));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 46, midpoint - 46));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 6, midpoint + 6));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 46, midpoint - 46));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 28, midpoint + 28));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)));
 }
 
 static void get_text_positions_blocko_big(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 2, 0)), PBL_IF_ROUND_ELSE(40, midpoint - 52));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(96, midpoint + 4));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(42, midpoint - 50));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -4)), PBL_IF_ROUND_ELSE(124, midpoint + 32));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(64, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(86, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 2, 0)), PBL_IF_ROUND_ELSE(midpoint - 52, midpoint - 52));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(midpoint + 4, midpoint + 4));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -2)), PBL_IF_ROUND_ELSE(midpoint - 50, midpoint - 50));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 1, -4)), PBL_IF_ROUND_ELSE(midpoint + 32, midpoint + 32));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
 
 static void get_text_positions_system(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(54, midpoint - 42));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(98, midpoint + 2));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 50));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(124, midpoint + 28));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(64, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(86, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 42, midpoint - 42));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 2, midpoint + 2));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 50, midpoint - 50));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 28, midpoint + 28));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
 
 static void get_text_positions_archivo(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, midpoint - 44));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(100, midpoint + 8));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(44, midpoint - 50));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(126, midpoint + 34));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(64, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(86, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 44, midpoint - 44));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 8, midpoint + 8));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 48, midpoint - 48));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 34, midpoint + 34));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
 
 static void get_text_positions_din(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(47, midpoint - 45));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 8));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(42, midpoint - 52));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(122, midpoint + 32));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(64, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(86, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 45, midpoint - 45));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 8, midpoint + 8));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 52, midpoint - 52));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 32, midpoint + 32));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, 0)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
 
 static void get_text_positions_prototype(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(54, midpoint - 40));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(100, midpoint + 8));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(48, midpoint - 46));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(122, midpoint + 30));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -2, 126, -2)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -2, 112, -2)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 40, midpoint - 40));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 8, midpoint + 8));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 46, midpoint - 46));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 30, midpoint + 30));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -2, 126, -2)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -2, 112, -2)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)));
 }
 
 static void get_text_positions_leco(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(51, midpoint - 41));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 6));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 46));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 28));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 26, midpoint + 34, midpoint - 26)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 8, midpoint + 34, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 38, midpoint - 38));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 9, midpoint + 9));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 43, midpoint - 43));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 31, midpoint + 31));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 26, midpoint + 34, midpoint - 26)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(midpoint + 34, get_pos(align, midpoint - 8, midpoint + 34, midpoint - 8)));
 }
 
 static void get_text_positions_konstruct(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
-    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(48, midpoint - 24));
-    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(99, midpoint + 10));
-    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(46, midpoint - 33));
-    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(120, midpoint + 28));
-    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(70, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
-    positions->updates = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(88, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
+    positions->hours = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, 0)), PBL_IF_ROUND_ELSE(midpoint - 24, midpoint - 24));
+    positions->date = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint + 10, midpoint + 10));
+    positions->alt_time = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -2)), PBL_IF_ROUND_ELSE(midpoint - 33, midpoint - 33));
+    positions->battery = create_point(PBL_IF_ROUND_ELSE(0, get_pos(align, 2, 0, -4)), PBL_IF_ROUND_ELSE(midpoint + 28, midpoint + 28));
+    positions->bluetooth = create_point(PBL_IF_ROUND_ELSE(134, get_pos(align, -4, 126, -2)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 30, midpoint + 40, midpoint - 30)));
+    positions->updates = create_point(PBL_IF_ROUND_ELSE(120, get_pos(align, -4, 112, -2)), PBL_IF_ROUND_ELSE(midpoint + 40, get_pos(align, midpoint - 8, midpoint + 40, midpoint - 8)));
 }
 
 void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions, int width, int height) {
@@ -564,21 +564,21 @@ static GPoint get_sunrise_positions(int mode, int font, int width, int height) {
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case BLOCKO_BIG_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case SYSTEM_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case ARCHIVO_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case DIN_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case PROTOTYPE_FONT:
-                    return create_point(26, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 3);
                 case LECO_FONT:
-                    return create_point(26, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(26, 9);
+                    return create_point(PBL_IF_ROUND_ELSE(86, 22), 9);
             }
             break;
         default:
@@ -594,21 +594,21 @@ static GPoint get_sunrise_icon_positions(int mode, int font, int width, int heig
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(-4, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 3);
                 case BLOCKO_BIG_FONT:
-                    return create_point(-4, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 4);
                 case SYSTEM_FONT:
-                    return create_point(-4, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 4);
                 case ARCHIVO_FONT:
-                    return create_point(-4, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 4);
                 case DIN_FONT:
-                    return create_point(-4, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 5);
                 case PROTOTYPE_FONT:
-                    return create_point(-4, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 3);
                 case LECO_FONT:
-                    return create_point(-4, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 4);
                 case KONSTRUCT_FONT:
-                    return create_point(-4, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(60, 0), 5);
             }
             break;
         default:
@@ -624,21 +624,21 @@ static GPoint get_sunset_positions(int mode, int font, int width, int height) {
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case BLOCKO_BIG_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case SYSTEM_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case ARCHIVO_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case DIN_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case PROTOTYPE_FONT:
-                    return create_point(-22, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 3);
                 case LECO_FONT:
-                    return create_point(-22, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(-22, 9);
+                    return create_point(PBL_IF_ROUND_ELSE(-86, -24), 9);
             }
             break;
         default:
@@ -654,21 +654,21 @@ static GPoint get_sunset_icon_positions(int mode, int font, int width, int heigh
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(0, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 3);
                 case BLOCKO_BIG_FONT:
-                    return create_point(0, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 4);
                 case SYSTEM_FONT:
-                    return create_point(0, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 4);
                 case ARCHIVO_FONT:
-                    return create_point(0, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 4);
                 case DIN_FONT:
-                    return create_point(0, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 5);
                 case PROTOTYPE_FONT:
-                    return create_point(0, 3);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 3);
                 case LECO_FONT:
-                    return create_point(0, 4);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 4);
                 case KONSTRUCT_FONT:
-                    return create_point(0, 5);
+                    return create_point(PBL_IF_ROUND_ELSE(-60, -4), 5);
             }
             break;
         default:
@@ -685,9 +685,9 @@ GPoint get_slot_positions(int mode, int slot, int width, int height) {
                 case SLOT_A:
                     return create_point(2, 0);
                 case SLOT_B:
-                    return create_point(PBL_IF_ROUND_ELSE(0, width / 2), PBL_IF_ROUND_ELSE(22, 0));
+                    return create_point(PBL_IF_ROUND_ELSE(0, width / 2), PBL_IF_ROUND_ELSE(18, 0));
                 case SLOT_C:
-                    return create_point(2, PBL_IF_ROUND_ELSE(138, height - 26));
+                    return create_point(2, PBL_IF_ROUND_ELSE(136, height - 26));
                 case SLOT_D:
                     return create_point(PBL_IF_ROUND_ELSE(0, width / 2), PBL_IF_ROUND_ELSE(152, height - 26));
             }
