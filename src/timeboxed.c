@@ -9,6 +9,7 @@
 #include "positions.h"
 #include "screen.h"
 #include "clock.h"
+#include "accel.h"
 
 static Window *watchface;
 
@@ -483,7 +484,9 @@ static void init(void) {
         .did_change = unobstructed_area_did_change,
     };
 
-    unobstructed_area_service_subscribe(unobstructed_handlers , NULL);
+    unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
+
+    accel_data_service_subscribe(10, accel_data_handler);
 
     battery_state_service_subscribe(battery_handler);
 
