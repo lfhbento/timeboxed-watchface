@@ -164,7 +164,7 @@ static void get_cal_data() {
         }
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Calories data: %d / %d", current_cal, cal_last_week);
 
-        snprintf(cal_text, sizeof(cal_text), "%d cal", current_cal);
+        snprintf(cal_text, sizeof(cal_text), get_loaded_font() == KONSTRUCT_FONT ? "%dcal" : "%d cal", current_cal);
 
         set_cal_layer_text(cal_text);
         set_progress_color_cal(current_cal < cal_last_week);

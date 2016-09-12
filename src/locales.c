@@ -72,10 +72,10 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
             snprintf(buffer, buf_size, "%02d%s%02d", tick_time->tm_mon, SEPARATORS[separator], tick_time->tm_mday);
             break;
         case FORMAT_WDSM:
-            snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon);
+            snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon + 1);
             break;
         case FORMAT_WSMD:
-            snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mon, SEPARATORS[separator], tick_time->tm_mday);
+            snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
             break;
     }
 }

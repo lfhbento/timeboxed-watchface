@@ -124,7 +124,7 @@ void create_text_layers(Window* window) {
     struct TextPositions text_positions;
     get_text_positions(selected_font, text_align, &text_positions, width, height);
 
-    int slot_width = is_simple_mode_enabled() ? width : width/2 - 4;
+    int slot_width = is_simple_mode_enabled() ? width : width/2;
 
     hours = text_layer_create(GRect(text_positions.hours.x, text_positions.hours.y, width, 100));
     text_layer_set_background_color(hours, GColorClear);
@@ -566,7 +566,7 @@ void set_dist_layer_text(char* text) {
 
 void set_cal_layer_text(char* text) {
     strcpy(cal_text, text);
-    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+    if (loaded_font == LECO_FONT) {
         for (unsigned char i = 0; cal_text[i]; ++i) {
             cal_text[i] = toupper((unsigned char)cal_text[i]);
         }
@@ -576,7 +576,7 @@ void set_cal_layer_text(char* text) {
 
 void set_sleep_layer_text(char* text) {
     strcpy(sleep_text, text);
-    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+    if (loaded_font == LECO_FONT) {
         for (unsigned char i = 0; sleep_text[i]; ++i) {
             sleep_text[i] = toupper((unsigned char)sleep_text[i]);
         }
