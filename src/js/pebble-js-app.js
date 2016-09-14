@@ -200,7 +200,7 @@ function formatYahooTime(time) {
     newTime.setHours(hours);
     newTime.setMinutes(minutes);
 
-    return newTime.getTime() / 1000;
+    return parseInt(newTime.getTime() / 1000, 10);
 }
 
 function fetchYahooData(pos, useCelsius, overrideLocation) {
@@ -306,7 +306,7 @@ function formatWeatherUndergroundDate(hours, minutes) {
     time.setHours(parseInt(hours, 10));
     time.setMinutes(parseInt(minutes, 10));
 
-    return time.getTime() / 1000;
+    return parseInt(time.getTime() / 1000, 10);
 }
 
 function fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation) {

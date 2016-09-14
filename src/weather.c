@@ -217,48 +217,43 @@ static bool get_weather_enabled() {
     return is_weather_toggle_enabled() || weather_module_available;
 }
 
+static void update_weather_from_storage() {
+    if (persist_exists(KEY_TEMP)) {
+        int temp = persist_read_int(KEY_TEMP);
+        int weather = persist_read_int(KEY_WEATHER);
+        update_weather_values(temp, weather);
+    }
+
+    if (persist_exists(KEY_MIN)) {
+        int min = persist_read_int(KEY_MIN);
+        int max = persist_read_int(KEY_MAX);
+        update_forecast_values(max, min);
+    }
+
+    if (persist_exists(KEY_SPEED)) {
+        int speed = persist_read_int(KEY_SPEED);
+        int direction = persist_read_int(KEY_DIRECTION);
+        update_wind_values(speed, direction);
+    }
+
+    if (persist_exists(KEY_SUNRISE)) {
+        int sunrise = persist_read_int(KEY_SUNRISE);
+        update_sunrise(sunrise);
+    }
+
+    if (persist_exists(KEY_SUNSET)) {
+        int sunset = persist_read_int(KEY_SUNSET);
+        update_sunset(sunset);
+    }
+}
+
 void toggle_weather(bool from_configs) {
     weather_enabled = get_weather_enabled();
     if (weather_enabled) {
-
         use_celsius = is_use_celsius_enabled();
-
-        if (from_configs) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from configs. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            update_weather_values(0, 0);
-            update_forecast_values(0, 0);
-            update_wind_values(0, 16);
-            update_sunrise(0);
-            update_sunset(0);
-            update_weather();
-        } else if (persist_exists(KEY_TEMP)) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Updating weather from storage. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            int temp = persist_read_int(KEY_TEMP);
-            int weather = persist_read_int(KEY_WEATHER);
-            update_weather_values(temp, weather);
-
-            int min = persist_read_int(KEY_MIN);
-            int max = persist_read_int(KEY_MAX);
-            update_forecast_values(max, min);
-
-            int speed = persist_read_int(KEY_SPEED);
-            int direction = persist_read_int(KEY_DIRECTION);
-            update_wind_values(speed, direction);
-
-            int sunrise = persist_read_int(KEY_SUNRISE);
-            update_sunrise(sunrise);
-
-            int sunset = persist_read_int(KEY_SUNSET);
-            update_sunset(sunset);
-        } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "No weather data from storage. Requesting... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-            update_weather_values(0, 0);
-            update_forecast_values(0, 0);
-            update_wind_values(0, 16);
-            update_sunrise(0);
-            update_sunset(0);
-            update_weather();
-        }
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
+        update_weather_from_storage();
+        update_weather();
     } else {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather disabled, clearing up. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_temp_cur_layer_text("");

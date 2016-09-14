@@ -701,7 +701,6 @@ GPoint get_slot_positions(int mode, int slot, int width, int height) {
 
 GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int height) {
     if (slot == -1) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid slot %d and item %d. Skipping. %d%03d", slot, item, (int)time(NULL), (int)time_ms(NULL, NULL));
         return create_point(0, 0);
     }
     GPoint slot_pos = get_slot_positions(mode, slot, width, height);
