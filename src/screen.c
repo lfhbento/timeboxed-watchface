@@ -31,9 +31,13 @@ void redraw_screen(Window *watchface) {
 void bt_handler(bool connected) {
     if (connected) {
         set_bluetooth_layer_text("");
+        persist_write_int(KEY_BLUETOOTHDISCONNECT, 0);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "bt connected. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     } else {
-        if (is_bluetooth_vibrate_enabled() && !is_user_sleeping()) {
+        bool did_vibrate = persist_exists(KEY_BLUETOOTHDISCONNECT) ? persist_read_int(KEY_BLUETOOTHDISCONNECT): 0;
+        if (is_bluetooth_vibrate_enabled() && !is_user_sleeping() && !did_vibrate) {
             vibes_long_pulse();
+            persist_write_int(KEY_BLUETOOTHDISCONNECT, 1);
         }
         set_bluetooth_color();
         set_bluetooth_layer_text("a");
