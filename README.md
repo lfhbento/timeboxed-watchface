@@ -13,7 +13,7 @@ A simple, clean and customizable watchface for the Pebble smartwatch.
  * Weather modules with current weather and temperature, wind speed and direction, with low and high for the day too.
  * Sunrise and sunset times.
  * Choose between OpenWeatherMap, Weather Underground and Yahoo Weather for weather data
- * Health modules with steps, distance walked and calorie count (Pebble Time and Time Round only)
+ * Health modules with steps, distance walked, active time and calorie count (Pebble Time and Time Round only)
  * Display different modules for half an hour after you wake up (Pebble Time and Time Round only)
  * Display health data in a different color if you're falling behind your monthly average for that day of the week
  * Display additional timezone
