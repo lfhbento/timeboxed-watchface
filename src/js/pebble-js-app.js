@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.6";
+var currentVersion = "3.7";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -46,7 +46,7 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/';
-    //url = 'http://localhost:8080';
+    //url = 'http://192.168.1.3:8080';
     Pebble.openURL(url +
         '?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +

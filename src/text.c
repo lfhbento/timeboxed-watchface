@@ -20,6 +20,7 @@ static TextLayer *sleep;
 static TextLayer *dist;
 static TextLayer *cal;
 static TextLayer *deep;
+static TextLayer *active;
 #endif
 
 static TextLayer *weather;
@@ -56,6 +57,8 @@ static GColor sleep_color;
 static GColor sleep_behind_color;
 static GColor deep_color;
 static GColor deep_behind_color;
+static GColor active_color;
+static GColor active_behind_color;
 #endif
 
 static char hour_text[13];
@@ -85,6 +88,7 @@ static char cal_text[16];
 static char dist_text[16];
 static char sleep_text[16];
 static char deep_text[16];
+static char active_text[16];
 #endif
 
 static uint8_t loaded_font;
@@ -260,6 +264,13 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(deep, GColorClear);
     text_layer_set_text_alignment(deep, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (deep_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+
+    int active_slot = get_slot_for_module(MODULE_ACTIVE);
+    GPoint active_pos = get_pos_for_item(active_slot, ACTIVE_ITEM, mode, selected_font, width, height);
+    active = text_layer_create(GRect(active_pos.x, active_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    text_layer_set_background_color(active, GColorClear);
+    text_layer_set_text_alignment(active, PBL_IF_ROUND_ELSE(
+                GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (active_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     #endif
 
     layer_add_child(window_layer, text_layer_get_layer(hours));
@@ -288,6 +299,7 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(cal));
     layer_add_child(window_layer, text_layer_get_layer(sleep));
     layer_add_child(window_layer, text_layer_get_layer(deep));
+    layer_add_child(window_layer, text_layer_get_layer(active));
     #endif
 }
 
@@ -318,6 +330,7 @@ void destroy_text_layers() {
     text_layer_destroy(sleep);
     text_layer_destroy(cal);
     text_layer_destroy(deep);
+    text_layer_destroy(active);
     #endif
 }
 
@@ -409,6 +422,7 @@ void set_face_fonts() {
     text_layer_set_font(cal, base_font);
     text_layer_set_font(sleep, base_font);
     text_layer_set_font(deep, base_font);
+    text_layer_set_font(active, base_font);
     #endif
 
 }
@@ -431,6 +445,8 @@ void set_colors(Window *window) {
     sleep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPBEHINDCOLOR)) : base_color;
     deep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPCOLOR)) : base_color;
     deep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPBEHINDCOLOR)) : base_color;
+    active_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVECOLOR)) : base_color;
+    active_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVEBEHINDCOLOR)) : base_color;
     #endif
 
     text_layer_set_text_color(date,
@@ -462,28 +478,6 @@ void set_colors(Window *window) {
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
 }
-
-#if defined(PBL_HEALTH)
-void set_progress_color_steps(bool falling_behind) {
-    text_layer_set_text_color(steps, falling_behind ? steps_behind_color : steps_color);
-}
-
-void set_progress_color_dist(bool falling_behind) {
-    text_layer_set_text_color(dist, falling_behind ? dist_behind_color : dist_color);
-}
-
-void set_progress_color_cal(bool falling_behind) {
-    text_layer_set_text_color(cal, falling_behind ? cal_behind_color : cal_color);
-}
-
-void set_progress_color_sleep(bool falling_behind) {
-    text_layer_set_text_color(sleep, falling_behind ? sleep_behind_color : sleep_color);
-}
-
-void set_progress_color_deep(bool falling_behind) {
-    text_layer_set_text_color(deep, falling_behind ? deep_behind_color : deep_color);
-}
-#endif
 
 void set_bluetooth_color() {
     text_layer_set_text_color(bluetooth,
@@ -549,6 +543,30 @@ void set_temp_min_layer_text(char* text) {
 }
 
 #if defined(PBL_HEALTH)
+void set_progress_color_steps(bool falling_behind) {
+    text_layer_set_text_color(steps, falling_behind ? steps_behind_color : steps_color);
+}
+
+void set_progress_color_dist(bool falling_behind) {
+    text_layer_set_text_color(dist, falling_behind ? dist_behind_color : dist_color);
+}
+
+void set_progress_color_cal(bool falling_behind) {
+    text_layer_set_text_color(cal, falling_behind ? cal_behind_color : cal_color);
+}
+
+void set_progress_color_sleep(bool falling_behind) {
+    text_layer_set_text_color(sleep, falling_behind ? sleep_behind_color : sleep_color);
+}
+
+void set_progress_color_deep(bool falling_behind) {
+    text_layer_set_text_color(deep, falling_behind ? deep_behind_color : deep_color);
+}
+
+void set_progress_color_active(bool falling_behind) {
+    text_layer_set_text_color(active, falling_behind ? active_behind_color : active_color);
+}
+
 void set_steps_layer_text(char* text) {
     strcpy(steps_text, text);
     text_layer_set_text(steps, steps_text);
@@ -592,6 +610,16 @@ void set_deep_layer_text(char* text) {
         }
     }
     text_layer_set_text(deep, deep_text);
+}
+
+void set_active_layer_text(char* text) {
+    strcpy(active_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; active_text[i]; ++i) {
+            active_text[i] = toupper((unsigned char)active_text[i]);
+        }
+    }
+    text_layer_set_text(active, active_text);
 }
 #endif
 

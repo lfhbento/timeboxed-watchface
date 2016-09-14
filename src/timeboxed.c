@@ -253,6 +253,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (deepBehindColor) {
         persist_write_int(KEY_DEEPBEHINDCOLOR, deepBehindColor->value->int32);
     }
+
+    Tuple *activeColor = dict_find(iterator, KEY_ACTIVECOLOR);
+    if (activeColor) {
+        persist_write_int(KEY_ACTIVECOLOR, activeColor->value->int32);
+    }
+
+    Tuple *activeBehindColor = dict_find(iterator, KEY_ACTIVEBEHINDCOLOR);
+    if (activeBehindColor) {
+        persist_write_int(KEY_ACTIVEBEHINDCOLOR, activeBehindColor->value->int32);
+    }
     #endif
 
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);

@@ -1,5 +1,5 @@
 {
-  "version": "3.6.0",
+  "version": "3.7.0",
   "author": "LFHB",
   "private": true,
   "dependencies": {},
@@ -258,7 +258,10 @@
       "KEY_SUNRISE": 72,
       "KEY_SUNSET": 73,
       "KEY_SUNRISECOLOR": 74,
-      "KEY_SUNSETCOLOR": 75
+      "KEY_SUNSETCOLOR": 75,
+      "KEY_ACTIVECOLOR": 76,
+      "KEY_ACTIVEBEHINDCOLOR": 77,
+      "KEY_ACTIVE": 78
     },
     "enableMultiJS": false,
     "displayName": "timeboxed",

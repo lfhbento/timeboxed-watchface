@@ -22,6 +22,7 @@ static char cal_text[10];
 static char dist_text[10];
 static char sleep_text[8];
 static char deep_text[8];
+static char active_text[8];
 
 static void clear_health_fields() {
     set_steps_layer_text("");
@@ -29,6 +30,7 @@ static void clear_health_fields() {
     set_cal_layer_text("");
     set_sleep_layer_text("");
     set_deep_layer_text("");
+    set_active_layer_text("");
 }
 
 static bool health_permission_granted() {
@@ -251,6 +253,45 @@ static void get_deep_data() {
 
 }
 
+static void get_active_data() {
+
+    time_t start = time_start_of_today();
+    time_t end = time(NULL);
+    int one_day = 24 * SECONDS_PER_HOUR;
+
+    int current_active = 0;
+    int active_last_week = 0;
+
+    HealthMetric metric_active = HealthMetricActiveSeconds;
+    HealthServiceAccessibilityMask mask_active =
+        health_service_metric_accessible(metric_active, start, end);
+    HealthServiceAccessibilityMask mask_active_average =
+        health_service_metric_averaged_accessible(metric_active, start, end, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+
+    if (mask_active & HealthServiceAccessibilityMaskAvailable) {
+        current_active = (int)health_service_sum_today(metric_active);
+
+        active_last_week = 0;
+        if (mask_active_average & HealthServiceAccessibilityMaskAvailable) {
+            active_last_week = (int)health_service_sum_averaged(metric_active, start, start + 24*SECONDS_PER_HOUR-1, HealthServiceTimeScopeDailyWeekdayOrWeekend);
+        } else {
+            for (int i = 1; i <= 7; i++) {
+                active_last_week += (int)health_service_sum(metric_active, start - i*one_day, start - (i-1)*one_day);
+            }
+            active_last_week /= 7;
+        }
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Active data: %d / %d", current_active, active_last_week);
+
+        int current_active_hours = current_active / SECONDS_PER_HOUR;
+        int current_active_minutes = (current_active - (current_active_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
+
+        snprintf(active_text, sizeof(active_text), "%dh%02dm", current_active_hours, current_active_minutes);
+
+        set_active_layer_text(active_text);
+        set_progress_color_active(current_active < active_last_week);
+    }
+}
+
 void queue_health_update() {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     update_queued = true;
@@ -274,6 +315,9 @@ void get_health_data() {
         }
         if (is_module_enabled(MODULE_DEEP)) {
             get_deep_data();
+        }
+        if (is_module_enabled(MODULE_ACTIVE)) {
+            get_active_data();
         }
     }
 }
@@ -318,6 +362,11 @@ static void load_health_data_from_storage() {
         set_deep_layer_text(deep_text);
         set_progress_color_deep(false);
     }
+    if (is_module_enabled(MODULE_ACTIVE)) {
+        persist_read_string(KEY_ACTIVE, active_text, sizeof(active_text));
+        set_active_layer_text(active_text);
+        set_progress_color_active(false);
+    }
 }
 
 static bool get_health_enabled() {
@@ -326,7 +375,8 @@ static bool get_health_enabled() {
         is_module_enabled(MODULE_DIST) ||
         is_module_enabled(MODULE_CAL) ||
         is_module_enabled(MODULE_SLEEP) ||
-        is_module_enabled(MODULE_DEEP);
+        is_module_enabled(MODULE_DEEP) ||
+        is_module_enabled(MODULE_ACTIVE);
 }
 
 void toggle_health(bool from_configs) {
@@ -433,6 +483,7 @@ void save_health_data_to_storage() {
     persist_write_string(KEY_CAL, cal_text);
     persist_write_string(KEY_SLEEP, sleep_text);
     persist_write_string(KEY_DEEP, deep_text);
+    persist_write_string(KEY_ACTIVE, active_text);
 }
 
 bool should_show_sleep_data() {

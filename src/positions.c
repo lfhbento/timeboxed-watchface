@@ -466,6 +466,36 @@ static GPoint get_deep_positions(int mode, int font, int width, int height) {
 
     return create_point(0, 0);
 };
+
+static GPoint get_active_positions(int mode, int font, int width, int height) {
+    // active time
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(0, 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(0, 3);
+                case SYSTEM_FONT:
+                    return create_point(0, 3);
+                case ARCHIVO_FONT:
+                    return create_point(0, 3);
+                case DIN_FONT:
+                    return create_point(0, 3);
+                case PROTOTYPE_FONT:
+                    return create_point(0, 3);
+                case LECO_FONT:
+                    return create_point(0, 5);
+                case KONSTRUCT_FONT:
+                    return create_point(0, 9);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
 #endif
 
 static GPoint get_speed_positions(int mode, int font, int width, int height) {
@@ -733,6 +763,9 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
             break;
         case DEEP_ITEM:
             item_pos = get_deep_positions(mode, font, width, height);
+            break;
+        case ACTIVE_ITEM:
+            item_pos = get_active_positions(mode, font, width, height);
             break;
         #endif
         case SPEED_ITEM:
