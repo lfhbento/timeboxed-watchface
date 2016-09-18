@@ -486,7 +486,8 @@ static void init(void) {
 
     unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
 
-    accel_data_service_subscribe(10, accel_data_handler);
+    accel_data_service_subscribe(5, accel_data_handler);
+    //accel_service_set_sampling_rate(ACCEL_SAMPLING_50HZ);
 
     battery_state_service_subscribe(battery_handler);
 
