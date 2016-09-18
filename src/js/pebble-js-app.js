@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.7";
+var currentVersion = "3.8";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -50,7 +50,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(url +
         '?v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
-        '&l=' + Pebble.getActiveWatchInfo().language)
+        '&l=' + Pebble.getActiveWatchInfo().language);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -93,7 +93,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_WEATHERPROVIDER;
     delete dict.KEY_OVERRIDELOCATION;
     delete dict.KEY_FORECASTKEY;
-    
+
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
     }, function() {
@@ -311,7 +311,7 @@ function formatWeatherUndergroundDate(hours, minutes) {
 
 function fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation) {
     if (overrideLocation) {
-        findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation)
+        findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation);
     } else {
         executeForecastQuery(pos, weatherKey, useCelsius);
     }

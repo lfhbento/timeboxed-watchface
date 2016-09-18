@@ -192,12 +192,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (windSpeedColor) {
         persist_write_int(KEY_WINDSPEEDCOLOR, windSpeedColor->value->int32);
     }
- 
+
     Tuple *sunriseColor = dict_find(iterator, KEY_SUNRISECOLOR);
     if (sunriseColor) {
         persist_write_int(KEY_SUNRISECOLOR, sunriseColor->value->int32);
     }
- 
+
     Tuple *sunsetColor = dict_find(iterator, KEY_SUNSETCOLOR);
     if (sunsetColor) {
         persist_write_int(KEY_SUNSETCOLOR, sunsetColor->value->int32);

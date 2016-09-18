@@ -201,7 +201,7 @@ void create_text_layers(Window* window) {
     direction = text_layer_create(GRect(direction_pos.x, direction_pos.y, width, 50));
     text_layer_set_background_color(direction, GColorClear);
     text_layer_set_text_alignment(direction, GTextAlignmentLeft);
-    
+
     GPoint wind_unit_pos = get_pos_for_item(wind_slot, WIND_UNIT_ITEM, mode, selected_font, width, height);
     wind_unit = text_layer_create(GRect(wind_unit_pos.x, wind_unit_pos.y, width, 50));
     text_layer_set_background_color(wind_unit, GColorClear);
@@ -212,7 +212,7 @@ void create_text_layers(Window* window) {
     sunrise = text_layer_create(GRect(sunrise_pos.x, sunrise_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunrise, GColorClear);
     text_layer_set_text_alignment(sunrise, GTextAlignmentLeft);
-    
+
     GPoint sunrise_icon_pos = get_pos_for_item(sunrise_slot, SUNRISEICON_ITEM, mode, selected_font, width, height);
     sunrise_icon = text_layer_create(GRect(sunrise_icon_pos.x, sunrise_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
     text_layer_set_background_color(sunrise_icon, GColorClear);
@@ -223,7 +223,7 @@ void create_text_layers(Window* window) {
     sunset = text_layer_create(GRect(sunset_pos.x, sunset_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunset, GColorClear);
     text_layer_set_text_alignment(sunset, GTextAlignmentRight);
-    
+
     GPoint sunset_icon_pos = get_pos_for_item(sunset_slot, SUNSETICON_ITEM, mode, selected_font, width, height);
     sunset_icon = text_layer_create(GRect(sunset_icon_pos.x, sunset_icon_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
     text_layer_set_background_color(sunset_icon, GColorClear);
@@ -431,52 +431,76 @@ void set_colors(Window *window) {
     base_color = persist_exists(KEY_HOURSCOLOR) ? GColorFromHEX(persist_read_int(KEY_HOURSCOLOR)) : GColorWhite;
     text_layer_set_text_color(hours, base_color);
     enable_advanced = is_advanced_colors_enabled();
-    GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
-    GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;
-
-    #if defined(PBL_HEALTH)
-    steps_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color;
-    steps_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : base_color;
-    dist_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color;
-    dist_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : base_color;
-    cal_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALCOLOR)) : base_color;
-    cal_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALBEHINDCOLOR)) : base_color;
-    sleep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPCOLOR)) : base_color;
-    sleep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPBEHINDCOLOR)) : base_color;
-    deep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPCOLOR)) : base_color;
-    deep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPBEHINDCOLOR)) : base_color;
-    active_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVECOLOR)) : base_color;
-    active_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVEBEHINDCOLOR)) : base_color;
-    #endif
 
     text_layer_set_text_color(date,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_DATECOLOR)) : base_color);
     text_layer_set_text_color(alt_time,
             enable_advanced ? GColorFromHEX(persist_read_int(KEY_ALTHOURSCOLOR)) : base_color);
-    text_layer_set_text_color(weather,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
-    text_layer_set_text_color(temp_cur,
-            enable_advanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
-    text_layer_set_text_color(temp_min, min_color);
-    text_layer_set_text_color(min_icon, min_color);
-    text_layer_set_text_color(temp_max, max_color);
-    text_layer_set_text_color(max_icon, max_color);
-
-    text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
-    text_layer_set_text_color(wind_unit, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
-    text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
-
-    GColor sunrise_color = enable_advanced && persist_read_int(KEY_SUNRISECOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNRISECOLOR)) : base_color;
-    GColor sunset_color = enable_advanced && persist_read_int(KEY_SUNSETCOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNSETCOLOR)) : base_color;
-    text_layer_set_text_color(sunrise, sunrise_color); 
-    text_layer_set_text_color(sunrise_icon, sunrise_color);
-    text_layer_set_text_color(sunset, sunset_color);
-    text_layer_set_text_color(sunset_icon, sunset_color);
 
     battery_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYCOLOR)) : base_color;
     battery_low_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_BATTERYLOWCOLOR)) : base_color;
 
     window_set_background_color(window, persist_read_int(KEY_BGCOLOR) ? GColorFromHEX(persist_read_int(KEY_BGCOLOR)) : GColorBlack);
+
+    #if defined(PBL_HEALTH)
+    if (is_module_enabled(MODULE_STEPS)) {
+        steps_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSCOLOR)) : base_color;
+        steps_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_STEPSBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_DIST)) {
+        dist_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTCOLOR)) : base_color;
+        dist_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DISTBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_CAL)) {
+        cal_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALCOLOR)) : base_color;
+        cal_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_CALBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_SLEEP)) {
+        sleep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPCOLOR)) : base_color;
+        sleep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_SLEEPBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_DEEP)) {
+        deep_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPCOLOR)) : base_color;
+        deep_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_DEEPBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_ACTIVE)) {
+        active_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVECOLOR)) : base_color;
+        active_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVEBEHINDCOLOR)) : base_color;
+    }
+    #endif
+
+    if (is_module_enabled(MODULE_WEATHER)) {
+        text_layer_set_text_color(weather,
+                enable_advanced ? GColorFromHEX(persist_read_int(KEY_WEATHERCOLOR)) : base_color);
+        text_layer_set_text_color(temp_cur,
+                enable_advanced ? GColorFromHEX(persist_read_int(KEY_TEMPCOLOR)) : base_color);
+    }
+
+    if (is_module_enabled(MODULE_FORECAST)) {
+        GColor min_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MINCOLOR)) : base_color;
+        GColor max_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_MAXCOLOR)) : base_color;
+        text_layer_set_text_color(temp_min, min_color);
+        text_layer_set_text_color(min_icon, min_color);
+        text_layer_set_text_color(temp_max, max_color);
+        text_layer_set_text_color(max_icon, max_color);
+    }
+
+    if (is_module_enabled(MODULE_WIND)) {
+        text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
+        text_layer_set_text_color(wind_unit, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
+        text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
+    }
+
+    if (is_module_enabled(MODULE_SUNRISE)) {
+        GColor sunrise_color = enable_advanced && persist_read_int(KEY_SUNRISECOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNRISECOLOR)) : base_color;
+        text_layer_set_text_color(sunrise, sunrise_color);
+        text_layer_set_text_color(sunrise_icon, sunrise_color);
+    }
+    if (is_module_enabled(MODULE_SUNSET)) {
+        GColor sunset_color = enable_advanced && persist_read_int(KEY_SUNSETCOLOR) ? GColorFromHEX(persist_read_int(KEY_SUNSETCOLOR)) : base_color;
+        text_layer_set_text_color(sunset, sunset_color);
+        text_layer_set_text_color(sunset_icon, sunset_color);
+    }
 }
 
 void set_bluetooth_color() {

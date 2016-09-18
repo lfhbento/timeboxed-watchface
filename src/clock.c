@@ -15,10 +15,10 @@ void set_hours(struct tm* tick_time, char* hour_text, int hour_text_len) {
     if (is_leading_zero_disabled()) {
         strftime(hour_text, hour_text_len, (clock_is_24h_style() ? "%k:%M" : "%l:%M"), tick_time);
         if (hour_text[0] == ' ') {
-            for (int i = 0; i < 12; ++i) {
+            for (int i = 0; i < hour_text_len; ++i) {
                 hour_text[i] = hour_text[i+1];
             }
-            hour_text[12] = '\0';
+            hour_text[hour_text_len - 1] = '\0';
         }
     } else {
         strftime(hour_text, hour_text_len, (clock_is_24h_style() ? "%H:%M" : "%I:%M"), tick_time);
@@ -41,17 +41,7 @@ void update_time() {
     set_hours(tick_time, hour_text, sizeof(hour_text));
 
     if (is_timezone_enabled()) {
-        if (is_leading_zero_disabled()) {
-            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%k:%M" : "%l:%M%p"), gmt_time);
-            if (tz_text[0] == ' ') {
-                for (int i = 0; i < 12; ++i) {
-                    tz_text[i] = tz_text[i+1];
-                }
-                tz_text[12] = '\0';
-            }
-        } else {
-            strftime(tz_text, sizeof(tz_text), (clock_is_24h_style() ? "%H:%M" : "%I:%M%p"), gmt_time);
-        }
+        set_hours(gmt_time, tz_text, sizeof(tz_text));
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
             (gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon > tick_time->tm_mon) ||
