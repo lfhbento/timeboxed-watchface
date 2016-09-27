@@ -1,17 +1,21 @@
 #include <pebble.h>
+#include "screen.h"
+#include "configs.h"
+#include "keys.h"
 
 static bool initialized;
 static int lastPassZ;
 static int lastZ;
-static bool is_tap;
 static bool begin_tap;
 static bool mid_tap;
 static bool end_tap;
 static bool neg;
 static int mid_tap_count;
 static int end_tap_count;
-AppTimer * timer;
-static const uint32_t const segments[] = { 100 };
+static bool show_tap_mode;
+static int timeout_sec;
+
+static Window *watchface_ref;
 
 static void reset_tap() {
     begin_tap = false;
@@ -22,12 +26,15 @@ static void reset_tap() {
 }
 
 static void reset_tap_handler(void * data) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "resetting tap detection");
-    reset_tap();
-    is_tap = false;
+    show_tap_mode = false;
+    redraw_screen(watchface_ref);
 }
 
 void accel_data_handler(AccelData *data, uint32_t num_samples) {
+    if (show_tap_mode) {
+        return;
+    }
+
     int passZ[2];
     int Z[2];
     int X[2];
@@ -37,7 +44,7 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
         passZ[0] = passZ[1] = data[0].z;
         Z[0] = Z[1] = data[0].z;
         initialized = true;
-        is_tap = false;
+        show_tap_mode = false;
         reset_tap();
     } else {
         passZ[0] = passZ[1] = lastPassZ;
@@ -48,12 +55,11 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     Y[0] = Y[1] = data[0].y;
 
     float a = 0.1;
-    int high_threshold = 40;
-    int low_threshold = 12;
+    int high_threshold = 30;
+    int low_threshold = 10;
     int range = 2;
-    int timeout = 700;
-    int x_threshold = 400;
-    int y_threshold = 200;
+    int x_threshold = 350;
+    int y_threshold = 150;
     for (int i = 1; i < (int)num_samples + 1; ++i) {
         Z[1] = data[i-1].z;
         X[1] = data[i-1].x;
@@ -66,12 +72,9 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
                 end_tap_count++;
                 if (abs(passZ[1]) <= abs(low_threshold)) {
                     end_tap = true;
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "end %d %d", passZ[0], passZ[1]);
                 }
             } else {
                 reset_tap();
-                is_tap = false;
-                //APP_LOG(APP_LOG_LEVEL_DEBUG, "not end -- %d %d", passZ[0], passZ[1]);
             }
         }
 
@@ -80,52 +83,29 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
                 mid_tap_count++;
                 if ((neg && passZ[1] >= high_threshold) || (!neg && passZ[1] <= -1*high_threshold)) {
                     mid_tap = true;
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "mid %d %d", passZ[0], passZ[1]);
                 }
             } else {
                 reset_tap();
-                is_tap = false;
-                //APP_LOG(APP_LOG_LEVEL_DEBUG, "not mid -- %d %d", passZ[0], passZ[1]);
             }
         }
 
         if (
-            (is_tap || abs(passZ[0]) <= low_threshold) &&
-            (is_tap || (abs(X[0]) <= x_threshold &&
+            (abs(passZ[0]) <= low_threshold) &&
+            ((abs(X[0]) <= x_threshold &&
                 Y[0] <= y_threshold)) &&
             abs(passZ[1]) >= high_threshold &&
             !begin_tap
         ) {
             begin_tap = true;
             neg = passZ[1] < 0;
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "begin %d %d", passZ[0], passZ[1]);
-            //APP_LOG(APP_LOG_LEVEL_DEBUG, "X %d %d", X[0], X[1]);
-            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Y %d %d", Y[0], Y[1]);
-        } else if (is_tap && !begin_tap) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "-- not begin %d %d", passZ[0], passZ[1]);
         }
 
         if (begin_tap && mid_tap && end_tap) {
-            if (!is_tap) {
-                //is_tap = true;
-                //timer = app_timer_register(timeout, reset_tap_handler, NULL);
-                APP_LOG(APP_LOG_LEVEL_DEBUG, "this is a tap");
-                VibePattern pat = {
-                    .durations = segments,
-                    .num_segments = ARRAY_LENGTH(segments),
-                };
-                vibes_enqueue_custom_pattern(pat);
-            } else {
-                app_timer_cancel(timer);
-                APP_LOG(APP_LOG_LEVEL_DEBUG, "this is a second tap");
-                VibePattern pat = {
-                    .durations = segments,
-                    .num_segments = ARRAY_LENGTH(segments),
-                };
-                vibes_enqueue_custom_pattern(pat);
-                is_tap = false;
-            }
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "this is a tap");
+            show_tap_mode = true;
+            app_timer_register(timeout_sec * 1000, reset_tap_handler, NULL);
             reset_tap();
+            redraw_screen(watchface_ref);
         }
         passZ[0] = passZ[1];
         Z[0] = Z[1];
@@ -135,4 +115,18 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
 
     lastPassZ = passZ[1];
     lastZ = Z[1];
+}
+
+bool tap_mode_visible() {
+    return show_tap_mode;
+}
+
+void init_accel_service(Window * watchface) {
+    timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
+    if (is_tap_enabled()) {
+        watchface_ref = watchface;
+        accel_data_service_subscribe(5, accel_data_handler);
+    } else {
+        accel_data_service_unsubscribe();
+    }
 }

@@ -5,6 +5,8 @@
 
 void load_screen(bool from_configs, Window *watchface);
 void redraw_screen(Window *watchface);
+void reload_fonts();
+void recreate_text_layers(Window * watchface);
 void bt_handler(bool connected);
 void battery_handler(BatteryChargeState battery_state);
 void update_time();

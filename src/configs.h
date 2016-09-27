@@ -6,7 +6,7 @@ int get_config_toggles();
 bool is_module_enabled(int);
 int get_slot_for_module(int);
 
-void set_module(int, int, bool);
+void set_module(int, int, int);
 
 bool is_weather_toggle_enabled();
 bool is_health_toggle_enabled();
@@ -21,6 +21,7 @@ bool is_use_calories_enabled();
 bool is_simple_mode_enabled();
 bool is_timezone_enabled();
 bool is_quickview_disabled();
+bool is_tap_enabled();
 
 int get_wind_speed_unit();
 

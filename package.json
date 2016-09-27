@@ -1,5 +1,5 @@
 {
-  "version": "3.8.0",
+  "version": "4.0.0",
   "author": "LFHB",
   "private": true,
   "dependencies": {},
@@ -261,7 +261,17 @@
       "KEY_SUNSETCOLOR": 75,
       "KEY_ACTIVECOLOR": 76,
       "KEY_ACTIVEBEHINDCOLOR": 77,
-      "KEY_ACTIVE": 78
+      "KEY_ACTIVE": 78,
+      "KEY_TAPSLOTA": 79,
+      "KEY_TAPSLOTB": 80,
+      "KEY_TAPSLOTC": 81,
+      "KEY_TAPSLOTD": 82,
+      "KEY_TAPTIME": 83,
+      "KEY_SHOWTAP": 84,
+      "KEY_HEART": 85,
+      "KEY_HEARTCOLOR": 86,
+      "KEY_HEARTCOLOROFF": 87,
+      "KEY_WEATHERTIME": 88
     },
     "enableMultiJS": false,
     "displayName": "timeboxed",

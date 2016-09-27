@@ -6,13 +6,9 @@
 #include "locales.h"
 #include "configs.h"
 #include "keys.h"
+#include "accel.h"
 
 void load_screen(bool from_configs, Window *watchface) {
-    if (from_configs) {
-        unload_face_fonts();
-    }
-    load_face_fonts();
-    set_face_fonts();
     load_locale();
     update_time();
     set_colors(watchface);
@@ -22,9 +18,19 @@ void load_screen(bool from_configs, Window *watchface) {
     bt_handler(connection_service_peek_pebble_app_connection());
 }
 
-void redraw_screen(Window *watchface) {
+void reload_fonts() {
+    unload_face_fonts();
+    load_face_fonts();
+}
+
+void recreate_text_layers(Window * watchface) {
     destroy_text_layers();
     create_text_layers(watchface);
+    set_face_fonts();
+}
+
+void redraw_screen(Window *watchface) {
+    recreate_text_layers(watchface);
     load_screen(true, watchface);
 }
 

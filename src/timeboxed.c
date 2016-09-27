@@ -14,6 +14,7 @@
 static Window *watchface;
 
 static uint8_t min_counter;
+static uint8_t weather_interval;
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     Tuple *error_tuple = dict_find(iterator, KEY_ERROR);
@@ -92,6 +93,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (showSleep) {
         bool enabled = showSleep->value->int8;
         if (enabled) configs += FLAG_SLEEP;
+    }
+
+    Tuple *showTap = dict_find(iterator, KEY_SHOWTAP);
+    if (showTap) {
+        bool enabled = showTap->value->int8;
+        if (enabled) configs += FLAG_TAP;
     }
 
     Tuple *enableWeather = dict_find(iterator, KEY_ENABLEWEATHER);
@@ -339,51 +346,91 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *slotA = dict_find(iterator, KEY_SLOTA);
     if (slotA) {
         int value = slotA->value->int8;
-        set_module(SLOT_A, value, false);
+        set_module(SLOT_A, value, STATE_NORMAL);
         persist_write_int(KEY_SLOTA, value);
     }
     Tuple *slotB = dict_find(iterator, KEY_SLOTB);
     if (slotB) {
         int value = slotB->value->int8;
-        set_module(SLOT_B, value, false);
+        set_module(SLOT_B, value, STATE_NORMAL);
         persist_write_int(KEY_SLOTB, value);
     }
     Tuple *slotC = dict_find(iterator, KEY_SLOTC);
     if (slotC) {
         int value = slotC->value->int8;
-        set_module(SLOT_C, value, false);
+        set_module(SLOT_C, value, STATE_NORMAL);
         persist_write_int(KEY_SLOTC, value);
     }
     Tuple *slotD = dict_find(iterator, KEY_SLOTD);
     if (slotD) {
         int value = slotD->value->int8;
-        set_module(SLOT_D, value, false);
+        set_module(SLOT_D, value, STATE_NORMAL);
         persist_write_int(KEY_SLOTD, value);
     }
 
     Tuple *slotASleep = dict_find(iterator, KEY_SLEEPSLOTA);
     if (slotASleep) {
         int value = slotASleep->value->int8;
-        set_module(SLOT_A, value, true);
+        set_module(SLOT_A, value, STATE_SLEEP);
+        set_module(SLOT_A, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTA, value);
     }
     Tuple *slotBSleep = dict_find(iterator, KEY_SLEEPSLOTB);
     if (slotBSleep) {
         int value = slotBSleep->value->int8;
-        set_module(SLOT_B, value, true);
+        set_module(SLOT_B, value, STATE_SLEEP);
+        set_module(SLOT_B, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTB, value);
     }
     Tuple *slotCSleep = dict_find(iterator, KEY_SLEEPSLOTC);
     if (slotCSleep) {
         int value = slotCSleep->value->int8;
-        set_module(SLOT_C, value, true);
+        set_module(SLOT_C, value, STATE_SLEEP);
+        set_module(SLOT_C, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTC, value);
     }
     Tuple *slotDSleep = dict_find(iterator, KEY_SLEEPSLOTD);
     if (slotDSleep) {
         int value = slotDSleep->value->int8;
-        set_module(SLOT_D, value, true);
+        set_module(SLOT_D, value, STATE_SLEEP);
+        set_module(SLOT_D, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTD, value);
+    }
+
+    Tuple *slotATap = dict_find(iterator, KEY_TAPSLOTA);
+    if (slotATap) {
+        int value = slotATap->value->int8;
+        set_module(SLOT_A, value, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTA, value);
+    }
+    Tuple *slotBTap = dict_find(iterator, KEY_TAPSLOTB);
+    if (slotBTap) {
+        int value = slotBTap->value->int8;
+        set_module(SLOT_B, value, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTB, value);
+    }
+    Tuple *slotCTap = dict_find(iterator, KEY_TAPSLOTC);
+    if (slotCTap) {
+        int value = slotCTap->value->int8;
+        set_module(SLOT_C, value, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTC, value);
+    }
+    Tuple *slotDTap = dict_find(iterator, KEY_TAPSLOTD);
+    if (slotDTap) {
+        int value = slotDTap->value->int8;
+        set_module(SLOT_D, value, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTD, value);
+    }
+
+    Tuple *tapTime = dict_find(iterator, KEY_TAPTIME);
+    if (tapTime) {
+        persist_write_int(KEY_TAPTIME, tapTime->value->int8);
+    }
+
+    Tuple *weatherTime = dict_find(iterator, KEY_WEATHERTIME);
+    if (weatherTime) {
+        weather_interval = weatherTime->value->int8;
+        persist_write_int(KEY_WEATHERTIME, weather_interval);
     }
 
     Tuple *dateSeparator = dict_find(iterator, KEY_DATESEPARATOR);
@@ -395,8 +442,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     set_config_toggles(configs);
     set_timezone(tz_name, tz_hour, tz_minute);
 
-    destroy_text_layers();
-    create_text_layers(watchface);
+    init_accel_service(watchface);
+    reload_fonts();
+    recreate_text_layers(watchface);
     load_screen(true, watchface);
 }
 
@@ -410,8 +458,7 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
 static void unobstructed_area_handle_changes() {
-    destroy_text_layers();
-    create_text_layers(watchface);
+    recreate_text_layers(watchface);
     load_screen(false, watchface);
 }
 
@@ -423,8 +470,11 @@ static void unobstructed_area_did_change(void * context) {
 
 static void watchface_load(Window *window) {
     create_text_layers(window);
+    load_face_fonts();
+    set_face_fonts();
 
-    min_counter = 30; // after loading, get the next weather update
+    weather_interval = persist_exists(KEY_WEATHERTIME) ? persist_read_int(KEY_WEATHERTIME) : 30;
+    min_counter = weather_interval; // after loading, get the next weather update
 
     load_timezone_from_storage();
 }
@@ -448,9 +498,11 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         notify_update(false);
     }
 
-    uint8_t tick_interval = is_user_sleeping() ? 90 : 30;
+    uint8_t tick_interval = is_user_sleeping() ? 90 : weather_interval;
 
-    show_sleep_data_if_visible(watchface);
+    if (!tap_mode_visible()) {
+        show_sleep_data_if_visible(watchface);
+    }
 
     if(min_counter >= tick_interval) {
         if (is_weather_enabled()) {
@@ -486,8 +538,7 @@ static void init(void) {
 
     unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
 
-    accel_data_service_subscribe(5, accel_data_handler);
-    //accel_service_set_sampling_rate(ACCEL_SAMPLING_50HZ);
+    init_accel_service(watchface);
 
     battery_state_service_subscribe(battery_handler);
 

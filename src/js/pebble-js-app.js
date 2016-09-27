@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "3.8";
+var currentVersion = "4.0";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -45,10 +45,10 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/';
-    //url = 'http://192.168.1.3:8080';
+    var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/?';
+    url = 'http://192.168.1.3:8080?nonce=' + new Date().getTime() + '&';
     Pebble.openURL(url +
-        '?v=' + currentVersion +
+        'v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language);
 });
@@ -76,7 +76,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
         }
         if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' ||
                 key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1 ||
-                key === 'KEY_SPEEDUNIT' || key === 'KEY_DATESEPARATOR') {
+                key === 'KEY_SPEEDUNIT' || key === 'KEY_DATESEPARATOR' || key === 'KEY_TAPTIME' ||
+                key === 'KEY_WEATHERTIME') {
             value = parseInt(value, 10);
         }
         dict[key] = value;
