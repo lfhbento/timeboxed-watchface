@@ -21,6 +21,8 @@ static TextLayer *dist;
 static TextLayer *cal;
 static TextLayer *deep;
 static TextLayer *active;
+static TextLayer *heart;
+static TextLayer *heart_icon;
 #endif
 
 static TextLayer *weather;
@@ -59,6 +61,8 @@ static GColor deep_color;
 static GColor deep_behind_color;
 static GColor active_color;
 static GColor active_behind_color;
+static GColor heart_color;
+static GColor heart_color_off;
 #endif
 
 static char hour_text[13];
@@ -89,6 +93,10 @@ static char dist_text[16];
 static char sleep_text[16];
 static char deep_text[16];
 static char active_text[16];
+static char heart_text[16];
+static char heart_icon_text[4];
+static uint8_t heart_low;
+static uint8_t heart_high;
 #endif
 
 static uint8_t loaded_font;
@@ -137,7 +145,6 @@ void create_text_layers(Window* window) {
     date = text_layer_create(GRect(text_positions.date.x, text_positions.date.y, width, 50));
     text_layer_set_background_color(date, GColorClear);
     text_layer_set_text_alignment(date, text_align);
-    //layer_set_hidden(text_layer_get_layer(date), height != full_height);
 
     alt_time = text_layer_create(GRect(text_positions.alt_time.x, text_positions.alt_time.y, width, 50));
     text_layer_set_background_color(alt_time, GColorClear);
@@ -271,6 +278,17 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(active, GColorClear);
     text_layer_set_text_alignment(active, PBL_IF_ROUND_ELSE(
                 GTextAlignmentCenter, is_simple_mode_enabled() ? text_align : (active_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+
+    int heart_slot = get_slot_for_module(MODULE_HEART);
+    GPoint heart_pos = get_pos_for_item(heart_slot, HEART_ITEM, mode, selected_font, width, height);
+    heart = text_layer_create(GRect(heart_pos.x, heart_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    text_layer_set_background_color(heart, GColorClear);
+    text_layer_set_text_alignment(heart, GTextAlignmentLeft);
+
+    GPoint heart_icon_pos = get_pos_for_item(heart_slot, HEARTICON_ITEM, mode, selected_font, width, height);
+    heart_icon = text_layer_create(GRect(heart_icon_pos.x, heart_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
+    text_layer_set_background_color(heart_icon, GColorClear);
+    text_layer_set_text_alignment(heart_icon, GTextAlignmentLeft);
     #endif
 
     layer_add_child(window_layer, text_layer_get_layer(hours));
@@ -300,6 +318,8 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(sleep));
     layer_add_child(window_layer, text_layer_get_layer(deep));
     layer_add_child(window_layer, text_layer_get_layer(active));
+    layer_add_child(window_layer, text_layer_get_layer(heart));
+    layer_add_child(window_layer, text_layer_get_layer(heart_icon));
     #endif
 }
 
@@ -331,6 +351,8 @@ void destroy_text_layers() {
     text_layer_destroy(cal);
     text_layer_destroy(deep);
     text_layer_destroy(active);
+    text_layer_destroy(heart);
+    text_layer_destroy(heart_icon);
     #endif
 }
 
@@ -423,6 +445,8 @@ void set_face_fonts() {
     text_layer_set_font(sleep, base_font);
     text_layer_set_font(deep, base_font);
     text_layer_set_font(active, base_font);
+    text_layer_set_font(heart, base_font);
+    text_layer_set_font(heart_icon, custom_font);
     #endif
 
 }
@@ -466,6 +490,12 @@ void set_colors(Window *window) {
     if (is_module_enabled(MODULE_ACTIVE)) {
         active_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVECOLOR)) : base_color;
         active_behind_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_ACTIVEBEHINDCOLOR)) : base_color;
+    }
+    if (is_module_enabled(MODULE_HEART)) {
+        heart_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_HEARTCOLOR)) : base_color;
+        heart_color_off = enable_advanced ? GColorFromHEX(persist_read_int(KEY_HEARTCOLOROFF)) : base_color;
+        heart_low = persist_exists(KEY_HEARTLOW) ? persist_read_int(KEY_HEARTLOW) : 0;
+        heart_high = persist_exists(KEY_HEARTHIGH) ? persist_read_int(KEY_HEARTHIGH) : 0;
     }
     #endif
 
@@ -591,6 +621,20 @@ void set_progress_color_active(bool falling_behind) {
     text_layer_set_text_color(active, falling_behind ? active_behind_color : active_color);
 }
 
+void set_progress_color_heart(int heart_value) {
+    bool is_above_low = heart_low == 0 ||
+        (heart_low > 0 && heart_value >= heart_low);
+    bool is_below_high = heart_high == 0 ||
+        (heart_high > 0 && heart_value <= heart_high);
+    if (is_above_low && is_below_high) {
+        text_layer_set_text_color(heart, heart_color);
+        text_layer_set_text_color(heart_icon, heart_color);
+    } else {
+        text_layer_set_text_color(heart, heart_color_off);
+        text_layer_set_text_color(heart_icon, heart_color_off);
+    }
+}
+
 void set_steps_layer_text(char* text) {
     strcpy(steps_text, text);
     text_layer_set_text(steps, steps_text);
@@ -644,6 +688,21 @@ void set_active_layer_text(char* text) {
         }
     }
     text_layer_set_text(active, active_text);
+}
+
+void set_heart_layer_text(char* text) {
+    strcpy(heart_text, text);
+    if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
+        for (unsigned char i = 0; active_text[i]; ++i) {
+            active_text[i] = toupper((unsigned char)active_text[i]);
+        }
+    }
+    text_layer_set_text(heart, heart_text);
+}
+
+void set_heart_icon_layer_text(char* text) {
+    strcpy(heart_icon_text, text);
+    text_layer_set_text(heart_icon, heart_icon_text);
 }
 #endif
 

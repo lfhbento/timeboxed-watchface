@@ -23,6 +23,7 @@ static char dist_text[10];
 static char sleep_text[8];
 static char deep_text[8];
 static char active_text[8];
+static char heart_text[10];
 
 static void clear_health_fields() {
     set_steps_layer_text("");
@@ -31,6 +32,8 @@ static void clear_health_fields() {
     set_sleep_layer_text("");
     set_deep_layer_text("");
     set_active_layer_text("");
+    set_heart_layer_text("");
+    set_heart_icon_layer_text("");
 }
 
 static bool health_permission_granted() {
@@ -292,6 +295,23 @@ static void get_active_data() {
     }
 }
 
+static void get_heart_data() {
+    int current_heart = 0;
+
+    HealthMetric metric_heart = HealthMetricHeartRateBPM;
+
+    current_heart = (int)health_service_peek_current_value(metric_heart);
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Heart data: %d", current_heart);
+
+    snprintf(heart_text, sizeof(heart_text), "%d", current_heart);
+
+
+    set_heart_layer_text(heart_text);
+    set_heart_icon_layer_text("v");
+    set_progress_color_heart(current_heart);
+}
+
 void queue_health_update() {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Queued health update. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
     update_queued = true;
@@ -318,6 +338,9 @@ void get_health_data() {
         }
         if (is_module_enabled(MODULE_ACTIVE)) {
             get_active_data();
+        }
+        if (is_module_enabled(MODULE_HEART)) {
+            get_heart_data();
         }
     }
 }
@@ -367,6 +390,11 @@ static void load_health_data_from_storage() {
         set_active_layer_text(active_text);
         set_progress_color_active(false);
     }
+    if (is_module_enabled(MODULE_HEART)) {
+        set_heart_layer_text("0");
+        set_heart_icon_layer_text("v");
+        set_progress_color_heart(0);
+    }
 }
 
 static bool get_health_enabled() {
@@ -376,7 +404,8 @@ static bool get_health_enabled() {
         is_module_enabled(MODULE_CAL) ||
         is_module_enabled(MODULE_SLEEP) ||
         is_module_enabled(MODULE_DEEP) ||
-        is_module_enabled(MODULE_ACTIVE);
+        is_module_enabled(MODULE_ACTIVE) ||
+        is_module_enabled(MODULE_HEART);
 }
 
 void toggle_health(bool from_configs) {

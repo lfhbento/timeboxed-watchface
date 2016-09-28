@@ -1,6 +1,6 @@
 {
   "version": "4.0.0",
-  "author": "LFHB",
+  "author": "Luis Bento",
   "private": true,
   "dependencies": {},
   "keywords": [
@@ -271,10 +271,12 @@
       "KEY_HEART": 85,
       "KEY_HEARTCOLOR": 86,
       "KEY_HEARTCOLOROFF": 87,
-      "KEY_WEATHERTIME": 88
+      "KEY_WEATHERTIME": 88,
+      "KEY_HEARTLOW": 89,
+      "KEY_HEARTHIGH": 90
     },
     "enableMultiJS": false,
-    "displayName": "timeboxed",
+    "displayName": "Timeboxed",
     "watchapp": {
       "onlyShownOnCommunication": false,
       "hiddenApp": false,

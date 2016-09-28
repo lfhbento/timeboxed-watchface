@@ -46,7 +46,7 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/?';
-    url = 'http://192.168.1.3:8080?nonce=' + new Date().getTime() + '&';
+    //url = 'http://192.168.1.3:8080?nonce=' + new Date().getTime() + '&';
     Pebble.openURL(url +
         'v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
@@ -77,7 +77,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
         if (key === 'KEY_FONTTYPE' || key === 'KEY_DATEFORMAT' || key === 'KEY_LOCALE' ||
                 key === 'KEY_TEXTALIGN' || key === 'KEY_WEATHERPROVIDER' || key.indexOf('SLOT') !== -1 ||
                 key === 'KEY_SPEEDUNIT' || key === 'KEY_DATESEPARATOR' || key === 'KEY_TAPTIME' ||
-                key === 'KEY_WEATHERTIME') {
+                key === 'KEY_WEATHERTIME' || key === 'KEY_HEARTHIGH' || key === 'KEY_HEARTLOW') {
             value = parseInt(value, 10);
         }
         dict[key] = value;
@@ -328,7 +328,7 @@ function findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation) {
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
     var query = 'select centroid from geo.places(1) where text="' + overrideLocation + '"';
     url += encodeURIComponent(query);
-    console.log('Retrieving location data for Forecast.io');
+    console.log('Retrieving location data for Dark Sky');
     console.log(url);
     xhrRequest(url, 'GET', function(responseText) {
         try {
@@ -356,9 +356,9 @@ function executeForecastQuery(pos, weatherKey, useCelsius, overrideLocation) {
     console.log(JSON.stringify(pos));
     var truncLat = pos.coords.latitude.toFixed(4);
     var truncLng = pos.coords.longitude.toFixed(4);
-    var url = 'https://api.forecast.io/forecast/' + weatherKey + '/' + truncLat  + ',' + truncLng;
+    var url = 'https://api.darksky.net/forecast/' + weatherKey + '/' + truncLat  + ',' + truncLng;
 
-    console.log('Retrieving weather data from Forecast.io');
+    console.log('Retrieving weather data from Dark Sky');
     console.log(url);
     xhrRequest(url, 'GET', function(responseText) {
         try {

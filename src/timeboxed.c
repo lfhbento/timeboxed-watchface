@@ -271,6 +271,26 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (activeBehindColor) {
         persist_write_int(KEY_ACTIVEBEHINDCOLOR, activeBehindColor->value->int32);
     }
+
+    Tuple *heartColor = dict_find(iterator, KEY_HEARTCOLOR);
+    if (heartColor) {
+        persist_write_int(KEY_HEARTCOLOR, heartColor->value->int32);
+    }
+
+    Tuple *heartColorOff = dict_find(iterator, KEY_HEARTCOLOROFF);
+    if (heartColorOff) {
+        persist_write_int(KEY_HEARTCOLOROFF, heartColorOff->value->int32);
+    }
+
+    Tuple *heartLow = dict_find(iterator, KEY_HEARTLOW);
+    if (heartLow) {
+        persist_write_int(KEY_HEARTLOW, heartLow->value->int32);
+    }
+
+    Tuple *heartHigh = dict_find(iterator, KEY_HEARTHIGH);
+    if (heartHigh) {
+        persist_write_int(KEY_HEARTHIGH, heartHigh->value->int32);
+    }
     #endif
 
     Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
@@ -513,7 +533,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         }
         min_counter = 0;
     }
-    if (tick_time->tm_min % 2 == 0) { // check for health updates every 2 minutes
+    if (tick_time->tm_min % 2 == 0 || is_module_enabled(MODULE_HEART)) { // check for health updates only every 2 minutes if heart rate is disabled
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         get_health_data();
     }
@@ -548,7 +568,7 @@ static void init(void) {
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
-    app_message_open(640, 64);
+    app_message_open(768, 64);
 
     connection_service_subscribe((ConnectionHandlers) {
 	.pebble_app_connection_handler = bt_handler

@@ -34,6 +34,7 @@ void set_progress_color_cal(bool);
 void set_progress_color_sleep(bool);
 void set_progress_color_deep(bool);
 void set_progress_color_active(bool);
+void set_progress_color_heart(int);
 
 void set_steps_layer_text(char*);
 void set_dist_layer_text(char*);
@@ -41,6 +42,8 @@ void set_cal_layer_text(char*);
 void set_sleep_layer_text(char*);
 void set_deep_layer_text(char*);
 void set_active_layer_text(char*);
+void set_heart_layer_text(char*);
+void set_heart_icon_layer_text(char*);
 #endif
 
 void set_weather_layer_text(char*);

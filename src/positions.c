@@ -496,6 +496,66 @@ static GPoint get_active_positions(int mode, int font, int width, int height) {
 
     return create_point(0, 0);
 };
+
+static GPoint get_heart_positions(int mode, int font, int width, int height) {
+    // heart
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 9);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
+static GPoint get_heart_icon_positions(int mode, int font, int width, int height) {
+    // heart icon
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 4);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 6);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 4);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 6);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
 #endif
 
 static GPoint get_speed_positions(int mode, int font, int width, int height) {
@@ -766,6 +826,12 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
             break;
         case ACTIVE_ITEM:
             item_pos = get_active_positions(mode, font, width, height);
+            break;
+        case HEART_ITEM:
+            item_pos = get_heart_positions(mode, font, width, height);
+            break;
+        case HEARTICON_ITEM:
+            item_pos = get_heart_icon_positions(mode, font, width, height);
             break;
         #endif
         case SPEED_ITEM:
