@@ -31,7 +31,7 @@ static void reset_tap_handler(void * data) {
 }
 
 void accel_data_handler(AccelData *data, uint32_t num_samples) {
-    if (show_tap_mode) {
+    if (show_tap_mode || data[0].did_vibrate || data[1].did_vibrate) {
         return;
     }
 
@@ -54,8 +54,8 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     X[0] = X[1] = data[0].x;
     Y[0] = Y[1] = data[0].y;
 
-    float a = 0.1;
-    int high_threshold = 30;
+    float a = 0.2;
+    int high_threshold = 40;
     int low_threshold = 10;
     int range = 2;
     int x_threshold = 350;
