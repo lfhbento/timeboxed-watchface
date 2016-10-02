@@ -41,8 +41,8 @@ static char* MONTHS[14][12] = {
     {"Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"}, // sk_SK
 };
 
-static char* SEPARATORS[3] = {
-    " ", ".", "/"
+static char* SEPARATORS[4] = {
+    " ", ".", "/", "-"
 };
 
 void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int separator) {
@@ -76,6 +76,9 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
             break;
         case FORMAT_WSMD:
             snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
+            break;
+        case FORMAT_ISO:
+            snprintf(buffer, buf_size, "%04d%s%02d%s%02d", ((int)tick_time->tm_year + 1900), SEPARATORS[separator], tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
             break;
     }
 }

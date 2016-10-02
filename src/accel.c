@@ -4,7 +4,11 @@
 #include "keys.h"
 
 static bool initialized;
+static int lastPassX;
+static int lastPassY;
 static int lastPassZ;
+static int lastX;
+static int lastY;
 static int lastZ;
 static bool begin_tap;
 static bool mid_tap;
@@ -31,32 +35,46 @@ static void reset_tap_handler(void * data) {
 }
 
 void accel_data_handler(AccelData *data, uint32_t num_samples) {
-    if (show_tap_mode || data[0].did_vibrate || data[1].did_vibrate) {
+    if (show_tap_mode) {
         return;
     }
 
+    for (int i = 0; i < (int)num_samples; ++i) {
+        if (data[i].did_vibrate) {
+            return;
+        }
+    }
+
+    int passX[2];
+    int passY[2];
     int passZ[2];
     int Z[2];
     int X[2];
     int Y[2];
 
     if (!initialized) {
+        passX[0] = passX[1] = data[0].x;
+        passY[0] = passY[1] = data[0].y;
         passZ[0] = passZ[1] = data[0].z;
         Z[0] = Z[1] = data[0].z;
+        X[0] = X[1] = data[0].x;
+        Y[0] = Y[1] = data[0].y;
         initialized = true;
         show_tap_mode = false;
         reset_tap();
     } else {
+        passX[0] = passX[1] = lastPassX;
+        passY[0] = passY[1] = lastPassY;
         passZ[0] = passZ[1] = lastPassZ;
+        X[0] = X[1] = lastX;
+        Y[0] = Y[1] = lastY;
         Z[0] = Z[1] = lastZ;
     }
 
-    X[0] = X[1] = data[0].x;
-    Y[0] = Y[1] = data[0].y;
-
     float a = 0.2;
-    int high_threshold = 40;
+    int high_threshold = 30;
     int low_threshold = 10;
+    int threshold_other_axis = 15;
     int range = 2;
     int x_threshold = 350;
     int y_threshold = 150;
@@ -65,6 +83,8 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
         X[1] = data[i-1].x;
         Y[1] = data[i-1].y;
 
+        passX[1] = (int) (a * (passX[0] + X[1] - X[0]));
+        passY[1] = (int) (a * (passY[0] + Y[1] - Y[0]));
         passZ[1] = (int) (a * (passZ[0] + Z[1] - Z[0]));
 
         if (!end_tap && mid_tap) {
@@ -93,6 +113,8 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
             (abs(passZ[0]) <= low_threshold) &&
             ((abs(X[0]) <= x_threshold &&
                 Y[0] <= y_threshold)) &&
+            ((abs(passX[0]) <= threshold_other_axis &&
+                abs(passY[0]) <= threshold_other_axis)) &&
             abs(passZ[1]) >= high_threshold &&
             !begin_tap
         ) {
@@ -107,13 +129,19 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
             reset_tap();
             redraw_screen(watchface_ref);
         }
+        passX[0] = passX[1];
+        passY[0] = passY[1];
         passZ[0] = passZ[1];
         Z[0] = Z[1];
         X[0] = X[1];
         Y[0] = Y[1];
     }
 
+    lastPassX = passX[1];
+    lastPassY = passY[1];
     lastPassZ = passZ[1];
+    lastX = X[1];
+    lastY = Y[1];
     lastZ = Z[1];
 }
 
