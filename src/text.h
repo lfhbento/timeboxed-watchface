@@ -57,5 +57,7 @@ void set_sunrise_layer_text(char*);
 void set_sunrise_icon_layer_text(char*);
 void set_sunset_layer_text(char*);
 void set_sunset_icon_layer_text(char*);
+void set_degrees_layer_text(char*);
+void set_compass_layer_text(char*);
 
 #endif

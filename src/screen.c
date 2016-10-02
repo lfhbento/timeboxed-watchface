@@ -7,10 +7,12 @@
 #include "configs.h"
 #include "keys.h"
 #include "accel.h"
+#include "compass.h"
 
 void load_screen(bool from_configs, Window *watchface) {
     load_locale();
     update_time();
+    init_compass_service(watchface);
     set_colors(watchface);
     toggle_health(from_configs);
     toggle_weather(from_configs);

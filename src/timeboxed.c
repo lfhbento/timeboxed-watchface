@@ -10,6 +10,7 @@
 #include "screen.h"
 #include "clock.h"
 #include "accel.h"
+#include "compass.h"
 
 static Window *watchface;
 
@@ -209,6 +210,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *sunsetColor = dict_find(iterator, KEY_SUNSETCOLOR);
     if (sunsetColor) {
         persist_write_int(KEY_SUNSETCOLOR, sunsetColor->value->int32);
+    }
+
+    Tuple *compassColor = dict_find(iterator, KEY_COMPASSCOLOR);
+    if (compassColor) {
+        persist_write_int(KEY_COMPASSCOLOR, compassColor->value->int32);
     }
 
     #if defined(PBL_HEALTH)
@@ -463,6 +469,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     set_timezone(tz_name, tz_hour, tz_minute);
 
     init_accel_service(watchface);
+    init_compass_service(watchface);
     reload_fonts();
     recreate_text_layers(watchface);
     load_screen(true, watchface);
@@ -559,6 +566,7 @@ static void init(void) {
     unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
 
     init_accel_service(watchface);
+    init_compass_service(watchface);
 
     battery_state_service_subscribe(battery_handler);
 

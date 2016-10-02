@@ -36,6 +36,8 @@ static TextLayer *sunrise;
 static TextLayer *sunrise_icon;
 static TextLayer *sunset;
 static TextLayer *sunset_icon;
+static TextLayer *compass;
+static TextLayer *degrees;
 
 static GFont time_font;
 static GFont medium_font;
@@ -85,6 +87,8 @@ static char sunrise_text[8];
 static char sunrise_icon_text[4];
 static char sunset_text[8];
 static char sunset_icon_text[4];
+static char compass_text[4];
+static char degrees_text[8];
 
 #if defined(PBL_HEALTH)
 static char steps_text[16];
@@ -236,6 +240,17 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(sunset_icon, GColorClear);
     text_layer_set_text_alignment(sunset_icon, GTextAlignmentRight);
 
+    int compass_slot = get_slot_for_module(MODULE_COMPASS);
+    GPoint degrees_pos = get_pos_for_item(compass_slot, DEGREES_ITEM, mode, selected_font, width, height);
+    degrees = text_layer_create(GRect(degrees_pos.x, degrees_pos.y, 42, 50));
+    text_layer_set_background_color(degrees, GColorClear);
+    text_layer_set_text_alignment(degrees, GTextAlignmentLeft);
+
+    GPoint compass_pos = get_pos_for_item(compass_slot, COMPASS_ITEM, mode, selected_font, width, height);
+    compass = text_layer_create(GRect(compass_pos.x, compass_pos.y, width, 50));
+    text_layer_set_background_color(compass, GColorClear);
+    text_layer_set_text_alignment(compass, GTextAlignmentLeft);
+
     #if defined(PBL_HEALTH)
     int steps_slot = get_slot_for_module(MODULE_STEPS);
     GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font, width, height);
@@ -310,6 +325,8 @@ void create_text_layers(Window* window) {
     layer_add_child(window_layer, text_layer_get_layer(sunrise_icon));
     layer_add_child(window_layer, text_layer_get_layer(sunset));
     layer_add_child(window_layer, text_layer_get_layer(sunset_icon));
+    layer_add_child(window_layer, text_layer_get_layer(compass));
+    layer_add_child(window_layer, text_layer_get_layer(degrees));
 
     #if defined(PBL_HEALTH)
     layer_add_child(window_layer, text_layer_get_layer(steps));
@@ -343,6 +360,8 @@ void destroy_text_layers() {
     text_layer_destroy(sunrise_icon);
     text_layer_destroy(sunset);
     text_layer_destroy(sunset_icon);
+    text_layer_destroy(compass);
+    text_layer_destroy(degrees);
 
     #if defined(PBL_HEALTH)
     text_layer_destroy(steps);
@@ -437,6 +456,8 @@ void set_face_fonts() {
     text_layer_set_font(sunrise_icon, weather_font_small);
     text_layer_set_font(sunset, base_font);
     text_layer_set_font(sunset_icon, weather_font_small);
+    text_layer_set_font(compass, custom_font);
+    text_layer_set_font(degrees, base_font);
 
     #if defined(PBL_HEALTH)
     text_layer_set_font(steps, base_font);
@@ -519,6 +540,12 @@ void set_colors(Window *window) {
         text_layer_set_text_color(speed, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
         text_layer_set_text_color(wind_unit, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDSPEEDCOLOR)) : base_color);
         text_layer_set_text_color(direction, enable_advanced ? GColorFromHEX(persist_read_int(KEY_WINDDIRCOLOR)) : base_color);
+    }
+
+    if (is_module_enabled(MODULE_COMPASS)) {
+        GColor compass_color = enable_advanced ? GColorFromHEX(persist_read_int(KEY_COMPASSCOLOR)) : base_color;
+        text_layer_set_text_color(compass, compass_color);
+        text_layer_set_text_color(degrees, compass_color);
     }
 
     if (is_module_enabled(MODULE_SUNRISE)) {
@@ -759,4 +786,14 @@ void set_sunset_layer_text(char* text) {
 void set_sunset_icon_layer_text(char* text) {
     strcpy(sunset_icon_text, text);
     text_layer_set_text(sunset_icon, sunset_icon_text);
+}
+
+void set_degrees_layer_text(char* text) {
+    strcpy(degrees_text, text);
+    text_layer_set_text(degrees, degrees_text);
+}
+
+void set_compass_layer_text(char* text) {
+    strcpy(compass_text, text);
+    text_layer_set_text(compass, compass_text);
 }

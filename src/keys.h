@@ -92,6 +92,7 @@
 #define KEY_WEATHERTIME 88
 #define KEY_HEARTLOW 89
 #define KEY_HEARTHIGH 90
+#define KEY_COMPASSCOLOR 91
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -167,6 +168,7 @@
 #define MODULE_SUNSET 12
 #define MODULE_ACTIVE 13
 #define MODULE_HEART 14
+#define MODULE_COMPASS 15
 
 #define MODE_NORMAL 0
 #define MODE_SIMPLE 1
@@ -196,6 +198,8 @@
 #define ACTIVE_ITEM 18
 #define HEART_ITEM 19
 #define HEARTICON_ITEM 20
+#define DEGREES_ITEM 21
+#define COMPASS_ITEM 22
 
 #define UNIT_MPH 0
 #define UNIT_KPH 1

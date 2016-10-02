@@ -789,6 +789,66 @@ GPoint get_slot_positions(int mode, int slot, int width, int height) {
     return create_point(0, 0);
 };
 
+static GPoint get_degrees_positions(int mode, int font, int width, int height) {
+    // compass degrees
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 3);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(82, 30), 9);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
+static GPoint get_compass_positions(int mode, int font, int width, int height) {
+    // compass arrow
+    switch (mode) {
+        case MODE_NORMAL:
+            switch(font) {
+                case BLOCKO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case BLOCKO_BIG_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case SYSTEM_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case ARCHIVO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case DIN_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case PROTOTYPE_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 3);
+                case LECO_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 5);
+                case KONSTRUCT_FONT:
+                    return create_point(PBL_IF_ROUND_ELSE(60, 8), 5);
+            }
+            break;
+        default:
+            return create_point(0, 0);
+    }
+
+    return create_point(0, 0);
+};
+
 GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int height) {
     if (slot == -1) {
         return create_point(0, 0);
@@ -860,6 +920,12 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
             break;
         case SUNSETICON_ITEM:
             item_pos = get_sunset_icon_positions(mode, font, width, height);
+            break;
+        case DEGREES_ITEM:
+            item_pos = get_degrees_positions(mode, font, width, height);
+            break;
+        case COMPASS_ITEM:
+            item_pos = get_compass_positions(mode, font, width, height);
             break;
     }
     return create_point(slot_pos.x + item_pos.x, slot_pos.y + item_pos.y);
