@@ -423,9 +423,7 @@ void toggle_health(bool from_configs) {
         }
 
         useCalories = is_use_calories_enabled();
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health enabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         if (health_permission_granted()) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             has_health = health_service_events_subscribe(health_handler, NULL);
             if (has_health) {
                 clear_health_fields();
@@ -439,13 +437,11 @@ void toggle_health(bool from_configs) {
                 health_service_events_unsubscribe();
             }
         } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Health permission not granted. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
             health_enabled = false;
         }
     }
 
     if (!health_enabled || !has_health) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         clear_health_fields();
         health_service_events_unsubscribe();
     }
@@ -521,32 +517,8 @@ bool should_show_sleep_data() {
 
 #else // Health not available
 
-void toggle_health(bool from_configs) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Health disabled. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
-}
-
 bool is_user_sleeping() {
     return false;
-}
-
-void get_health_data() {
-    return;
-}
-
-void show_sleep_data_if_visible(Window *watchface) {
-    return;
-}
-
-void init_sleep_data() {
-    return;
-}
-
-void queue_health_update() {
-    return;
-}
-
-void save_health_data_to_storage() {
-    return;
 }
 
 bool should_show_sleep_data() {

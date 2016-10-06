@@ -7,6 +7,7 @@
 
 static bool weather_enabled;
 static bool use_celsius;
+static int last_update;
 
 static char* weather_conditions[] = {
     "\U0000F07B", // 'unknown': 0,
@@ -58,16 +59,14 @@ static char* weather_conditions[] = {
     "\U0000F073", // hurricane: 46
 };
 
-static char* wind_directions[] = {
-    "S", "T", "U", "V", "W", "X", "Y", "Z",
-    "0", "1", "2", "3", "4", "5", "6", "7",
-    "o"
-};
-
 void update_weather(void) {
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    app_message_outbox_send();
+    int current_time = (int)time(NULL);
+    if (last_update == 0 || current_time - last_update >= 120) {
+        DictionaryIterator *iter;
+        app_message_outbox_begin(&iter);
+        app_message_outbox_send();
+        last_update = current_time;
+    }
 }
 
 char* get_wind_direction_text(int degrees) {
@@ -110,40 +109,40 @@ char* get_wind_direction_text(int degrees) {
 
 char* get_wind_direction(int degrees) {
     if (degrees > 349 || degrees <= 11) {
-        return wind_directions[8]; // N -> S
+        return "0"; // N -> S
     } else if (degrees > 11 && degrees <= 34) {
-        return wind_directions[9]; // NNE -> SSW
+        return "1"; // NNE -> SSW
     } else if (degrees > 34 && degrees <= 56) {
-        return wind_directions[10]; // NE -> SW
+        return "2"; // NE -> SW
     } else if (degrees > 56 && degrees <= 79) {
-        return wind_directions[11]; // ENE -> WSW
+        return "3"; // ENE -> WSW
     } else if (degrees > 79 && degrees <= 101) {
-        return wind_directions[12]; // E -> W
+        return "4"; // E -> W
     } else if (degrees > 101 && degrees <= 124) {
-        return wind_directions[13]; // ESE -> WNW
+        return "5"; // ESE -> WNW
     } else if (degrees > 124 && degrees <= 146) {
-        return wind_directions[14]; // SE -> NW
+        return "6"; // SE -> NW
     } else if (degrees > 146 && degrees <= 169) {
-        return wind_directions[15]; // SSE -> NNW
+        return "7"; // SSE -> NNW
     } else if (degrees > 169 && degrees <= 191) {
-        return wind_directions[0]; // S -> N
+        return "S"; // S -> N
     } else if (degrees > 191 && degrees <= 214) {
-        return wind_directions[1]; // SSW -> NNE
+        return "T"; // SSW -> NNE
     } else if (degrees > 214 && degrees <= 236) {
-        return wind_directions[2]; // SW -> NE
+        return "U"; // SW -> NE
     } else if (degrees > 236 && degrees <= 259) {
-        return wind_directions[3]; // WSW -> ENE
+        return "V"; // WSW -> ENE
     } else if (degrees > 259 && degrees <= 281) {
-        return wind_directions[4]; // W -> E
+        return "W"; // W -> E
     } else if (degrees > 281 && degrees <= 304) {
-        return wind_directions[5]; // WNW -> ESE
+        return "X"; // WNW -> ESE
     } else if (degrees > 304 && degrees <= 326) {
-        return wind_directions[6]; // NW -> SE
+        return "Y"; // NW -> SE
     } else if (degrees > 326 && degrees <= 349) {
-        return wind_directions[7]; // NNW -> SSE
+        return "Z"; // NNW -> SSE
     }
 
-    return wind_directions[16];
+    return "o";
 }
 
 void update_weather_values(int temp_val, int weather_val) {
@@ -289,11 +288,9 @@ void toggle_weather(bool from_configs) {
     weather_enabled = get_weather_enabled();
     if (weather_enabled) {
         use_celsius = is_use_celsius_enabled();
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting weather... %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         update_weather_from_storage();
         update_weather();
     } else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather disabled, clearing up. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         set_temp_cur_layer_text("");
         set_temp_max_layer_text("");
         set_temp_min_layer_text("");
@@ -310,7 +307,6 @@ void toggle_weather(bool from_configs) {
 }
 
 void store_weather_values(int temp, int max, int min, int weather, int speed, int direction, int sunrise, int sunset) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Storing weather data. %d %d%03d", use_celsius, (int)time(NULL), (int)time_ms(NULL, NULL));
     persist_write_int(KEY_TEMP, temp);
     persist_write_int(KEY_MAX, max);
     persist_write_int(KEY_MIN, min);

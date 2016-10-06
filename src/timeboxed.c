@@ -21,7 +21,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *error_tuple = dict_find(iterator, KEY_ERROR);
 
     if (error_tuple) {
+        #if defined(PBL_HEALTH)
         get_health_data();
+        #endif
         return;
     }
 
@@ -37,13 +39,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     Tuple *max_tuple = dict_find(iterator, KEY_MAX);
     Tuple *min_tuple = dict_find(iterator, KEY_MIN);
     Tuple *weather_tuple = dict_find(iterator, KEY_WEATHER);
-    //Tuple *feels_tuple = dict_find(iterator, KEY_FEELS);
     Tuple *speed_tuple = dict_find(iterator, KEY_SPEED);
     Tuple *direction_tuple = dict_find(iterator, KEY_DIRECTION);
     Tuple *sunrise_tuple = dict_find(iterator, KEY_SUNRISE);
     Tuple *sunset_tuple = dict_find(iterator, KEY_SUNSET);
 
-    if (temp_tuple && max_tuple && min_tuple && weather_tuple && is_weather_enabled()) {
+    if (temp_tuple || max_tuple || speed_tuple || sunrise_tuple || sunset_tuple) {
         int temp_val = (int)temp_tuple->value->int32;
         int max_val = (int)max_tuple->value->int32;
         int min_val = (int)min_tuple->value->int32;
@@ -52,14 +53,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         update_weather_values(temp_val, weather_val);
         update_forecast_values(max_val, min_val);
 
-        //int feels_val = (int)feels_tuple->value->int32;
         int speed_val = (int)speed_tuple->value->int32;
         int direction_val = (int)direction_tuple->value->int32;
 
         int sunrise_val = (int)sunrise_tuple->value->int32;
         int sunset_val = (int)sunset_tuple->value->int32;
 
-        //update_feels_value(feels_val);
         update_wind_values(speed_val, direction_val);
         update_sunrise(sunrise_val);
         update_sunset(sunset_val);
@@ -72,46 +71,19 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     uint8_t tz_minute = 0;
     static char tz_name[TZ_LEN];
 
-    Tuple *enableHealth = dict_find(iterator, KEY_ENABLEHEALTH);
-    if (enableHealth) {
-        bool enabled = enableHealth->value->int8;
-        if (enabled) configs += FLAG_HEALTH;
-    }
-
-    Tuple *useKm = dict_find(iterator, KEY_USEKM);
-    if (useKm) {
-        bool enabled = useKm->value->int8;
-        if (enabled) configs += FLAG_KM;
-    }
-
-    Tuple *useCal = dict_find(iterator, KEY_USECAL);
-    if (useCal) {
-        bool enabled = useCal->value->int8;
-        if (enabled) configs += FLAG_CALORIES;
-    }
-
     Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);
     if (showSleep) {
-        bool enabled = showSleep->value->int8;
-        if (enabled) configs += FLAG_SLEEP;
+        if (showSleep->value->int8) configs += FLAG_SLEEP;
     }
 
     Tuple *showTap = dict_find(iterator, KEY_SHOWTAP);
     if (showTap) {
-        bool enabled = showTap->value->int8;
-        if (enabled) configs += FLAG_TAP;
-    }
-
-    Tuple *enableWeather = dict_find(iterator, KEY_ENABLEWEATHER);
-    if (enableWeather) {
-        bool enabled =  enableWeather->value->int8;
-        if (enabled) configs += FLAG_WEATHER;
+        if (showTap->value->int8) configs += FLAG_TAP;
     }
 
     Tuple *useCelsius = dict_find(iterator, KEY_USECELSIUS);
     if (useCelsius) {
-        bool enabled = useCelsius->value->int8;
-        if (enabled)  configs += FLAG_CELSIUS;
+        if (useCelsius->value->int8)  configs += FLAG_CELSIUS;
     }
 
     Tuple *timezones = dict_find(iterator, KEY_TIMEZONES);
@@ -148,8 +120,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *enableAdvanced = dict_find(iterator, KEY_ENABLEADVANCED);
     if (enableAdvanced) {
-        bool enabled = enableAdvanced->value->int8;
-        if (enabled) configs += FLAG_ADVANCED;
+        if (enableAdvanced->value->int8) configs += FLAG_ADVANCED;
     }
 
     Tuple *dateColor = dict_find(iterator, KEY_DATECOLOR);
@@ -306,8 +277,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *bluetoothDisconnect = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
     if (bluetoothDisconnect) {
-        bool enabled = bluetoothDisconnect->value->int8;
-        if(enabled) configs += FLAG_BLUETOOTH;
+        if(bluetoothDisconnect->value->int8) configs += FLAG_BLUETOOTH;
     }
 
     Tuple *bluetoothColor = dict_find(iterator, KEY_BLUETOOTHCOLOR);
@@ -322,8 +292,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
     if (updateAvailable) {
-        bool disabled = updateAvailable->value->int8;
-        if (!disabled) configs += FLAG_UPDATE;
+        if (!updateAvailable->value->int8) configs += FLAG_UPDATE;
     }
 
     Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
@@ -353,20 +322,17 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     Tuple *leadingZero = dict_find(iterator, KEY_LEADINGZERO);
     if (leadingZero) {
-        bool disabled = leadingZero->value->int8;
-        if (!disabled) configs += FLAG_LEADINGZERO;
+        if (!leadingZero->value->int8) configs += FLAG_LEADINGZERO;
     }
 
     Tuple *simpleMode = dict_find(iterator, KEY_SIMPLEMODE);
     if (simpleMode) {
-        bool enabled = simpleMode->value->int8;
-        if (enabled) configs += FLAG_SIMPLEMODE;
+        if (simpleMode->value->int8) configs += FLAG_SIMPLEMODE;
     }
 
     Tuple *quickview = dict_find(iterator, KEY_QUICKVIEW);
     if (quickview) {
-        bool disabled = quickview->value->int8;
-        if (!disabled) configs += FLAG_QUICKVIEW;
+        if (!quickview->value->int8) configs += FLAG_QUICKVIEW;
     }
 
     Tuple *slotA = dict_find(iterator, KEY_SLOTA);
@@ -469,7 +435,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     set_timezone(tz_name, tz_hour, tz_minute);
 
     init_accel_service(watchface);
+    #if defined PBL_COMPASS
     init_compass_service(watchface);
+    #endif
     reload_fonts();
     recreate_text_layers(watchface);
     load_screen(true, watchface);
@@ -484,6 +452,7 @@ static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResul
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
+#if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
 static void unobstructed_area_handle_changes() {
     recreate_text_layers(watchface);
     load_screen(false, watchface);
@@ -494,6 +463,7 @@ static void unobstructed_area_did_change(void * context) {
         unobstructed_area_handle_changes();
     }
 }
+#endif
 
 static void watchface_load(Window *window) {
     create_text_layers(window);
@@ -507,7 +477,9 @@ static void watchface_load(Window *window) {
 }
 
 static void watchface_unload(Window *window) {
+    #if defined(PBL_HEALTH)
     save_health_data_to_storage();
+    #endif
 
     unload_face_fonts();
 
@@ -527,30 +499,40 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
     uint8_t tick_interval = is_user_sleeping() ? 90 : weather_interval;
 
+    #if defined(PBL_HEALTH)
     if (!tap_mode_visible()) {
         show_sleep_data_if_visible(watchface);
     }
+    #endif
 
     if(min_counter >= tick_interval) {
         if (is_weather_enabled()) {
             update_weather();
         }
+
+        #if defined(PBL_HEALTH)
         if (is_user_sleeping()) {
             queue_health_update();
         }
+        #endif
+
         min_counter = 0;
     }
+
+    #if defined(PBL_HEALTH)
     if (tick_time->tm_min % 2 == 0 || is_module_enabled(MODULE_HEART)) { // check for health updates only every 2 minutes if heart rate is disabled
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting health from time. %d%03d", (int)time(NULL), (int)time_ms(NULL, NULL));
         get_health_data();
     }
+    #endif
 }
 
 static void init(void) {
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
+    #if defined(PBL_HEALTH)
     init_sleep_data();
     queue_health_update();
+    #endif
 
     watchface = window_create();
 
@@ -559,14 +541,19 @@ static void init(void) {
         .unload = watchface_unload,
     });
 
+    #if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
     UnobstructedAreaHandlers unobstructed_handlers = {
         .did_change = unobstructed_area_did_change,
     };
 
     unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
+    #endif
 
     init_accel_service(watchface);
+
+    #if defined PBL_COMPASS
     init_compass_service(watchface);
+    #endif
 
     battery_state_service_subscribe(battery_handler);
 

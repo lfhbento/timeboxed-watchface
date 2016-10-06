@@ -71,7 +71,7 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
         Z[0] = Z[1] = lastZ;
     }
 
-    float a = 0.2;
+    int factor = 4;
     int high_threshold = 30;
     int low_threshold = 10;
     int threshold_other_axis = 15;
@@ -83,9 +83,9 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
         X[1] = data[i-1].x;
         Y[1] = data[i-1].y;
 
-        passX[1] = (int) (a * (passX[0] + X[1] - X[0]));
-        passY[1] = (int) (a * (passY[0] + Y[1] - Y[0]));
-        passZ[1] = (int) (a * (passZ[0] + Z[1] - Z[0]));
+        passX[1] = (int) ((passX[0] + X[1] - X[0])/factor);
+        passY[1] = (int) ((passY[0] + Y[1] - Y[0])/factor);
+        passZ[1] = (int) ((passZ[0] + Z[1] - Z[0])/factor);
 
         if (!end_tap && mid_tap) {
             if (end_tap_count < 3*range) {
@@ -123,7 +123,6 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
         }
 
         if (begin_tap && mid_tap && end_tap) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "this is a tap");
             show_tap_mode = true;
             app_timer_register(timeout_sec * 1000, reset_tap_handler, NULL);
             reset_tap();

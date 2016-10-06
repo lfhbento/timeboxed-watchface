@@ -3,20 +3,16 @@
 
 #include <pebble.h>
 
+#if defined PBL_HEALTH
 void toggle_health(bool);
+void get_health_data();
+void queue_health_update();
+void show_sleep_data_if_visible(Window *watchface);
+void init_sleep_data();
+void save_health_data_to_storage();
+#endif
 
 bool is_user_sleeping();
-
-void get_health_data();
-
-void queue_health_update();
-
-void show_sleep_data_if_visible(Window *watchface);
-
-void init_sleep_data();
-
-void save_health_data_to_storage();
-
 bool should_show_sleep_data();
 
 #endif

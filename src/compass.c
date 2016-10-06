@@ -5,6 +5,7 @@
 #include "text.h"
 #include "weather.h"
 
+#if defined PBL_COMPASS
 void compass_handler(CompassHeadingData data) {
     CompassStatus status = data.compass_status;
     int heading;
@@ -37,3 +38,4 @@ void init_compass_service(Window * watchface) {
         compass_service_unsubscribe();
     }
 }
+#endif

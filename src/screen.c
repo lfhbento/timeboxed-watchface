@@ -12,9 +12,17 @@
 void load_screen(bool from_configs, Window *watchface) {
     load_locale();
     update_time();
+
+    #if defined PBL_COMPASS
     init_compass_service(watchface);
+    #endif
+
     set_colors(watchface);
+
+    #if defined(PBL_HEALTH)
     toggle_health(from_configs);
+    #endif
+
     toggle_weather(from_configs);
     battery_handler(battery_state_service_peek());
     bt_handler(connection_service_peek_pebble_app_connection());
