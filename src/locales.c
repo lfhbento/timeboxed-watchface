@@ -6,6 +6,7 @@
 
 uint8_t selected_locale;
 uint8_t selected_format;
+static char week_text[4];
 
 static char* WEEKDAYS[14][7] = {
     {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}, // en_US
@@ -45,9 +46,15 @@ static char* SEPARATORS[4] = {
     " ", ".", "/", "-"
 };
 
+static char* WEEK_SHORT[14] = {
+    "W", "S", "S", "W", "S", "S", "W", "U", "H", "T", "T", "V", "V", "T"
+};
+
 void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int separator) {
     char* weekday = WEEKDAYS[selected_locale][tick_time->tm_wday];
     char* month = MONTHS[selected_locale][tick_time->tm_mon];
+    char week_text_format[4];
+    snprintf(week_text_format, sizeof(week_text_format), "%s%s", WEEK_SHORT[selected_locale], "%V");
 
     switch(selected_format) {
         case FORMAT_WMD:
@@ -66,10 +73,10 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
             snprintf(buffer, buf_size, "%s%s%02d", month, SEPARATORS[separator], tick_time->tm_mday);
             break;
         case FORMAT_DSM:
-            snprintf(buffer, buf_size, "%02d%s%02d", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon);
+            snprintf(buffer, buf_size, "%02d%s%02d", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon + 1);
             break;
         case FORMAT_SMD:
-            snprintf(buffer, buf_size, "%02d%s%02d", tick_time->tm_mon, SEPARATORS[separator], tick_time->tm_mday);
+            snprintf(buffer, buf_size, "%02d%s%02d", tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
             break;
         case FORMAT_WDSM:
             snprintf(buffer, buf_size, "%s%s%02d%s%02d", weekday, " ", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon + 1);
@@ -80,6 +87,15 @@ void get_current_date(struct tm* tick_time, char* buffer, int buf_size, int sepa
         case FORMAT_ISO:
             snprintf(buffer, buf_size, "%04d%s%02d%s%02d", ((int)tick_time->tm_year + 1900), SEPARATORS[separator], tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
             break;
+        case FORMAT_WNDSM:
+            strftime(week_text, sizeof(week_text), week_text_format, tick_time);
+            snprintf(buffer, buf_size, "%s%s%02d%s%02d", week_text, " ", tick_time->tm_mday, SEPARATORS[separator], tick_time->tm_mon + 1);
+            break;
+        case FORMAT_WNSMD:
+            strftime(week_text, sizeof(week_text), week_text_format, tick_time);
+            snprintf(buffer, buf_size, "%s%s%02d%s%02d", week_text, " ", tick_time->tm_mon + 1, SEPARATORS[separator], tick_time->tm_mday);
+            break;
+
     }
 }
 

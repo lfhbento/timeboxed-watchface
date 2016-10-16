@@ -72,7 +72,7 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     }
 
     int factor = 4;
-    int high_threshold = 30;
+    int high_threshold = 40;
     int low_threshold = 10;
     int threshold_other_axis = 15;
     int range = 2;

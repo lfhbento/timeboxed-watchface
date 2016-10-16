@@ -147,6 +147,8 @@
 #define FORMAT_WDSM 7
 #define FORMAT_WSMD 8
 #define FORMAT_ISO 9
+#define FORMAT_WNDSM 10
+#define FORMAT_WNSMD 11
 
 #define SLOT_A 0
 #define SLOT_B 1

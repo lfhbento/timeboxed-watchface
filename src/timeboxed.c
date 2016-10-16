@@ -364,28 +364,24 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (slotASleep) {
         int value = slotASleep->value->int8;
         set_module(SLOT_A, value, STATE_SLEEP);
-        set_module(SLOT_A, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTA, value);
     }
     Tuple *slotBSleep = dict_find(iterator, KEY_SLEEPSLOTB);
     if (slotBSleep) {
         int value = slotBSleep->value->int8;
         set_module(SLOT_B, value, STATE_SLEEP);
-        set_module(SLOT_B, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTB, value);
     }
     Tuple *slotCSleep = dict_find(iterator, KEY_SLEEPSLOTC);
     if (slotCSleep) {
         int value = slotCSleep->value->int8;
         set_module(SLOT_C, value, STATE_SLEEP);
-        set_module(SLOT_C, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTC, value);
     }
     Tuple *slotDSleep = dict_find(iterator, KEY_SLEEPSLOTD);
     if (slotDSleep) {
         int value = slotDSleep->value->int8;
         set_module(SLOT_D, value, STATE_SLEEP);
-        set_module(SLOT_D, value, STATE_TAP);
         persist_write_int(KEY_SLEEPSLOTD, value);
     }
 
@@ -454,6 +450,9 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 #if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
 static void unobstructed_area_handle_changes() {
+    #if defined(PBL_HEALTH)
+    save_health_data_to_storage();
+    #endif
     recreate_text_layers(watchface);
     load_screen(false, watchface);
 }
