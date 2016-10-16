@@ -81,6 +81,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         if (showTap->value->int8) configs += FLAG_TAP;
     }
 
+    Tuple *showWrist = dict_find(iterator, KEY_SHOWWRIST);
+    if (showWrist) {
+        if (showWrist->value->int8) configs += FLAG_WRIST;
+    }
+
     Tuple *useCelsius = dict_find(iterator, KEY_USECELSIUS);
     if (useCelsius) {
         if (useCelsius->value->int8)  configs += FLAG_CELSIUS;
@@ -410,6 +415,31 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_TAPSLOTD, value);
     }
 
+    Tuple *slotAWrist = dict_find(iterator, KEY_WRISTSLOTA);
+    if (slotAWrist) {
+        int value = slotAWrist->value->int8;
+        set_module(SLOT_A, value, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTA, value);
+    }
+    Tuple *slotBWrist = dict_find(iterator, KEY_WRISTSLOTB);
+    if (slotBWrist) {
+        int value = slotBWrist->value->int8;
+        set_module(SLOT_B, value, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTB, value);
+    }
+    Tuple *slotCWrist = dict_find(iterator, KEY_WRISTSLOTC);
+    if (slotCWrist) {
+        int value = slotCWrist->value->int8;
+        set_module(SLOT_C, value, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTC, value);
+    }
+    Tuple *slotDWrist = dict_find(iterator, KEY_WRISTSLOTD);
+    if (slotDWrist) {
+        int value = slotDWrist->value->int8;
+        set_module(SLOT_D, value, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTD, value);
+    }
+
     Tuple *tapTime = dict_find(iterator, KEY_TAPTIME);
     if (tapTime) {
         persist_write_int(KEY_TAPTIME, tapTime->value->int8);
@@ -499,7 +529,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     uint8_t tick_interval = is_user_sleeping() ? 90 : weather_interval;
 
     #if defined(PBL_HEALTH)
-    if (!tap_mode_visible()) {
+    if (!tap_mode_visible() && !wrist_mode_visible()) {
         show_sleep_data_if_visible(watchface);
     }
     #endif

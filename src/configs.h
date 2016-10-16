@@ -22,6 +22,7 @@ bool is_simple_mode_enabled();
 bool is_timezone_enabled();
 bool is_quickview_disabled();
 bool is_tap_enabled();
+bool is_wrist_enabled();
 
 int get_wind_speed_unit();
 

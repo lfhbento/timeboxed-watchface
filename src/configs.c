@@ -10,6 +10,7 @@ static int configs;
 static uint8_t modules[4];
 static uint8_t modules_sleep[4];
 static uint8_t modules_tap[4];
+static uint8_t modules_wrist[4];
 
 void set_module(int slot, int module, int state) {
     if (state == STATE_NORMAL) {
@@ -18,6 +19,8 @@ void set_module(int slot, int module, int state) {
         modules_sleep[slot] = module;
     } else if (state == STATE_TAP) {
         modules_tap[slot] = module;
+    } else if (state == STATE_WRIST) {
+        modules_wrist[slot] = module;
     }
 }
 
@@ -38,6 +41,10 @@ static void load_modules() {
     modules_tap[SLOT_B] = persist_read_int(KEY_TAPSLOTB);
     modules_tap[SLOT_C] = persist_read_int(KEY_TAPSLOTC);
     modules_tap[SLOT_D] = persist_read_int(KEY_TAPSLOTD);
+    modules_wrist[SLOT_A] = persist_read_int(KEY_WRISTSLOTA);
+    modules_wrist[SLOT_B] = persist_read_int(KEY_WRISTSLOTB);
+    modules_wrist[SLOT_C] = persist_read_int(KEY_WRISTSLOTC);
+    modules_wrist[SLOT_D] = persist_read_int(KEY_WRISTSLOTD);
 
     modules_loaded = true;
 }
@@ -49,6 +56,12 @@ bool is_module_enabled(int module) {
     if (tap_mode_visible()) {
         for (unsigned int i = 0; i < 4; ++i) {
             if (modules_tap[i] == module) {
+                return true;
+            }
+        }
+    } else if (wrist_mode_visible()) {
+        for (unsigned int i = 0; i < 4; ++i) {
+            if (modules_wrist[i] == module) {
                 return true;
             }
         }
@@ -143,6 +156,10 @@ bool is_tap_enabled() {
     return get_config_toggles() & FLAG_TAP;
 }
 
+bool is_wrist_enabled() {
+    return get_config_toggles() & FLAG_WRIST;
+}
+
 int get_slot_for_module(int module) {
     if (!modules_loaded) {
         load_modules();
@@ -150,6 +167,12 @@ int get_slot_for_module(int module) {
     if (tap_mode_visible()) {
         for (unsigned int i = 0; i < 4; ++i) {
             if (modules_tap[i] == module) {
+                return i;
+            }
+        }
+    } else if (wrist_mode_visible()) {
+        for (unsigned int i = 0; i < 4; ++i) {
+            if (modules_wrist[i] == module) {
                 return i;
             }
         }

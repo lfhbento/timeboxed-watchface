@@ -274,7 +274,12 @@
       "KEY_WEATHERTIME": 88,
       "KEY_HEARTLOW": 89,
       "KEY_HEARTHIGH": 90,
-      "KEY_COMPASSCOLOR": 91
+      "KEY_COMPASSCOLOR": 91,
+      "KEY_WRISTSLOTA": 92,
+      "KEY_WRISTSLOTB": 93,
+      "KEY_WRISTSLOTC": 94,
+      "KEY_WRISTSLOTD": 95,
+      "KEY_SHOWWRIST": 96
     },
     "enableMultiJS": false,
     "displayName": "Timeboxed",

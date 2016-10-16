@@ -17,6 +17,7 @@ static bool neg;
 static int mid_tap_count;
 static int end_tap_count;
 static bool show_tap_mode;
+static bool show_wrist_mode;
 static int timeout_sec;
 
 static Window *watchface_ref;
@@ -148,6 +149,23 @@ bool tap_mode_visible() {
     return show_tap_mode;
 }
 
+bool wrist_mode_visible() {
+    return show_wrist_mode;
+}
+
+void reset_wrist_handler(void * data) {
+    show_wrist_mode = false;
+    redraw_screen(watchface_ref);
+}
+
+void shake_data_handler(AccelAxisType axis, int32_t direction) {
+    if (axis == ACCEL_AXIS_Y) {
+        show_wrist_mode = true;
+        app_timer_register(timeout_sec * 1000, reset_wrist_handler, NULL);
+        redraw_screen(watchface_ref);
+    }
+}
+
 void init_accel_service(Window * watchface) {
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
     if (is_tap_enabled()) {
@@ -155,5 +173,12 @@ void init_accel_service(Window * watchface) {
         accel_data_service_subscribe(5, accel_data_handler);
     } else {
         accel_data_service_unsubscribe();
+    }
+
+    if (is_wrist_enabled()) {
+        watchface_ref = watchface;
+        accel_tap_service_subscribe(shake_data_handler);
+    } else {
+        accel_tap_service_unsubscribe();
     }
 }
