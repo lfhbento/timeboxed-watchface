@@ -18,7 +18,7 @@ static uint8_t min_counter;
 static uint8_t weather_interval;
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-    Tuple *error_tuple = dict_find(iterator, KEY_ERROR);
+    Tuple * error_tuple = dict_find(iterator, KEY_ERROR);
 
     if (error_tuple) {
         #if defined(PBL_HEALTH)
@@ -71,389 +71,371 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     uint8_t tz_minute = 0;
     static char tz_name[TZ_LEN];
 
-    Tuple *showSleep = dict_find(iterator, KEY_SHOWSLEEP);
-    if (showSleep) {
-        if (showSleep->value->int8) configs += FLAG_SLEEP;
+    Tuple *keyValue = dict_find(iterator, KEY_SHOWSLEEP);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_SLEEP;
     }
 
-    Tuple *showTap = dict_find(iterator, KEY_SHOWTAP);
-    if (showTap) {
-        if (showTap->value->int8) configs += FLAG_TAP;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SHOWTAP);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_TAP;
     }
 
-    Tuple *showWrist = dict_find(iterator, KEY_SHOWWRIST);
-    if (showWrist) {
-        if (showWrist->value->int8) configs += FLAG_WRIST;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SHOWWRIST);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_WRIST;
     }
 
-    Tuple *useCelsius = dict_find(iterator, KEY_USECELSIUS);
-    if (useCelsius) {
-        if (useCelsius->value->int8)  configs += FLAG_CELSIUS;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_USECELSIUS);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_CELSIUS;
     }
 
-    Tuple *timezones = dict_find(iterator, KEY_TIMEZONES);
-    if (timezones) {
-        signed int tz = timezones->value->int8;
-        persist_write_int(KEY_TIMEZONES, tz);
-        tz_hour = tz;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TIMEZONES);
+    if (keyValue) {
+        persist_write_int(KEY_TIMEZONES, keyValue->value->int8);
+        tz_hour = keyValue->value->int8;
     }
 
-    Tuple *timezonesMin = dict_find(iterator, KEY_TIMEZONESMINUTES);
-    if (timezonesMin) {
-        int tz_min = timezonesMin->value->int8;
-        persist_write_int(KEY_TIMEZONESMINUTES, tz_min);
-        tz_minute = tz_min;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TIMEZONESMINUTES);
+    if (keyValue) {
+        persist_write_int(KEY_TIMEZONESMINUTES, keyValue->value->int8);
+        tz_minute = keyValue->value->int8;
     }
 
-    Tuple *timezonesCode = dict_find(iterator, KEY_TIMEZONESCODE);
-    if (timezones) {
-        char* tz_code = timezonesCode->value->cstring;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TIMEZONESCODE);
+    if (keyValue) {
+        char* tz_code = keyValue->value->cstring;
         persist_write_string(KEY_TIMEZONESCODE, tz_code);
         strcpy(tz_name, tz_code);
         if (tz_code[0] != '#') configs += FLAG_TIMEZONES;
     }
 
-    Tuple *bgColor = dict_find(iterator, KEY_BGCOLOR);
-    if (bgColor) {
-        persist_write_int(KEY_BGCOLOR, bgColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_BGCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_BGCOLOR, keyValue->value->int32);
     }
 
-    Tuple *hoursColor = dict_find(iterator, KEY_HOURSCOLOR);
-    if (hoursColor) {
-        persist_write_int(KEY_HOURSCOLOR, hoursColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_HOURSCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_HOURSCOLOR, keyValue->value->int32);
     }
 
-    Tuple *enableAdvanced = dict_find(iterator, KEY_ENABLEADVANCED);
-    if (enableAdvanced) {
-        if (enableAdvanced->value->int8) configs += FLAG_ADVANCED;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_ENABLEADVANCED);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_ADVANCED;
     }
 
-    Tuple *dateColor = dict_find(iterator, KEY_DATECOLOR);
-    if (dateColor) {
-        persist_write_int(KEY_DATECOLOR, dateColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DATECOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_DATECOLOR, keyValue->value->int32);
     }
 
-    Tuple *altHoursColor = dict_find(iterator, KEY_ALTHOURSCOLOR);
-    if (altHoursColor) {
-        persist_write_int(KEY_ALTHOURSCOLOR, altHoursColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_ALTHOURSCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_ALTHOURSCOLOR, keyValue->value->int32);
     }
 
-    Tuple *batteryColor = dict_find(iterator, KEY_BATTERYCOLOR);
-    if (batteryColor) {
-        persist_write_int(KEY_BATTERYCOLOR, batteryColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_BATTERYCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_BATTERYCOLOR, keyValue->value->int32);
     }
 
-    Tuple *batteryLowColor = dict_find(iterator, KEY_BATTERYLOWCOLOR);
-    if (batteryLowColor) {
-        persist_write_int(KEY_BATTERYLOWCOLOR, batteryLowColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_BATTERYLOWCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_BATTERYLOWCOLOR, keyValue->value->int32);
     }
 
-    Tuple *weatherColor = dict_find(iterator, KEY_WEATHERCOLOR);
-    if (weatherColor) {
-        persist_write_int(KEY_WEATHERCOLOR, weatherColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WEATHERCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_WEATHERCOLOR, keyValue->value->int32);
     }
 
-    Tuple *tempColor = dict_find(iterator, KEY_TEMPCOLOR);
-    if (tempColor) {
-        persist_write_int(KEY_TEMPCOLOR, tempColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TEMPCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_TEMPCOLOR, keyValue->value->int32);
     }
 
-    Tuple *minColor = dict_find(iterator, KEY_MINCOLOR);
-    if (minColor) {
-        persist_write_int(KEY_MINCOLOR, minColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_MINCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_MINCOLOR, keyValue->value->int32);
     }
 
-    Tuple *maxColor = dict_find(iterator, KEY_MAXCOLOR);
-    if (maxColor) {
-        persist_write_int(KEY_MAXCOLOR, maxColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_MAXCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_MAXCOLOR, keyValue->value->int32);
     }
 
-    Tuple *windDirColor = dict_find(iterator, KEY_WINDDIRCOLOR);
-    if (windDirColor) {
-        persist_write_int(KEY_WINDDIRCOLOR, windDirColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WINDDIRCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_WINDDIRCOLOR, keyValue->value->int32);
     }
 
-    Tuple *windSpeedColor = dict_find(iterator, KEY_WINDSPEEDCOLOR);
-    if (windSpeedColor) {
-        persist_write_int(KEY_WINDSPEEDCOLOR, windSpeedColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WINDSPEEDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_WINDSPEEDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *sunriseColor = dict_find(iterator, KEY_SUNRISECOLOR);
-    if (sunriseColor) {
-        persist_write_int(KEY_SUNRISECOLOR, sunriseColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SUNRISECOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_SUNRISECOLOR, keyValue->value->int32);
     }
 
-    Tuple *sunsetColor = dict_find(iterator, KEY_SUNSETCOLOR);
-    if (sunsetColor) {
-        persist_write_int(KEY_SUNSETCOLOR, sunsetColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SUNSETCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_SUNSETCOLOR, keyValue->value->int32);
     }
 
-    Tuple *compassColor = dict_find(iterator, KEY_COMPASSCOLOR);
-    if (compassColor) {
-        persist_write_int(KEY_COMPASSCOLOR, compassColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_COMPASSCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_COMPASSCOLOR, keyValue->value->int32);
     }
 
     #if defined(PBL_HEALTH)
-    Tuple *stepsColor = dict_find(iterator, KEY_STEPSCOLOR);
-    if (stepsColor) {
-        persist_write_int(KEY_STEPSCOLOR, stepsColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_STEPSCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_STEPSCOLOR, keyValue->value->int32);
     }
 
-    Tuple *distColor = dict_find(iterator, KEY_DISTCOLOR);
-    if (distColor) {
-        persist_write_int(KEY_DISTCOLOR, distColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DISTCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_DISTCOLOR, keyValue->value->int32);
     }
 
-    Tuple *calColor = dict_find(iterator, KEY_CALCOLOR);
-    if (calColor) {
-        persist_write_int(KEY_CALCOLOR, calColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_CALCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_CALCOLOR, keyValue->value->int32);
     }
 
-    Tuple *sleepColor = dict_find(iterator, KEY_SLEEPCOLOR);
-    if (sleepColor) {
-        persist_write_int(KEY_SLEEPCOLOR, sleepColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_SLEEPCOLOR, keyValue->value->int32);
     }
 
-    Tuple *deepColor = dict_find(iterator, KEY_DEEPCOLOR);
-    if (deepColor) {
-        persist_write_int(KEY_DEEPCOLOR, deepColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DEEPCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_DEEPCOLOR, keyValue->value->int32);
     }
 
-    Tuple *stepsBehindColor = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
-    if (stepsBehindColor) {
-        persist_write_int(KEY_STEPSBEHINDCOLOR, stepsBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_STEPSBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *distBehindColor = dict_find(iterator, KEY_DISTBEHINDCOLOR);
-    if (distBehindColor) {
-        persist_write_int(KEY_DISTBEHINDCOLOR, distBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DISTBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_DISTBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *calBehindColor = dict_find(iterator, KEY_CALBEHINDCOLOR);
-    if (calBehindColor) {
-        persist_write_int(KEY_CALBEHINDCOLOR, calBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_CALBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_CALBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *sleepBehindColor = dict_find(iterator, KEY_SLEEPBEHINDCOLOR);
-    if (sleepBehindColor) {
-        persist_write_int(KEY_SLEEPBEHINDCOLOR, sleepBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_SLEEPBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *deepBehindColor = dict_find(iterator, KEY_DEEPBEHINDCOLOR);
-    if (deepBehindColor) {
-        persist_write_int(KEY_DEEPBEHINDCOLOR, deepBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DEEPBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_DEEPBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *activeColor = dict_find(iterator, KEY_ACTIVECOLOR);
-    if (activeColor) {
-        persist_write_int(KEY_ACTIVECOLOR, activeColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_ACTIVECOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_ACTIVECOLOR, keyValue->value->int32);
     }
 
-    Tuple *activeBehindColor = dict_find(iterator, KEY_ACTIVEBEHINDCOLOR);
-    if (activeBehindColor) {
-        persist_write_int(KEY_ACTIVEBEHINDCOLOR, activeBehindColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_ACTIVEBEHINDCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_ACTIVEBEHINDCOLOR, keyValue->value->int32);
     }
 
-    Tuple *heartColor = dict_find(iterator, KEY_HEARTCOLOR);
-    if (heartColor) {
-        persist_write_int(KEY_HEARTCOLOR, heartColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_HEARTCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_HEARTCOLOR, keyValue->value->int32);
     }
 
-    Tuple *heartColorOff = dict_find(iterator, KEY_HEARTCOLOROFF);
-    if (heartColorOff) {
-        persist_write_int(KEY_HEARTCOLOROFF, heartColorOff->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_HEARTCOLOROFF);
+    if (keyValue) {
+        persist_write_int(KEY_HEARTCOLOROFF, keyValue->value->int32);
     }
 
-    Tuple *heartLow = dict_find(iterator, KEY_HEARTLOW);
-    if (heartLow) {
-        persist_write_int(KEY_HEARTLOW, heartLow->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_HEARTLOW);
+    if (keyValue) {
+        persist_write_int(KEY_HEARTLOW, keyValue->value->int32);
     }
 
-    Tuple *heartHigh = dict_find(iterator, KEY_HEARTHIGH);
-    if (heartHigh) {
-        persist_write_int(KEY_HEARTHIGH, heartHigh->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_HEARTHIGH);
+    if (keyValue) {
+        persist_write_int(KEY_HEARTHIGH, keyValue->value->int32);
     }
     #endif
 
-    Tuple *fontType = dict_find(iterator, KEY_FONTTYPE);
-    if (fontType) {
-        persist_write_int(KEY_FONTTYPE, fontType->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_FONTTYPE);
+    if (keyValue) {
+        persist_write_int(KEY_FONTTYPE, keyValue->value->int8);
     }
 
-    Tuple *bluetoothDisconnect = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
-    if (bluetoothDisconnect) {
-        if(bluetoothDisconnect->value->int8) configs += FLAG_BLUETOOTH;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
+    if (keyValue) {
+        if(keyValue->value->int8) configs += FLAG_BLUETOOTH;
     }
 
-    Tuple *bluetoothColor = dict_find(iterator, KEY_BLUETOOTHCOLOR);
-    if (bluetoothColor) {
-        persist_write_int(KEY_BLUETOOTHCOLOR, bluetoothColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_BLUETOOTHCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_BLUETOOTHCOLOR, keyValue->value->int32);
     }
 
-    Tuple *overrideLocation = dict_find(iterator, KEY_OVERRIDELOCATION);
-    if (overrideLocation) {
-        persist_write_string(KEY_OVERRIDELOCATION, overrideLocation->value->cstring);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_OVERRIDELOCATION);
+    if (keyValue) {
+        persist_write_string(KEY_OVERRIDELOCATION, keyValue->value->cstring);
     }
 
-    Tuple *updateAvailable = dict_find(iterator, KEY_UPDATE);
-    if (updateAvailable) {
-        if (!updateAvailable->value->int8) configs += FLAG_UPDATE;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_UPDATE);
+    if (keyValue) {
+        if (!keyValue->value->int8) configs += FLAG_UPDATE;
     }
 
-    Tuple *updateColor = dict_find(iterator, KEY_UPDATECOLOR);
-    if (updateColor) {
-        persist_write_int(KEY_UPDATECOLOR, updateColor->value->int32);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_UPDATECOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_UPDATECOLOR, keyValue->value->int32);
     }
 
-    Tuple *locale = dict_find(iterator, KEY_LOCALE);
-    if (locale) {
-        persist_write_int(KEY_LOCALE, locale->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_LOCALE);
+    if (keyValue) {
+        persist_write_int(KEY_LOCALE, keyValue->value->int8);
     }
 
-    Tuple *dateFormat = dict_find(iterator, KEY_DATEFORMAT);
-    if (dateFormat) {
-        persist_write_int(KEY_DATEFORMAT, dateFormat->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DATEFORMAT);
+    if (keyValue) {
+        persist_write_int(KEY_DATEFORMAT, keyValue->value->int8);
     }
 
-    Tuple *textAlign = dict_find(iterator, KEY_TEXTALIGN);
-    if (textAlign) {
-        persist_write_int(KEY_TEXTALIGN, textAlign->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TEXTALIGN);
+    if (keyValue) {
+        persist_write_int(KEY_TEXTALIGN, keyValue->value->int8);
     }
 
-    Tuple *speedUnit = dict_find(iterator, KEY_SPEEDUNIT);
-    if (speedUnit) {
-        persist_write_int(KEY_SPEEDUNIT, speedUnit->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SPEEDUNIT);
+    if (keyValue) {
+        persist_write_int(KEY_SPEEDUNIT, keyValue->value->int8);
     }
 
-    Tuple *leadingZero = dict_find(iterator, KEY_LEADINGZERO);
-    if (leadingZero) {
-        if (!leadingZero->value->int8) configs += FLAG_LEADINGZERO;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_LEADINGZERO);
+    if (keyValue) {
+        if (!keyValue->value->int8) configs += FLAG_LEADINGZERO;
     }
 
-    Tuple *simpleMode = dict_find(iterator, KEY_SIMPLEMODE);
-    if (simpleMode) {
-        if (simpleMode->value->int8) configs += FLAG_SIMPLEMODE;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SIMPLEMODE);
+    if (keyValue) {
+        if (keyValue->value->int8) configs += FLAG_SIMPLEMODE;
     }
 
-    Tuple *quickview = dict_find(iterator, KEY_QUICKVIEW);
-    if (quickview) {
-        if (!quickview->value->int8) configs += FLAG_QUICKVIEW;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_QUICKVIEW);
+    if (keyValue) {
+        if (!keyValue->value->int8) configs += FLAG_QUICKVIEW;
     }
 
-    Tuple *slotA = dict_find(iterator, KEY_SLOTA);
-    if (slotA) {
-        int value = slotA->value->int8;
-        set_module(SLOT_A, value, STATE_NORMAL);
-        persist_write_int(KEY_SLOTA, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTA);
+    if (keyValue) {
+        set_module(SLOT_A, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTA, keyValue->value->int8);
     }
-    Tuple *slotB = dict_find(iterator, KEY_SLOTB);
-    if (slotB) {
-        int value = slotB->value->int8;
-        set_module(SLOT_B, value, STATE_NORMAL);
-        persist_write_int(KEY_SLOTB, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTB);
+    if (keyValue) {
+        set_module(SLOT_B, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTB, keyValue->value->int8);
     }
-    Tuple *slotC = dict_find(iterator, KEY_SLOTC);
-    if (slotC) {
-        int value = slotC->value->int8;
-        set_module(SLOT_C, value, STATE_NORMAL);
-        persist_write_int(KEY_SLOTC, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTC);
+    if (keyValue) {
+        set_module(SLOT_C, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTC, keyValue->value->int8);
     }
-    Tuple *slotD = dict_find(iterator, KEY_SLOTD);
-    if (slotD) {
-        int value = slotD->value->int8;
-        set_module(SLOT_D, value, STATE_NORMAL);
-        persist_write_int(KEY_SLOTD, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTD);
+    if (keyValue) {
+        set_module(SLOT_D, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTD, keyValue->value->int8);
     }
 
-    Tuple *slotASleep = dict_find(iterator, KEY_SLEEPSLOTA);
-    if (slotASleep) {
-        int value = slotASleep->value->int8;
-        set_module(SLOT_A, value, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTA, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTA);
+    if (keyValue) {
+        set_module(SLOT_A, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTA, keyValue->value->int8);
     }
-    Tuple *slotBSleep = dict_find(iterator, KEY_SLEEPSLOTB);
-    if (slotBSleep) {
-        int value = slotBSleep->value->int8;
-        set_module(SLOT_B, value, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTB, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTB);
+    if (keyValue) {
+        set_module(SLOT_B, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTB, keyValue->value->int8);
     }
-    Tuple *slotCSleep = dict_find(iterator, KEY_SLEEPSLOTC);
-    if (slotCSleep) {
-        int value = slotCSleep->value->int8;
-        set_module(SLOT_C, value, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTC, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTC);
+    if (keyValue) {
+        set_module(SLOT_C, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTC, keyValue->value->int8);
     }
-    Tuple *slotDSleep = dict_find(iterator, KEY_SLEEPSLOTD);
-    if (slotDSleep) {
-        int value = slotDSleep->value->int8;
-        set_module(SLOT_D, value, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTD, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTD);
+    if (keyValue) {
+        set_module(SLOT_D, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTD, keyValue->value->int8);
     }
 
-    Tuple *slotATap = dict_find(iterator, KEY_TAPSLOTA);
-    if (slotATap) {
-        int value = slotATap->value->int8;
-        set_module(SLOT_A, value, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTA, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTA);
+    if (keyValue) {
+        set_module(SLOT_A, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTA, keyValue->value->int8);
     }
-    Tuple *slotBTap = dict_find(iterator, KEY_TAPSLOTB);
-    if (slotBTap) {
-        int value = slotBTap->value->int8;
-        set_module(SLOT_B, value, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTB, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTB);
+    if (keyValue) {
+        set_module(SLOT_B, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTB, keyValue->value->int8);
     }
-    Tuple *slotCTap = dict_find(iterator, KEY_TAPSLOTC);
-    if (slotCTap) {
-        int value = slotCTap->value->int8;
-        set_module(SLOT_C, value, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTC, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTC);
+    if (keyValue) {
+        set_module(SLOT_C, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTC, keyValue->value->int8);
     }
-    Tuple *slotDTap = dict_find(iterator, KEY_TAPSLOTD);
-    if (slotDTap) {
-        int value = slotDTap->value->int8;
-        set_module(SLOT_D, value, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTD, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTD);
+    if (keyValue) {
+        set_module(SLOT_D, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTD, keyValue->value->int8);
     }
 
-    Tuple *slotAWrist = dict_find(iterator, KEY_WRISTSLOTA);
-    if (slotAWrist) {
-        int value = slotAWrist->value->int8;
-        set_module(SLOT_A, value, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTA, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTA);
+    if (keyValue) {
+        set_module(SLOT_A, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTA, keyValue->value->int8);
     }
-    Tuple *slotBWrist = dict_find(iterator, KEY_WRISTSLOTB);
-    if (slotBWrist) {
-        int value = slotBWrist->value->int8;
-        set_module(SLOT_B, value, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTB, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTB);
+    if (keyValue) {
+        set_module(SLOT_B, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTB, keyValue->value->int8);
     }
-    Tuple *slotCWrist = dict_find(iterator, KEY_WRISTSLOTC);
-    if (slotCWrist) {
-        int value = slotCWrist->value->int8;
-        set_module(SLOT_C, value, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTC, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTC);
+    if (keyValue) {
+        set_module(SLOT_C, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTC, keyValue->value->int8);
     }
-    Tuple *slotDWrist = dict_find(iterator, KEY_WRISTSLOTD);
-    if (slotDWrist) {
-        int value = slotDWrist->value->int8;
-        set_module(SLOT_D, value, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTD, value);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTD);
+    if (keyValue) {
+        set_module(SLOT_D, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTD, keyValue->value->int8);
     }
 
-    Tuple *tapTime = dict_find(iterator, KEY_TAPTIME);
-    if (tapTime) {
-        persist_write_int(KEY_TAPTIME, tapTime->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPTIME);
+    if (keyValue) {
+        persist_write_int(KEY_TAPTIME, keyValue->value->int8);
     }
 
-    Tuple *weatherTime = dict_find(iterator, KEY_WEATHERTIME);
-    if (weatherTime) {
-        weather_interval = weatherTime->value->int8;
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WEATHERTIME);
+    if (keyValue) {
+        weather_interval = keyValue->value->int8;
         persist_write_int(KEY_WEATHERTIME, weather_interval);
     }
 
-    Tuple *dateSeparator = dict_find(iterator, KEY_DATESEPARATOR);
-    if (dateSeparator) {
-        persist_write_int(KEY_DATESEPARATOR, dateSeparator->value->int8);
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_DATESEPARATOR);
+    if (keyValue) {
+        persist_write_int(KEY_DATESEPARATOR, keyValue->value->int8);
     }
 
     persist_write_int(KEY_CONFIGS, configs);
