@@ -25,5 +25,6 @@ bool is_tap_enabled();
 bool is_wrist_enabled();
 
 int get_wind_speed_unit();
+void toggle_center_slots(bool);
 
 #endif

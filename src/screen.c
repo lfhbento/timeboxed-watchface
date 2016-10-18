@@ -8,6 +8,7 @@
 #include "keys.h"
 #include "accel.h"
 #include "compass.h"
+#include "clock.h"
 
 void load_screen(bool from_configs, Window *watchface) {
     load_locale();
@@ -26,6 +27,9 @@ void load_screen(bool from_configs, Window *watchface) {
     toggle_weather(from_configs);
     battery_handler(battery_state_service_peek());
     bt_handler(connection_service_peek_pebble_app_connection());
+    time_t temp = time(NULL);
+    struct tm *tick_time = localtime(&temp);
+    update_seconds(tick_time);
 }
 
 void reload_fonts() {
@@ -60,15 +64,19 @@ void bt_handler(bool connected) {
 }
 
 void battery_handler(BatteryChargeState charge_state) {
-    char s_battery_buffer[8];
+    if (is_module_enabled(MODULE_BATTERY)) {
+        char s_battery_buffer[8];
 
-    if (charge_state.is_charging) {
-        snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=)");
+        if (charge_state.is_charging) {
+            snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=)");
+        } else {
+            snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent < 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
+        }
+        set_battery_color(charge_state.charge_percent);
+        set_battery_layer_text(s_battery_buffer);
     } else {
-        snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent < 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
+        set_battery_layer_text("");
     }
-    set_battery_color(charge_state.charge_percent);
-    set_battery_layer_text(s_battery_buffer);
 }
 
 void check_for_updates() {

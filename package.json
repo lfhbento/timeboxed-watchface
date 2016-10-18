@@ -106,14 +106,14 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
-          "name": "FONT_KONSTRUCT_16"
+          "name": "FONT_KONSTRUCT_17"
         },
         {
           "type": "font",
           "characterRegex": "[0-9:! ]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
-          "name": "FONT_KONSTRUCT_32"
+          "name": "FONT_KONSTRUCT_33"
         },
         {
           "type": "font",
@@ -279,7 +279,16 @@
       "KEY_WRISTSLOTB": 93,
       "KEY_WRISTSLOTC": 94,
       "KEY_WRISTSLOTD": 95,
-      "KEY_SHOWWRIST": 96
+      "KEY_SHOWWRIST": 96,
+      "KEY_SECONDSCOLOR": 97,
+      "KEY_SLOTE": 98,
+      "KEY_SLOTF": 99,
+      "KEY_SLEEPSLOTE": 100,
+      "KEY_SLEEPSLOTF": 101,
+      "KEY_TAPSLOTE": 102,
+      "KEY_TAPSLOTF": 103,
+      "KEY_WRISTSLOTE": 104,
+      "KEY_WRISTSLOTF": 105
     },
     "enableMultiJS": false,
     "displayName": "Timeboxed",
@@ -300,5 +309,5 @@
       "health"
     ]
   },
-  "name": "timeboxed"
+  "name": "Timeboxed"
 }

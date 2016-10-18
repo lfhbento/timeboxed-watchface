@@ -40,7 +40,7 @@ void update_time() {
 
     set_hours(tick_time, hour_text, sizeof(hour_text));
 
-    if (is_timezone_enabled()) {
+    if (is_module_enabled(MODULE_TIMEZONE) && is_timezone_enabled()) {
         set_hours(gmt_time, tz_text, sizeof(tz_text));
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||
@@ -72,8 +72,9 @@ void update_time() {
     set_date_layer_text(date_text);
 }
 
+
 void load_timezone_from_storage() {
-    if (is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
+    if (is_module_enabled(MODULE_TIMEZONE) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
         tz_hour = persist_exists(KEY_TIMEZONES) ? persist_read_int(KEY_TIMEZONES) : 0;
         tz_minute = persist_exists(KEY_TIMEZONESMINUTES) ? persist_read_int(KEY_TIMEZONESMINUTES) : 0;
@@ -84,4 +85,14 @@ void set_timezone(char *name, int hour, int minute) {
    strcpy(tz_name, name);
    tz_hour = hour;
    tz_minute = minute;
+}
+
+void update_seconds(struct tm* tick_time) {
+    if (is_module_enabled(MODULE_SECONDS)) {
+        char seconds_text[4];
+        strftime(seconds_text, sizeof(seconds_text), "%S", tick_time);
+        set_seconds_layer_text(seconds_text);
+    } else {
+        set_seconds_layer_text("");
+    }
 }

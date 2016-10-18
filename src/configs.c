@@ -7,10 +7,11 @@
 static bool configs_loaded;
 static bool modules_loaded;
 static int configs;
-static uint8_t modules[4];
-static uint8_t modules_sleep[4];
-static uint8_t modules_tap[4];
-static uint8_t modules_wrist[4];
+static uint8_t modules[6];
+static uint8_t modules_sleep[6];
+static uint8_t modules_tap[6];
+static uint8_t modules_wrist[6];
+static bool center_slots_enabled = true;
 
 void set_module(int slot, int module, int state) {
     if (state == STATE_NORMAL) {
@@ -33,18 +34,26 @@ static void load_modules() {
     modules[SLOT_B] = persist_read_int(KEY_SLOTB);
     modules[SLOT_C] = persist_read_int(KEY_SLOTC);
     modules[SLOT_D] = persist_read_int(KEY_SLOTD);
+    modules[SLOT_E] = persist_read_int(KEY_SLOTE);
+    modules[SLOT_F] = persist_read_int(KEY_SLOTF);
     modules_sleep[SLOT_A] = persist_read_int(KEY_SLEEPSLOTA);
     modules_sleep[SLOT_B] = persist_read_int(KEY_SLEEPSLOTB);
     modules_sleep[SLOT_C] = persist_read_int(KEY_SLEEPSLOTC);
     modules_sleep[SLOT_D] = persist_read_int(KEY_SLEEPSLOTD);
+    modules_sleep[SLOT_E] = persist_read_int(KEY_SLEEPSLOTE);
+    modules_sleep[SLOT_F] = persist_read_int(KEY_SLEEPSLOTF);
     modules_tap[SLOT_A] = persist_read_int(KEY_TAPSLOTA);
     modules_tap[SLOT_B] = persist_read_int(KEY_TAPSLOTB);
     modules_tap[SLOT_C] = persist_read_int(KEY_TAPSLOTC);
     modules_tap[SLOT_D] = persist_read_int(KEY_TAPSLOTD);
+    modules_tap[SLOT_E] = persist_read_int(KEY_TAPSLOTE);
+    modules_tap[SLOT_F] = persist_read_int(KEY_TAPSLOTF);
     modules_wrist[SLOT_A] = persist_read_int(KEY_WRISTSLOTA);
     modules_wrist[SLOT_B] = persist_read_int(KEY_WRISTSLOTB);
     modules_wrist[SLOT_C] = persist_read_int(KEY_WRISTSLOTC);
     modules_wrist[SLOT_D] = persist_read_int(KEY_WRISTSLOTD);
+    modules_wrist[SLOT_E] = persist_read_int(KEY_WRISTSLOTE);
+    modules_wrist[SLOT_F] = persist_read_int(KEY_WRISTSLOTF);
 
     modules_loaded = true;
 }
@@ -54,27 +63,27 @@ bool is_module_enabled(int module) {
         load_modules();
     }
     if (tap_mode_visible()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_tap[i] == module) {
-                return true;
+                return i <= 3 || (i > 3 && center_slots_enabled);
             }
         }
     } else if (wrist_mode_visible()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_wrist[i] == module) {
-                return true;
+                return i <= 3 || (i > 3 && center_slots_enabled);
             }
         }
     } else if (should_show_sleep_data()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_sleep[i] == module) {
-                return true;
+                return i <= 3 || (i > 3 && center_slots_enabled);
             }
         }
     } else {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules[i] == module) {
-                return true;
+                return i <= 3 || (i > 3 && center_slots_enabled);
             }
         }
     }
@@ -165,29 +174,33 @@ int get_slot_for_module(int module) {
         load_modules();
     }
     if (tap_mode_visible()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_tap[i] == module) {
                 return i;
             }
         }
     } else if (wrist_mode_visible()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_wrist[i] == module) {
                 return i;
             }
         }
     } else if (should_show_sleep_data()) {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules_sleep[i] == module) {
                 return i;
             }
         }
     } else {
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < 6; ++i) {
             if (modules[i] == module) {
                 return i;
             }
         }
     }
     return -1;
+}
+
+void toggle_center_slots(bool enable) {
+    center_slots_enabled = enable;
 }

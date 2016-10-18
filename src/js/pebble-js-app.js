@@ -46,7 +46,7 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/?';
-    url = 'http://lfhbento-timeboxed.rhcloud.com/pebble-apps/timeboxed/config/?nonce=' + new Date().getTime() + '&';
+    url = 'http://www.timeboxed.watch/pebble-apps/timeboxed/config/?nonce=' + new Date().getTime() + '&';
     Pebble.openURL(url +
         'v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
@@ -94,6 +94,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_WEATHERPROVIDER;
     delete dict.KEY_OVERRIDELOCATION;
     delete dict.KEY_FORECASTKEY;
+    delete dict.KEY_MASTERKEYEMAIL;
+    delete dict.KEY_MASTERKEYPIN;
 
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));

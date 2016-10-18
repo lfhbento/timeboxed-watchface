@@ -7,7 +7,6 @@
 
 static bool weather_enabled;
 static bool use_celsius;
-static int last_update = 0;
 
 static char* weather_conditions[] = {
     "\U0000F07B", // 'unknown': 0,
@@ -60,13 +59,9 @@ static char* weather_conditions[] = {
 };
 
 void update_weather(void) {
-    int current_time = (int)time(NULL);
-    if (last_update == 0 || (current_time - last_update) >= 120) {
-        DictionaryIterator *iter;
-        app_message_outbox_begin(&iter);
-        app_message_outbox_send();
-        last_update = current_time;
-    }
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    app_message_outbox_send();
 }
 
 char* get_wind_direction_text(int degrees) {

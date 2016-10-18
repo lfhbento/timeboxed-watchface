@@ -41,9 +41,6 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     }
 
     for (int i = 0; i < (int)num_samples; ++i) {
-        if (data[i].did_vibrate) {
-            return;
-        }
     }
 
     int passX[2];
@@ -79,10 +76,14 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     int range = 2;
     int x_threshold = 350;
     int y_threshold = 150;
-    for (int i = 1; i < (int)num_samples + 1; ++i) {
-        Z[1] = data[i-1].z;
-        X[1] = data[i-1].x;
-        Y[1] = data[i-1].y;
+    for (int i = 0; i < (int)num_samples; ++i) {
+        if (data[i].did_vibrate) {
+            reset_tap();
+            continue;
+        }
+        Z[1] = data[i].z;
+        X[1] = data[i].x;
+        Y[1] = data[i].y;
 
         passX[1] = (int) ((passX[0] + X[1] - X[0])/factor);
         passY[1] = (int) ((passY[0] + Y[1] - Y[0])/factor);
@@ -146,11 +147,11 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
 }
 
 bool tap_mode_visible() {
-    return show_tap_mode;
+    return show_tap_mode && !show_wrist_mode;
 }
 
 bool wrist_mode_visible() {
-    return show_wrist_mode;
+    return show_wrist_mode && !show_tap_mode;
 }
 
 void reset_wrist_handler(void * data) {
@@ -170,7 +171,7 @@ void init_accel_service(Window * watchface) {
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
     if (is_tap_enabled()) {
         watchface_ref = watchface;
-        accel_data_service_subscribe(5, accel_data_handler);
+        accel_data_service_subscribe(25, accel_data_handler);
     } else {
         accel_data_service_unsubscribe();
     }

@@ -6,8 +6,6 @@
 struct TextPositions {
     GPoint hours;
     GPoint date;
-    GPoint alt_time;
-    GPoint battery;
     GPoint bluetooth;
     GPoint updates;
 };

@@ -98,6 +98,15 @@
 #define KEY_WRISTSLOTC 94
 #define KEY_WRISTSLOTD 95
 #define KEY_SHOWWRIST 96
+#define KEY_SECONDSCOLOR 97
+#define KEY_SLOTE 98
+#define KEY_SLOTF 99
+#define KEY_SLEEPSLOTE 100
+#define KEY_SLEEPSLOTF 101
+#define KEY_TAPSLOTE 102
+#define KEY_TAPSLOTF 103
+#define KEY_WRISTSLOTE 104
+#define KEY_WRISTSLOTF 105
 
 #define FLAG_WEATHER 0x0001
 #define FLAG_HEALTH 0x0002
@@ -160,6 +169,8 @@
 #define SLOT_B 1
 #define SLOT_C 2
 #define SLOT_D 3
+#define SLOT_E 4
+#define SLOT_F 5
 
 #define MODULE_NONE -1
 #define MODULE_WEATHER 1
@@ -177,6 +188,9 @@
 #define MODULE_ACTIVE 13
 #define MODULE_HEART 14
 #define MODULE_COMPASS 15
+#define MODULE_SECONDS 16
+#define MODULE_BATTERY 17
+#define MODULE_TIMEZONE 18
 
 #define MODE_NORMAL 0
 #define MODE_SIMPLE 1
@@ -209,6 +223,9 @@
 #define HEARTICON_ITEM 20
 #define DEGREES_ITEM 21
 #define COMPASS_ITEM 22
+#define SECONDS_ITEM 23
+#define BATTERY_ITEM 24
+#define TIMEZONE_ITEM 25
 
 #define UNIT_MPH 0
 #define UNIT_KPH 1

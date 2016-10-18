@@ -191,6 +191,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         persist_write_int(KEY_COMPASSCOLOR, keyValue->value->int32);
     }
 
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SECONDSCOLOR);
+    if (keyValue) {
+        persist_write_int(KEY_SECONDSCOLOR, keyValue->value->int32);
+    }
+
     #if defined(PBL_HEALTH)
     keyValue = NULL; keyValue = dict_find(iterator, KEY_STEPSCOLOR);
     if (keyValue) {
@@ -358,6 +363,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         set_module(SLOT_D, keyValue->value->int8, STATE_NORMAL);
         persist_write_int(KEY_SLOTD, keyValue->value->int8);
     }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTE);
+    if (keyValue) {
+        set_module(SLOT_E, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTE, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLOTF);
+    if (keyValue) {
+        set_module(SLOT_F, keyValue->value->int8, STATE_NORMAL);
+        persist_write_int(KEY_SLOTF, keyValue->value->int8);
+    }
 
     keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTA);
     if (keyValue) {
@@ -378,6 +393,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (keyValue) {
         set_module(SLOT_D, keyValue->value->int8, STATE_SLEEP);
         persist_write_int(KEY_SLEEPSLOTD, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTE);
+    if (keyValue) {
+        set_module(SLOT_E, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTE, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_SLEEPSLOTF);
+    if (keyValue) {
+        set_module(SLOT_F, keyValue->value->int8, STATE_SLEEP);
+        persist_write_int(KEY_SLEEPSLOTF, keyValue->value->int8);
     }
 
     keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTA);
@@ -400,6 +425,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         set_module(SLOT_D, keyValue->value->int8, STATE_TAP);
         persist_write_int(KEY_TAPSLOTD, keyValue->value->int8);
     }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTE);
+    if (keyValue) {
+        set_module(SLOT_E, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTE, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPSLOTF);
+    if (keyValue) {
+        set_module(SLOT_F, keyValue->value->int8, STATE_TAP);
+        persist_write_int(KEY_TAPSLOTF, keyValue->value->int8);
+    }
 
     keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTA);
     if (keyValue) {
@@ -420,6 +455,16 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (keyValue) {
         set_module(SLOT_D, keyValue->value->int8, STATE_WRIST);
         persist_write_int(KEY_WRISTSLOTD, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTE);
+    if (keyValue) {
+        set_module(SLOT_E, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTE, keyValue->value->int8);
+    }
+    keyValue = NULL; keyValue = dict_find(iterator, KEY_WRISTSLOTF);
+    if (keyValue) {
+        set_module(SLOT_F, keyValue->value->int8, STATE_WRIST);
+        persist_write_int(KEY_WRISTSLOTF, keyValue->value->int8);
     }
 
     keyValue = NULL; keyValue = dict_find(iterator, KEY_TAPTIME);
@@ -462,9 +507,12 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 #if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
 static void unobstructed_area_handle_changes() {
-    #if defined(PBL_HEALTH)
+    Layer *window_layer = window_get_root_layer(watchface);
+    GRect full_bounds = layer_get_bounds(window_layer);
+    GRect bounds = layer_get_unobstructed_bounds(window_layer);
+    toggle_center_slots(bounds.size.h == full_bounds.size.h);
+
     save_health_data_to_storage();
-    #endif
     recreate_text_layers(watchface);
     load_screen(false, watchface);
 }
@@ -498,47 +546,51 @@ static void watchface_unload(Window *window) {
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-    update_time();
-    min_counter++;
+    update_seconds(tick_time);
 
-    if (!is_update_disabled() && tick_time->tm_hour == 4 && tick_time->tm_min == 0) { // updates at 4:00am
-        check_for_updates();
-    }
-    if (is_update_disabled()) {
-        notify_update(false);
-    }
+    if (units_changed & MINUTE_UNIT) {
+        update_time();
+        min_counter++;
 
-    uint8_t tick_interval = is_user_sleeping() ? 90 : weather_interval;
-
-    #if defined(PBL_HEALTH)
-    if (!tap_mode_visible() && !wrist_mode_visible()) {
-        show_sleep_data_if_visible(watchface);
-    }
-    #endif
-
-    if(min_counter >= tick_interval) {
-        if (is_weather_enabled()) {
-            update_weather();
+        if (!is_update_disabled() && tick_time->tm_hour == 4 && tick_time->tm_min == 0) { // updates at 4:00am
+            check_for_updates();
+        }
+        if (is_update_disabled()) {
+            notify_update(false);
         }
 
+        uint8_t tick_interval = is_user_sleeping() ? 90 : weather_interval;
+
         #if defined(PBL_HEALTH)
-        if (is_user_sleeping()) {
-            queue_health_update();
+        if (!tap_mode_visible() && !wrist_mode_visible()) {
+            show_sleep_data_if_visible(watchface);
         }
         #endif
 
-        min_counter = 0;
-    }
+        if(min_counter >= tick_interval) {
+            if (is_weather_enabled()) {
+                update_weather();
+            }
 
-    #if defined(PBL_HEALTH)
-    if (tick_time->tm_min % 2 == 0 || is_module_enabled(MODULE_HEART)) { // check for health updates only every 2 minutes if heart rate is disabled
-        get_health_data();
+            #if defined(PBL_HEALTH)
+            if (is_user_sleeping()) {
+                queue_health_update();
+            }
+            #endif
+
+            min_counter = 0;
+        }
+
+        #if defined(PBL_HEALTH)
+        if (tick_time->tm_min % 2 == 0 || is_module_enabled(MODULE_HEART)) { // check for health updates only every 2 minutes if heart rate is disabled
+            get_health_data();
+        }
+        #endif
     }
-    #endif
 }
 
 static void init(void) {
-    tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+    tick_timer_service_subscribe(SECOND_UNIT | MINUTE_UNIT, tick_handler);
 
     #if defined(PBL_HEALTH)
     init_sleep_data();
@@ -552,14 +604,6 @@ static void init(void) {
         .unload = watchface_unload,
     });
 
-    #if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
-    UnobstructedAreaHandlers unobstructed_handlers = {
-        .did_change = unobstructed_area_did_change,
-    };
-
-    unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
-    #endif
-
     init_accel_service(watchface);
 
     #if defined PBL_COMPASS
@@ -570,11 +614,19 @@ static void init(void) {
 
     window_stack_push(watchface, true);
 
+    #if !defined PBL_PLATFORM_APLITE && !defined PBL_PLATFORM_CHALK
+    UnobstructedAreaHandlers unobstructed_handlers = {
+        .did_change = unobstructed_area_did_change,
+    };
+
+    unobstructed_area_service_subscribe(unobstructed_handlers, NULL);
+    #endif
+
     app_message_register_inbox_received(inbox_received_callback);
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
-    app_message_open(768, 64);
+    app_message_open(1024, 64);
 
     connection_service_subscribe((ConnectionHandlers) {
 	.pebble_app_connection_handler = bt_handler
