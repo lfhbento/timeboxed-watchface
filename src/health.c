@@ -408,7 +408,7 @@ static bool get_health_enabled() {
         is_module_enabled(MODULE_HEART);
 }
 
-void toggle_health(bool from_configs) {
+void toggle_health(uint8_t reload_origin) {
     is_sleeping = false;
     bool has_health = false;
     health_enabled = get_health_enabled();
@@ -428,7 +428,7 @@ void toggle_health(bool from_configs) {
             if (has_health) {
                 clear_health_fields();
                 queue_health_update();
-                if (from_configs) {
+                if (reload_origin != RELOAD_DEFAULT) {
                     get_health_data();
                 } else {
                     load_health_data_from_storage();

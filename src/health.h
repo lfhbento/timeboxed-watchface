@@ -4,7 +4,7 @@
 #include <pebble.h>
 
 #if defined PBL_HEALTH
-void toggle_health(bool);
+void toggle_health(uint8_t);
 void get_health_data();
 void queue_health_update();
 void show_sleep_data_if_visible(Window *watchface);

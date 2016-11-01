@@ -18,7 +18,7 @@ static int mid_tap_count;
 static int end_tap_count;
 static bool show_tap_mode;
 static bool show_wrist_mode;
-static int timeout_sec;
+static int timeout_sec = 0;
 
 static Window *watchface_ref;
 
@@ -38,9 +38,6 @@ static void reset_tap_handler(void * data) {
 void accel_data_handler(AccelData *data, uint32_t num_samples) {
     if (show_tap_mode) {
         return;
-    }
-
-    for (int i = 0; i < (int)num_samples; ++i) {
     }
 
     int passX[2];
@@ -160,6 +157,10 @@ void reset_wrist_handler(void * data) {
 }
 
 void shake_data_handler(AccelAxisType axis, int32_t direction) {
+    if (show_wrist_mode) {
+        return;
+    }
+
     if (axis == ACCEL_AXIS_Y) {
         show_wrist_mode = true;
         app_timer_register(timeout_sec * 1000, reset_wrist_handler, NULL);
@@ -169,17 +170,17 @@ void shake_data_handler(AccelAxisType axis, int32_t direction) {
 
 void init_accel_service(Window * watchface) {
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
+    watchface_ref = watchface;
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "accel");
+    accel_data_service_unsubscribe();
     if (is_tap_enabled()) {
-        watchface_ref = watchface;
         accel_data_service_subscribe(25, accel_data_handler);
-    } else {
-        accel_data_service_unsubscribe();
     }
 
+    accel_tap_service_unsubscribe();
     if (is_wrist_enabled()) {
-        watchface_ref = watchface;
         accel_tap_service_subscribe(shake_data_handler);
-    } else {
-        accel_tap_service_unsubscribe();
     }
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "done");
 }

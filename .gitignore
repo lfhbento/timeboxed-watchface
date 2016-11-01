@@ -3,7 +3,6 @@
 /.lock-*
 /build/
 /out/
-*.swp
-*.swo
+*.sw*
 
 node_modules/

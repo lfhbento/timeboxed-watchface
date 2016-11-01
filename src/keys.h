@@ -231,4 +231,9 @@
 #define UNIT_KPH 1
 #define UNIT_KNOTS 2
 
+#define RELOAD_DEFAULT 0
+#define RELOAD_CONFIGS 1
+#define RELOAD_REDRAW 2
+#define RELOAD_MODULE 3
+
 #endif

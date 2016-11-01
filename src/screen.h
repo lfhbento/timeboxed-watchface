@@ -3,7 +3,7 @@
 
 #include <pebble.h>
 
-void load_screen(bool from_configs, Window *watchface);
+void load_screen(uint8_t reload_origin, Window *watchface);
 void redraw_screen(Window *watchface);
 void reload_fonts();
 void recreate_text_layers(Window * watchface);

@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "positions.h"
 #include "keys.h"
+#include "configs.h"
 
 
 GPoint create_point(int x, int y) {
@@ -10,6 +11,7 @@ GPoint create_point(int x, int y) {
     return point;
 }
 
+#ifndef PBL_ROUND
 static int get_pos(int alignment, int left_pos, int center_pos, int right_pos) {
     switch (alignment) {
         case GTextAlignmentLeft:
@@ -24,6 +26,7 @@ static int get_pos(int alignment, int left_pos, int center_pos, int right_pos) {
     }
     return right_pos;
 }
+#endif
 
 static void get_text_positions_blocko(GTextAlignment align, struct TextPositions* positions, int width, int height) {
     int midpoint = height / 2;
@@ -487,21 +490,21 @@ static GPoint get_heart_positions(int mode, int font, int width, int height) {
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case BLOCKO_BIG_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case SYSTEM_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case ARCHIVO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case DIN_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case PROTOTYPE_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 3);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 3);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 5);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(96, 32), 9);
+                    return create_point(PBL_IF_ROUND_ELSE(96, 38), 9);
             }
             break;
         default:
@@ -517,21 +520,21 @@ static GPoint get_heart_icon_positions(int mode, int font, int width, int height
         case MODE_NORMAL:
             switch(font) {
                 case BLOCKO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 4);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 4);
                 case BLOCKO_BIG_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 5);
                 case SYSTEM_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 5);
                 case ARCHIVO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 5);
                 case DIN_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 6);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 6);
                 case PROTOTYPE_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 4);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 4);
                 case LECO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 5);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 5);
                 case KONSTRUCT_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(64, 4), 6);
+                    return create_point(PBL_IF_ROUND_ELSE(64, 10), 6);
             }
             break;
         default:

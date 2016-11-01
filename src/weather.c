@@ -7,6 +7,8 @@
 
 static bool weather_enabled;
 static bool use_celsius;
+static int last_update = 0;
+static int weather_interval = 30;
 
 static char* weather_conditions[] = {
     "\U0000F07B", // 'unknown': 0,
@@ -59,9 +61,13 @@ static char* weather_conditions[] = {
 };
 
 void update_weather(void) {
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    app_message_outbox_send();
+    int current_time = (int)time(NULL);
+    if (last_update == 0 || (current_time - last_update) >= weather_interval * 60) {
+        DictionaryIterator *iter;
+        app_message_outbox_begin(&iter);
+        app_message_outbox_send();
+        last_update = current_time;
+    }
 }
 
 char* get_wind_direction_text(int degrees) {
@@ -251,40 +257,37 @@ static bool get_weather_enabled() {
 
 static void update_weather_from_storage() {
     if (persist_exists(KEY_TEMP)) {
-        int temp = persist_read_int(KEY_TEMP);
-        int weather = persist_read_int(KEY_WEATHER);
-        update_weather_values(temp, weather);
+        update_weather_values(persist_read_int(KEY_TEMP), persist_read_int(KEY_WEATHER));
     }
 
     if (persist_exists(KEY_MIN)) {
-        int min = persist_read_int(KEY_MIN);
-        int max = persist_read_int(KEY_MAX);
-        update_forecast_values(max, min);
+        update_forecast_values(persist_read_int(KEY_MAX), persist_read_int(KEY_MIN));
     }
 
     if (persist_exists(KEY_SPEED)) {
-        int speed = persist_read_int(KEY_SPEED);
-        int direction = persist_read_int(KEY_DIRECTION);
-        update_wind_values(speed, direction);
+        update_wind_values(persist_read_int(KEY_SPEED), persist_read_int(KEY_DIRECTION));
     }
 
     if (persist_exists(KEY_SUNRISE)) {
-        int sunrise = persist_read_int(KEY_SUNRISE);
-        update_sunrise(sunrise);
+        update_sunrise(persist_read_int(KEY_SUNRISE));
     }
 
     if (persist_exists(KEY_SUNSET)) {
-        int sunset = persist_read_int(KEY_SUNSET);
-        update_sunset(sunset);
+        update_sunset(persist_read_int(KEY_SUNSET));
     }
 }
 
-void toggle_weather(bool from_configs) {
+void toggle_weather(uint8_t reload_origin) {
     weather_enabled = get_weather_enabled();
+    if (reload_origin == RELOAD_CONFIGS || reload_origin == RELOAD_DEFAULT) {
+        weather_interval = persist_exists(KEY_WEATHERTIME) ? persist_read_int(KEY_WEATHERTIME) : 30;
+    }
     if (weather_enabled) {
         use_celsius = is_use_celsius_enabled();
         update_weather_from_storage();
-        update_weather();
+        if (reload_origin == RELOAD_MODULE || reload_origin == RELOAD_CONFIGS) {
+            update_weather();
+        }
     } else {
         set_temp_cur_layer_text("");
         set_temp_max_layer_text("");

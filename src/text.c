@@ -162,7 +162,7 @@ void create_text_layers(Window* window) {
 
     int battery_slot = get_slot_for_module(MODULE_BATTERY);
     GPoint battery_pos = get_pos_for_item(battery_slot, BATTERY_ITEM, mode, selected_font, width, height);
-    battery = text_layer_create(GRect(battery_pos.x, battery_pos.y, battery_slot > 3 ? width : slot_width, 50));
+    battery = text_layer_create(GRect(battery_pos.x, battery_pos.y, PBL_IF_ROUND_ELSE(width, battery_slot > 3 ? width : slot_width), 50));
     text_layer_set_background_color(battery, GColorClear);
     text_layer_set_text_alignment(battery, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
                 is_simple_mode_enabled() || battery_slot > 3 ? text_align : (battery_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
@@ -249,7 +249,7 @@ void create_text_layers(Window* window) {
 
     int compass_slot = get_slot_for_module(MODULE_COMPASS);
     GPoint degrees_pos = get_pos_for_item(compass_slot, DEGREES_ITEM, mode, selected_font, width, height);
-    degrees = text_layer_create(GRect(degrees_pos.x, degrees_pos.y, 42, 50));
+    degrees = text_layer_create(GRect(degrees_pos.x, degrees_pos.y, width, 50));
     text_layer_set_background_color(degrees, GColorClear);
     text_layer_set_text_alignment(degrees, GTextAlignmentLeft);
 
@@ -395,50 +395,50 @@ void load_face_fonts() {
     int selected_font = persist_exists(KEY_FONTTYPE) ? persist_read_int(KEY_FONTTYPE) : LECO_FONT;
 
     if (selected_font == SYSTEM_FONT) {
-        time_font = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
-        medium_font = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
-        base_font = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
+        time_font = fonts_get_system_font(IF_BIG_SCREEN_ELSE(FONT_KEY_ROBOTO_BOLD_SUBSET_49, FONT_KEY_ROBOTO_BOLD_SUBSET_49));
+        medium_font = fonts_get_system_font(IF_BIG_SCREEN_ELSE(FONT_KEY_GOTHIC_28_BOLD, FONT_KEY_GOTHIC_28_BOLD));
+        base_font = fonts_get_system_font(IF_BIG_SCREEN_ELSE(FONT_KEY_GOTHIC_18_BOLD, FONT_KEY_GOTHIC_18_BOLD));
         loaded_font = SYSTEM_FONT;
     } else if (selected_font == ARCHIVO_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_56));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_28));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ARCHIVO_18));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ARCHIVO_66, RESOURCE_ID_FONT_ARCHIVO_56)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ARCHIVO_38, RESOURCE_ID_FONT_ARCHIVO_28)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ARCHIVO_26, RESOURCE_ID_FONT_ARCHIVO_18)));
         loaded_font = ARCHIVO_FONT;
     } else if (selected_font == DIN_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_58));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_26));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIN_20));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_DIN_70, RESOURCE_ID_FONT_DIN_58)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_DIN_38, RESOURCE_ID_FONT_DIN_26)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_DIN_28, RESOURCE_ID_FONT_DIN_20)));
         loaded_font = DIN_FONT;
     } else if (selected_font == PROTOTYPE_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_48));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_22));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PROTOTYPE_16));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_60, RESOURCE_ID_FONT_PROTOTYPE_48)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_34, RESOURCE_ID_FONT_PROTOTYPE_22)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_24, RESOURCE_ID_FONT_PROTOTYPE_16)));
         loaded_font = PROTOTYPE_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_64));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_32));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_19));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_80, RESOURCE_ID_FONT_BLOCKO_64)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_44, RESOURCE_ID_FONT_BLOCKO_32)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_30, RESOURCE_ID_FONT_BLOCKO_19)));
         loaded_font = BLOCKO_BIG_FONT;
     } else if (selected_font == LECO_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_47));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_21));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LECO_14));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_54, RESOURCE_ID_FONT_LECO_47)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_28, RESOURCE_ID_FONT_LECO_21)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_20, RESOURCE_ID_FONT_LECO_14)));
         loaded_font = LECO_FONT;
     } else if (selected_font == KONSTRUCT_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_33));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_17));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONSTRUCT_11));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_38, RESOURCE_ID_FONT_KONSTRUCT_33)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_22, RESOURCE_ID_FONT_KONSTRUCT_17)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_16, RESOURCE_ID_FONT_KONSTRUCT_11)));
         loaded_font = KONSTRUCT_FONT;
     } else {
-        time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_56));
-        medium_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_24));
-        base_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_BLOCKO_16));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_70, RESOURCE_ID_FONT_BLOCKO_56)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_38, RESOURCE_ID_FONT_BLOCKO_24)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_24, RESOURCE_ID_FONT_BLOCKO_16)));
         loaded_font = BLOCKO_FONT;
     }
 
-    weather_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_24));
-    weather_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_WEATHER_16));
-    custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ICONS_20));
+    weather_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_WEATHER_28, RESOURCE_ID_FONT_WEATHER_24)));
+    weather_font_small = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_WEATHER_22, RESOURCE_ID_FONT_WEATHER_16)));
+    custom_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ICONS_26, RESOURCE_ID_FONT_ICONS_20)));
 }
 
 void unload_face_fonts() {

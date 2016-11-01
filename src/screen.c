@@ -10,21 +10,23 @@
 #include "compass.h"
 #include "clock.h"
 
-void load_screen(bool from_configs, Window *watchface) {
+void load_screen(uint8_t reload_origin, Window *watchface) {
     load_locale();
     update_time();
 
     #if defined PBL_COMPASS
-    init_compass_service(watchface);
+    if (reload_origin != RELOAD_REDRAW) {
+        init_compass_service(watchface);
+    }
     #endif
 
-    set_colors(watchface);
+set_colors(watchface);
 
     #if defined(PBL_HEALTH)
-    toggle_health(from_configs);
+    toggle_health(reload_origin);
     #endif
 
-    toggle_weather(from_configs);
+    toggle_weather(reload_origin);
     battery_handler(battery_state_service_peek());
     bt_handler(connection_service_peek_pebble_app_connection());
     time_t temp = time(NULL);
@@ -45,7 +47,7 @@ void recreate_text_layers(Window * watchface) {
 
 void redraw_screen(Window *watchface) {
     recreate_text_layers(watchface);
-    load_screen(true, watchface);
+    load_screen(RELOAD_MODULE, watchface);
 }
 
 void bt_handler(bool connected) {
@@ -68,7 +70,7 @@ void battery_handler(BatteryChargeState charge_state) {
         char s_battery_buffer[8];
 
         if (charge_state.is_charging) {
-            snprintf(s_battery_buffer, sizeof(s_battery_buffer), "(=)");
+            snprintf(s_battery_buffer, sizeof(s_battery_buffer), "chg");
         } else {
             snprintf(s_battery_buffer, sizeof(s_battery_buffer), (charge_state.charge_percent < 20 ? "! %d%%" : "%d%%"), charge_state.charge_percent);
         }
@@ -89,6 +91,8 @@ void check_for_updates() {
 void notify_update(int update_available) {
     if (update_available) {
         set_update_color();
+        set_update_layer_text("f");
+    } else {
+        set_update_layer_text("");
     }
-    set_update_layer_text(update_available ? "f" : "");
 }
