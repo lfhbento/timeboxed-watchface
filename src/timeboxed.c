@@ -13,6 +13,13 @@
 #include "compass.h"
 
 static Window *watchface;
+static int timeout_sec = 0;
+
+#if defined(PBL_HEALTH)
+static int min_count = 0;
+#endif
+
+static int sec_count = 0;
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     Tuple * error_tuple = dict_find(iterator, KEY_ERROR);
@@ -65,7 +72,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     uint8_t tz_minute = 0;
     static char tz_name[TZ_LEN];
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "getting configs");
     Tuple *key_value = NULL;
     key_value = dict_find(iterator, KEY_SHOWSLEEP);
     if (key_value) {
@@ -465,6 +471,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     key_value = NULL; key_value = dict_find(iterator, KEY_TAPTIME);
     if (key_value) {
+        timeout_sec = key_value->value->int8;
         persist_write_int(KEY_TAPTIME, key_value->value->int8);
     }
 
@@ -524,6 +531,7 @@ static void watchface_load(Window *window) {
     set_face_fonts();
 
     load_timezone_from_storage();
+    timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
 }
 
 static void watchface_unload(Window *window) {
@@ -541,9 +549,30 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         update_seconds(tick_time);
     }
 
+    if (tap_mode_visible() || wrist_mode_visible()) {
+        sec_count++;
+        if (sec_count > timeout_sec) {
+            sec_count = 0;
+            reset_tap_handler();
+            reset_wrist_handler();
+        }
+    }
+
     if (units_changed & MINUTE_UNIT) {
         if (is_weather_enabled()) {
-            update_weather();
+            #if defined(PBL_HEALTH)
+                if (is_user_sleeping()) {
+                    min_count++;
+                    if (min_count > 90) {
+                        update_weather();
+                        min_count = 0;
+                    }
+                } else {
+                    update_weather();
+                }
+            #else
+                update_weather();
+            #endif
         }
         update_time();
 
@@ -555,12 +584,10 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         if (!tap_mode_visible() && !wrist_mode_visible()) {
             show_sleep_data_if_visible(watchface);
         }
-        #endif
 
-        #if defined(PBL_HEALTH)
         if (
             ((tick_time->tm_min % 2 == 0 || is_module_enabled(MODULE_HEART)) && !is_user_sleeping()) || // check for health updates only every 2 minutes (or 1 min if heart rate is enabled)
-            (tick_time->tm_min % 30 == 0 && is_user_sleeping())
+            (is_user_sleeping() && tick_time->tm_min == 0)
         ) {
             get_health_data();
         }

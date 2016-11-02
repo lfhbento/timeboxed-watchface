@@ -30,7 +30,7 @@ static void reset_tap() {
     mid_tap_count = 0;
 }
 
-static void reset_tap_handler(void * data) {
+void reset_tap_handler() {
     show_tap_mode = false;
     redraw_screen(watchface_ref);
 }
@@ -123,7 +123,6 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
 
         if (begin_tap && mid_tap && end_tap) {
             show_tap_mode = true;
-            app_timer_register(timeout_sec * 1000, reset_tap_handler, NULL);
             reset_tap();
             redraw_screen(watchface_ref);
         }
@@ -151,7 +150,7 @@ bool wrist_mode_visible() {
     return show_wrist_mode && !show_tap_mode;
 }
 
-void reset_wrist_handler(void * data) {
+void reset_wrist_handler() {
     show_wrist_mode = false;
     redraw_screen(watchface_ref);
 }
@@ -163,7 +162,6 @@ void shake_data_handler(AccelAxisType axis, int32_t direction) {
 
     if (axis == ACCEL_AXIS_Y) {
         show_wrist_mode = true;
-        app_timer_register(timeout_sec * 1000, reset_wrist_handler, NULL);
         redraw_screen(watchface_ref);
     }
 }
@@ -172,7 +170,6 @@ void init_accel_service(Window * watchface) {
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
     watchface_ref = watchface;
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "accel");
     accel_data_service_unsubscribe();
     if (is_tap_enabled()) {
         accel_data_service_subscribe(25, accel_data_handler);
@@ -182,5 +179,4 @@ void init_accel_service(Window * watchface) {
     if (is_wrist_enabled()) {
         accel_tap_service_subscribe(shake_data_handler);
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "done");
 }

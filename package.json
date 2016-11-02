@@ -76,7 +76,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_56",
@@ -100,7 +100,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
           "name": "FONT_LECO_47",
@@ -124,7 +124,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
           "name": "FONT_KONSTRUCT_33",
@@ -148,7 +148,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_56",
@@ -172,7 +172,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/OSP-DIN.ttf",
           "name": "FONT_DIN_58",
@@ -196,7 +196,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_48",
@@ -268,7 +268,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_80",
@@ -279,7 +279,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_20",
+          "name": "FONT_LECO_22",
           "targetPlatforms": ["emery"]
         },
         {
@@ -287,12 +287,12 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_28",
+          "name": "FONT_LECO_30",
           "targetPlatforms": ["emery"]
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
           "name": "FONT_LECO_54",
@@ -316,7 +316,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
           "name": "FONT_KONSTRUCT_38",
@@ -340,7 +340,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_66",
@@ -364,7 +364,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/OSP-DIN.ttf",
           "name": "FONT_DIN_70",
@@ -388,7 +388,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9:! ]",
+          "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_60",
