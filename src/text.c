@@ -126,6 +126,10 @@ void create_text_layers(Window* window) {
     int height = bounds.size.h;
     int full_height = full_bounds.size.h;
 
+    if (is_quickview_disabled()) {
+        height = full_height;
+    }
+
     GTextAlignment text_align = GTextAlignmentRight;
     switch (alignment) {
         case ALIGN_LEFT:
@@ -179,7 +183,7 @@ void create_text_layers(Window* window) {
 
     int weather_slot = get_slot_for_module(MODULE_WEATHER);
     GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font, width, height);
-    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, 38), 50));
+    weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, IF_BIG_SCREEN_ELSE(45, 38)), 50));
     text_layer_set_background_color(weather, GColorClear);
     text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
@@ -422,7 +426,7 @@ void load_face_fonts() {
     } else if (selected_font == LECO_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_54, RESOURCE_ID_FONT_LECO_47)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_30, RESOURCE_ID_FONT_LECO_21)));
-        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_22, RESOURCE_ID_FONT_LECO_14)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_20, RESOURCE_ID_FONT_LECO_14)));
         loaded_font = LECO_FONT;
     } else if (selected_font == KONSTRUCT_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_38, RESOURCE_ID_FONT_KONSTRUCT_33)));

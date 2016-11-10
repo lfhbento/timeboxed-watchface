@@ -279,7 +279,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_22",
+          "name": "FONT_LECO_20",
           "targetPlatforms": ["emery"]
         },
         {

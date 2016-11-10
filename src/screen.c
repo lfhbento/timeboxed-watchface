@@ -43,6 +43,7 @@ void recreate_text_layers(Window * watchface) {
     destroy_text_layers();
     create_text_layers(watchface);
     set_face_fonts();
+    notify_update(false);
 }
 
 void redraw_screen(Window *watchface) {
@@ -93,6 +94,9 @@ void notify_update(int update_available) {
         set_update_color();
         set_update_layer_text("f");
     } else {
-        set_update_layer_text("");
+        set_update_color();
+        set_update_layer_text("f");
+        set_bluetooth_color();
+        set_bluetooth_layer_text("a");
     }
 }
