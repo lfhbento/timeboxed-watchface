@@ -255,7 +255,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
-          "name": "FONT_BLOCKO_30",
+          "name": "FONT_BLOCKO_28",
           "targetPlatforms": ["emery"]
         },
         {
@@ -295,7 +295,7 @@
           "characterRegex": "[0-9:]",
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
-          "name": "FONT_LECO_54",
+          "name": "FONT_LECO_58",
           "targetPlatforms": ["emery"]
         },
         {
@@ -303,7 +303,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
-          "name": "FONT_KONSTRUCT_16",
+          "name": "FONT_KONSTRUCT_15",
           "targetPlatforms": ["emery"]
         },
         {
@@ -375,7 +375,7 @@
           "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
-          "name": "FONT_PROTOTYPE_24",
+          "name": "FONT_PROTOTYPE_22",
           "targetPlatforms": ["emery"]
         },
         {

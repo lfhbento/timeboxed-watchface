@@ -416,22 +416,22 @@ void load_face_fonts() {
     } else if (selected_font == PROTOTYPE_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_60, RESOURCE_ID_FONT_PROTOTYPE_48)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_34, RESOURCE_ID_FONT_PROTOTYPE_22)));
-        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_24, RESOURCE_ID_FONT_PROTOTYPE_16)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_PROTOTYPE_22, RESOURCE_ID_FONT_PROTOTYPE_16)));
         loaded_font = PROTOTYPE_FONT;
     } else if (selected_font == BLOCKO_BIG_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_80, RESOURCE_ID_FONT_BLOCKO_64)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_44, RESOURCE_ID_FONT_BLOCKO_32)));
-        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_30, RESOURCE_ID_FONT_BLOCKO_19)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_28, RESOURCE_ID_FONT_BLOCKO_19)));
         loaded_font = BLOCKO_BIG_FONT;
     } else if (selected_font == LECO_FONT) {
-        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_54, RESOURCE_ID_FONT_LECO_47)));
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_58, RESOURCE_ID_FONT_LECO_47)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_30, RESOURCE_ID_FONT_LECO_21)));
         base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_LECO_20, RESOURCE_ID_FONT_LECO_14)));
         loaded_font = LECO_FONT;
     } else if (selected_font == KONSTRUCT_FONT) {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_38, RESOURCE_ID_FONT_KONSTRUCT_33)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_22, RESOURCE_ID_FONT_KONSTRUCT_17)));
-        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_16, RESOURCE_ID_FONT_KONSTRUCT_11)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_15, RESOURCE_ID_FONT_KONSTRUCT_11)));
         loaded_font = KONSTRUCT_FONT;
     } else {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_70, RESOURCE_ID_FONT_BLOCKO_56)));
