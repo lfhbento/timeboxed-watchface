@@ -20,7 +20,7 @@ void load_screen(uint8_t reload_origin, Window *watchface) {
     }
     #endif
 
-set_colors(watchface);
+    set_colors(watchface);
 
     #if defined(PBL_HEALTH)
     toggle_health(reload_origin);
@@ -94,9 +94,6 @@ void notify_update(int update_available) {
         set_update_color();
         set_update_layer_text("f");
     } else {
-        set_update_color();
-        set_update_layer_text("f");
-        set_bluetooth_color();
-        set_bluetooth_layer_text("a");
+        set_update_layer_text("");
     }
 }

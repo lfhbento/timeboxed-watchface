@@ -19,7 +19,9 @@ static int timeout_sec = 0;
 static int min_count = 0;
 #endif
 
+#if !defined PBL_PLATFORM_APLITE
 static int sec_count = 0;
+#endif
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     Tuple * error_tuple = dict_find(iterator, KEY_ERROR);
@@ -489,7 +491,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     set_config_toggles(configs);
     set_timezone(tz_name, tz_hour, tz_minute);
 
+    #if !defined PBL_PLATFORM_APLITE
     init_accel_service(watchface);
+    #endif
     #if defined PBL_COMPASS
     init_compass_service(watchface);
     #endif
@@ -549,6 +553,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         update_seconds(tick_time);
     }
 
+    #if !defined PBL_PLATFORM_APLITE
     if (tap_mode_visible() || wrist_mode_visible()) {
         sec_count++;
         if (sec_count > timeout_sec) {
@@ -557,6 +562,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
             reset_wrist_handler();
         }
     }
+    #endif
 
     if (units_changed & MINUTE_UNIT) {
         if (is_weather_enabled()) {
@@ -610,7 +616,9 @@ static void init(void) {
         .unload = watchface_unload,
     });
 
+    #if !defined PBL_PLATFORM_APLITE
     init_accel_service(watchface);
+    #endif
 
     #if defined PBL_COMPASS
     init_compass_service(watchface);

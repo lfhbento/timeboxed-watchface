@@ -3,6 +3,7 @@
 #include "configs.h"
 #include "keys.h"
 
+#if !defined PBL_PLATFORM_APLITE
 static bool initialized;
 static int lastPassX;
 static int lastPassY;
@@ -142,6 +143,7 @@ void accel_data_handler(AccelData *data, uint32_t num_samples) {
     lastZ = Z[1];
 }
 
+
 bool tap_mode_visible() {
     return show_tap_mode && !show_wrist_mode;
 }
@@ -170,13 +172,26 @@ void init_accel_service(Window * watchface) {
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
     watchface_ref = watchface;
 
+    #if !defined PBL_PLATFORM_APLITE
     accel_data_service_unsubscribe();
     if (is_tap_enabled()) {
         accel_data_service_subscribe(25, accel_data_handler);
     }
+    #endif
 
     accel_tap_service_unsubscribe();
     if (is_wrist_enabled()) {
         accel_tap_service_subscribe(shake_data_handler);
     }
 }
+#else
+
+bool tap_mode_visible() {
+    return false;
+}
+
+bool wrist_mode_visible() {
+    return false;
+}
+
+#endif
