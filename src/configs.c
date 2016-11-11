@@ -174,11 +174,11 @@ bool is_use_calories_enabled() {
 }
 
 bool is_simple_mode_enabled() {
-    return get_config_toggles() & FLAG_SIMPLEMODE;
+    return false;
 }
 
 bool is_timezone_enabled() {
-    return get_config_toggles() & FLAG_TIMEZONES;
+    return true;
 }
 
 bool is_quickview_disabled() {

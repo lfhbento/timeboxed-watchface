@@ -99,9 +99,14 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
     if (Pebble.getActiveWatchInfo().platform === 'aplite') {
         Object.keys(dict).filter(function(value) {
-            return value.indexOf('WRIST') !== -1 || value.indexOf('TAP') !== -1 || typeof dict[value] == 'undefined';
+            return (
+                value.indexOf('WRIST') !== -1 || value.indexOf('TAP') !== -1 ||
+                value.indexOf('SLEEP') !== -1 || value.indexOf('HEART') !== -1 ||
+                value.indexOf('DEEP') !== -1 || value.indexOf('ACTIVE') !== -1 ||
+                value.indexOf('_CAL') !== -1 || value.indexOf('STEPS') !== -1 ||
+                value.indexOf('DIST') !== -1 || typeof dict[value] == 'undefined'
+            );
         }).map(function(value) {
-            console.log('removing ' + value);
             delete dict[value];
         });
     }

@@ -480,7 +480,12 @@ static void init(void) {
     app_message_register_inbox_dropped(inbox_dropped_callback);
     app_message_register_outbox_failed(outbox_failed_callback);
     app_message_register_outbox_sent(outbox_sent_callback);
+
+    #if !defined PBL_PLATFORM_APLITE
     app_message_open(1024, 64);
+    #else
+    app_message_open(512, 64);
+    #endif
 
     connection_service_subscribe((ConnectionHandlers) {
 	.pebble_app_connection_handler = bt_handler

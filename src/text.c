@@ -113,31 +113,31 @@ uint8_t get_loaded_font() {
 }
 
 static void add_text_layer(Layer * window, TextLayer * text) {
-    if (text != NULL) {
+    if (text) {
         layer_add_child(window, text_layer_get_layer(text));
     }
 }
 
 static void delete_text_layer(TextLayer * text) {
-    if (text != NULL) {
+    if (text) {
         text_layer_destroy(text);
     }
 }
 
 static void set_text_font(TextLayer * text, GFont font) {
-    if (text != NULL) {
+    if (text) {
         text_layer_set_font(text, font);
     }
 }
 
 static void set_text_color(TextLayer * text, GColor color) {
-    if (text != NULL) {
+    if (text) {
         text_layer_set_text_color(text, color);
     }
 }
 
 static void set_text(TextLayer * text, char * content) {
-    if (text != NULL) {
+    if (text) {
         text_layer_set_text(text, content);
     }
 }
@@ -175,6 +175,9 @@ void create_text_layers(Window* window) {
             break;
     }
 
+    GPoint pos;
+    int slot;
+
     struct TextPositions text_positions;
     get_text_positions(selected_font, text_align, &text_positions, width, height);
 
@@ -188,23 +191,23 @@ void create_text_layers(Window* window) {
     text_layer_set_background_color(date, GColorClear);
     text_layer_set_text_alignment(date, text_align);
 
-    int alt_time_slot = get_slot_for_module(MODULE_TIMEZONE);
-    if (alt_time_slot != -1) {
-        GPoint alt_time_pos = get_pos_for_item(alt_time_slot, TIMEZONE_ITEM, mode, selected_font, width, height);
-        alt_time = text_layer_create(GRect(alt_time_pos.x, alt_time_pos.y, width, 50));
+    slot = get_slot_for_module(MODULE_TIMEZONE);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, TIMEZONE_ITEM, mode, selected_font, width, height);
+        alt_time = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(alt_time, GColorClear);
         text_layer_set_text_alignment(alt_time, text_align);
         text_layer_set_text_alignment(alt_time, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || alt_time_slot > 3 ? text_align : (alt_time_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int battery_slot = get_slot_for_module(MODULE_BATTERY);
-    if (battery_slot != -1) {
-        GPoint battery_pos = get_pos_for_item(battery_slot, BATTERY_ITEM, mode, selected_font, width, height);
-        battery = text_layer_create(GRect(battery_pos.x, battery_pos.y, PBL_IF_ROUND_ELSE(width, battery_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_BATTERY);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, BATTERY_ITEM, mode, selected_font, width, height);
+        battery = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(battery, GColorClear);
         text_layer_set_text_alignment(battery, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || battery_slot > 3 ? text_align : (battery_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
     bluetooth = text_layer_create(GRect(text_positions.bluetooth.x, text_positions.bluetooth.y, width, 50));
@@ -217,172 +220,172 @@ void create_text_layers(Window* window) {
     text_layer_set_text_alignment(update, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
     layer_set_hidden(text_layer_get_layer(update), height != full_height);
 
-    int weather_slot = get_slot_for_module(MODULE_WEATHER);
-    if (weather_slot != -1) {
-        GPoint weather_pos = get_pos_for_item(weather_slot, WEATHER_ITEM, mode, selected_font, width, height);
-        weather = text_layer_create(GRect(weather_pos.x, weather_pos.y, PBL_IF_ROUND_ELSE(width, IF_BIG_SCREEN_ELSE(45, 38)), 50));
+    slot = get_slot_for_module(MODULE_WEATHER);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, WEATHER_ITEM, mode, selected_font, width, height);
+        weather = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, IF_BIG_SCREEN_ELSE(45, 38)), 50));
         text_layer_set_background_color(weather, GColorClear);
         text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
-        GPoint temp_pos = get_pos_for_item(weather_slot, TEMP_ITEM, mode, selected_font, width, height);
-        temp_cur = text_layer_create(GRect(temp_pos.x, temp_pos.y, width, 50));
+        pos = get_pos_for_item(slot, TEMP_ITEM, mode, selected_font, width, height);
+        temp_cur = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(temp_cur, GColorClear);
         text_layer_set_text_alignment(temp_cur, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
     }
 
-    int forecast_slot = get_slot_for_module(MODULE_FORECAST);
-    if (forecast_slot != -1) {
-        GPoint max_pos = get_pos_for_item(forecast_slot, TEMPMAX_ITEM, mode, selected_font, width, height);
-        temp_max = text_layer_create(GRect(max_pos.x, max_pos.y, width, 50));
+    slot = get_slot_for_module(MODULE_FORECAST);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, TEMPMAX_ITEM, mode, selected_font, width, height);
+        temp_max = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(temp_max, GColorClear);
         text_layer_set_text_alignment(temp_max, GTextAlignmentLeft);
 
-        GPoint max_icon_pos = get_pos_for_item(forecast_slot, TEMPMAXICON_ITEM, mode, selected_font, width, height);
-        max_icon = text_layer_create(GRect(max_icon_pos.x, max_icon_pos.y, width, 50));
+        pos = get_pos_for_item(slot, TEMPMAXICON_ITEM, mode, selected_font, width, height);
+        max_icon = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(max_icon, GColorClear);
         text_layer_set_text_alignment(max_icon, GTextAlignmentLeft);
 
-        GPoint min_pos = get_pos_for_item(forecast_slot, TEMPMIN_ITEM, mode, selected_font, width, height);
-        temp_min = text_layer_create(GRect(min_pos.x, min_pos.y, width, 50));
+        pos = get_pos_for_item(slot, TEMPMIN_ITEM, mode, selected_font, width, height);
+        temp_min = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(temp_min, GColorClear);
         text_layer_set_text_alignment(temp_min, GTextAlignmentLeft);
 
-        GPoint min_icon_pos = get_pos_for_item(forecast_slot, TEMPMINICON_ITEM, mode, selected_font, width, height);
-        min_icon = text_layer_create(GRect(min_icon_pos.x, min_icon_pos.y, width, 50));
+        pos = get_pos_for_item(slot, TEMPMINICON_ITEM, mode, selected_font, width, height);
+        min_icon = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(min_icon, GColorClear);
         text_layer_set_text_alignment(min_icon, GTextAlignmentLeft);
     }
 
-    int wind_slot = get_slot_for_module(MODULE_WIND);
-    if (wind_slot != -1) {
-        GPoint speed_pos = get_pos_for_item(wind_slot, SPEED_ITEM, mode, selected_font, width, height);
-        speed = text_layer_create(GRect(speed_pos.x, speed_pos.y, 42, 50));
+    slot = get_slot_for_module(MODULE_WIND);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, SPEED_ITEM, mode, selected_font, width, height);
+        speed = text_layer_create(GRect(pos.x, pos.y, 42, 50));
         text_layer_set_background_color(speed, GColorClear);
         text_layer_set_text_alignment(speed, GTextAlignmentRight);
 
-        GPoint direction_pos = get_pos_for_item(wind_slot, DIRECTION_ITEM, mode, selected_font, width, height);
-        direction = text_layer_create(GRect(direction_pos.x, direction_pos.y, width, 50));
+        pos = get_pos_for_item(slot, DIRECTION_ITEM, mode, selected_font, width, height);
+        direction = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(direction, GColorClear);
         text_layer_set_text_alignment(direction, GTextAlignmentLeft);
 
-        GPoint wind_unit_pos = get_pos_for_item(wind_slot, WIND_UNIT_ITEM, mode, selected_font, width, height);
-        wind_unit = text_layer_create(GRect(wind_unit_pos.x, wind_unit_pos.y, width, 50));
+        pos = get_pos_for_item(slot, WIND_UNIT_ITEM, mode, selected_font, width, height);
+        wind_unit = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(wind_unit, GColorClear);
         text_layer_set_text_alignment(wind_unit, GTextAlignmentLeft);
     }
 
-    int sunrise_slot = get_slot_for_module(MODULE_SUNRISE);
-    if (sunrise_slot != -1) {
-        GPoint sunrise_pos = get_pos_for_item(sunrise_slot, SUNRISE_ITEM, mode, selected_font, width, height);
-        sunrise = text_layer_create(GRect(sunrise_pos.x, sunrise_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    slot = get_slot_for_module(MODULE_SUNRISE);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, SUNRISE_ITEM, mode, selected_font, width, height);
+        sunrise = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
         text_layer_set_background_color(sunrise, GColorClear);
         text_layer_set_text_alignment(sunrise, GTextAlignmentLeft);
 
-        GPoint sunrise_icon_pos = get_pos_for_item(sunrise_slot, SUNRISEICON_ITEM, mode, selected_font, width, height);
-        sunrise_icon = text_layer_create(GRect(sunrise_icon_pos.x, sunrise_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
+        pos = get_pos_for_item(slot, SUNRISEICON_ITEM, mode, selected_font, width, height);
+        sunrise_icon = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
         text_layer_set_background_color(sunrise_icon, GColorClear);
         text_layer_set_text_alignment(sunrise_icon, GTextAlignmentLeft);
     }
 
-    int sunset_slot = get_slot_for_module(MODULE_SUNSET);
-    if (sunset_slot != -1) {
-        GPoint sunset_pos = get_pos_for_item(sunset_slot, SUNSET_ITEM, mode, selected_font, width, height);
-        sunset = text_layer_create(GRect(sunset_pos.x, sunset_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    slot = get_slot_for_module(MODULE_SUNSET);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, SUNSET_ITEM, mode, selected_font, width, height);
+        sunset = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
         text_layer_set_background_color(sunset, GColorClear);
         text_layer_set_text_alignment(sunset, GTextAlignmentRight);
 
-        GPoint sunset_icon_pos = get_pos_for_item(sunset_slot, SUNSETICON_ITEM, mode, selected_font, width, height);
-        sunset_icon = text_layer_create(GRect(sunset_icon_pos.x, sunset_icon_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+        pos = get_pos_for_item(slot, SUNSETICON_ITEM, mode, selected_font, width, height);
+        sunset_icon = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
         text_layer_set_background_color(sunset_icon, GColorClear);
         text_layer_set_text_alignment(sunset_icon, GTextAlignmentRight);
     }
 
-    int compass_slot = get_slot_for_module(MODULE_COMPASS);
-    if (compass_slot != -1) {
-        GPoint degrees_pos = get_pos_for_item(compass_slot, DEGREES_ITEM, mode, selected_font, width, height);
-        degrees = text_layer_create(GRect(degrees_pos.x, degrees_pos.y, width, 50));
+    slot = get_slot_for_module(MODULE_COMPASS);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, DEGREES_ITEM, mode, selected_font, width, height);
+        degrees = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(degrees, GColorClear);
         text_layer_set_text_alignment(degrees, GTextAlignmentLeft);
 
-        GPoint compass_pos = get_pos_for_item(compass_slot, COMPASS_ITEM, mode, selected_font, width, height);
-        compass = text_layer_create(GRect(compass_pos.x, compass_pos.y, width, 50));
+        pos = get_pos_for_item(slot, COMPASS_ITEM, mode, selected_font, width, height);
+        compass = text_layer_create(GRect(pos.x, pos.y, width, 50));
         text_layer_set_background_color(compass, GColorClear);
         text_layer_set_text_alignment(compass, GTextAlignmentLeft);
     }
 
-    int seconds_slot = get_slot_for_module(MODULE_SECONDS);
-    if (seconds_slot != -1) {
-        GPoint seconds_pos = get_pos_for_item(seconds_slot, SECONDS_ITEM, mode, selected_font, width, height);
-        seconds = text_layer_create(GRect(seconds_pos.x, seconds_pos.y, PBL_IF_ROUND_ELSE(width, seconds_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_SECONDS);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, SECONDS_ITEM, mode, selected_font, width, height);
+        seconds = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(seconds, GColorClear);
         text_layer_set_text_alignment(seconds, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || seconds_slot > 3 ? text_align : (seconds_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
     #if defined(PBL_HEALTH)
-    int steps_slot = get_slot_for_module(MODULE_STEPS);
-    if (steps_slot != -1) {
-        GPoint steps_pos = get_pos_for_item(steps_slot, STEPS_ITEM, mode, selected_font, width, height);
-        steps = text_layer_create(GRect(steps_pos.x, steps_pos.y, PBL_IF_ROUND_ELSE(width, steps_slot > 3 ? width: slot_width), 50));
+    slot = get_slot_for_module(MODULE_STEPS);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, STEPS_ITEM, mode, selected_font, width, height);
+        steps = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width: slot_width), 50));
         text_layer_set_background_color(steps, GColorClear);
         text_layer_set_text_alignment(steps, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || steps_slot > 3 ? text_align : (steps_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int dist_slot = get_slot_for_module(MODULE_DIST);
-    if (dist_slot != -1) {
-        GPoint dist_pos = get_pos_for_item(dist_slot, DIST_ITEM, mode, selected_font, width, height);
-        dist = text_layer_create(GRect(dist_pos.x, dist_pos.y, PBL_IF_ROUND_ELSE(width, dist_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_DIST);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, DIST_ITEM, mode, selected_font, width, height);
+        dist = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(dist, GColorClear);
         text_layer_set_text_alignment(dist, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || dist_slot > 3 ? text_align : (dist_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int cal_slot = get_slot_for_module(MODULE_CAL);
-    if (cal_slot != -1) {
-        GPoint cal_pos = get_pos_for_item(cal_slot, CAL_ITEM, mode, selected_font, width, height);
-        cal = text_layer_create(GRect(cal_pos.x, cal_pos.y, PBL_IF_ROUND_ELSE(width, cal_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_CAL);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, CAL_ITEM, mode, selected_font, width, height);
+        cal = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(cal, GColorClear);
         text_layer_set_text_alignment(cal, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || cal_slot > 3 ? text_align : (cal_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int sleep_slot = get_slot_for_module(MODULE_SLEEP);
-    if (sleep_slot != -1) {
-        GPoint sleep_pos = get_pos_for_item(sleep_slot, SLEEP_ITEM, mode, selected_font, width, height);
-        sleep = text_layer_create(GRect(sleep_pos.x, sleep_pos.y, PBL_IF_ROUND_ELSE(width, sleep_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_SLEEP);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, SLEEP_ITEM, mode, selected_font, width, height);
+        sleep = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(sleep, GColorClear);
         text_layer_set_text_alignment(sleep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || sleep_slot > 3 ? text_align : (sleep_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int deep_slot = get_slot_for_module(MODULE_DEEP);
-    if (deep_slot != -1) {
-        GPoint deep_pos = get_pos_for_item(deep_slot, DEEP_ITEM, mode, selected_font, width, height);
-        deep = text_layer_create(GRect(deep_pos.x, deep_pos.y, PBL_IF_ROUND_ELSE(width, deep_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_DEEP);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, DEEP_ITEM, mode, selected_font, width, height);
+        deep = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(deep, GColorClear);
         text_layer_set_text_alignment(deep, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || deep_slot > 3 ? text_align : (deep_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int active_slot = get_slot_for_module(MODULE_ACTIVE);
-    if (active_slot != -1) {
-        GPoint active_pos = get_pos_for_item(active_slot, ACTIVE_ITEM, mode, selected_font, width, height);
-        active = text_layer_create(GRect(active_pos.x, active_pos.y, PBL_IF_ROUND_ELSE(width, active_slot > 3 ? width : slot_width), 50));
+    slot = get_slot_for_module(MODULE_ACTIVE);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, ACTIVE_ITEM, mode, selected_font, width, height);
+        active = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(active, GColorClear);
         text_layer_set_text_alignment(active, PBL_IF_ROUND_ELSE(GTextAlignmentCenter,
-                    is_simple_mode_enabled() || active_slot > 3 ? text_align : (active_slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
+                    is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    int heart_slot = get_slot_for_module(MODULE_HEART);
-    if (heart_slot != -1) {
-        GPoint heart_pos = get_pos_for_item(heart_slot, HEART_ITEM, mode, selected_font, width, height);
-        heart = text_layer_create(GRect(heart_pos.x, heart_pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
+    slot = get_slot_for_module(MODULE_HEART);
+    if (slot != -1) {
+        pos = get_pos_for_item(slot, HEART_ITEM, mode, selected_font, width, height);
+        heart = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot_width), 50));
         text_layer_set_background_color(heart, GColorClear);
         text_layer_set_text_alignment(heart, GTextAlignmentLeft);
 
-        GPoint heart_icon_pos = get_pos_for_item(heart_slot, HEARTICON_ITEM, mode, selected_font, width, height);
-        heart_icon = text_layer_create(GRect(heart_icon_pos.x, heart_icon_pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
+        pos = get_pos_for_item(slot, HEARTICON_ITEM, mode, selected_font, width, height);
+        heart_icon = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, 34), 50));
         text_layer_set_background_color(heart_icon, GColorClear);
         text_layer_set_text_alignment(heart_icon, GTextAlignmentLeft);
     }
@@ -425,37 +428,67 @@ void create_text_layers(Window* window) {
 
 void destroy_text_layers() {
     delete_text_layer(hours);
+    hours = NULL;
     delete_text_layer(date);
+    date = NULL;
     delete_text_layer(alt_time);
+    alt_time = NULL;
     delete_text_layer(battery);
+    battery = NULL;
     delete_text_layer(bluetooth);
+    bluetooth = NULL;
     delete_text_layer(update);
+    update = NULL;
     delete_text_layer(weather);
+    weather = NULL;
     delete_text_layer(min_icon);
+    min_icon = NULL;
     delete_text_layer(max_icon);
+    max_icon = NULL;
     delete_text_layer(temp_cur);
+    temp_cur = NULL;
     delete_text_layer(temp_min);
+    temp_min = NULL;
     delete_text_layer(temp_max);
+    temp_max = NULL;
     delete_text_layer(speed);
+    speed = NULL;
     delete_text_layer(direction);
+    direction = NULL;
     delete_text_layer(wind_unit);
+    wind_unit = NULL;
     delete_text_layer(sunrise);
+    sunrise = NULL;
     delete_text_layer(sunrise_icon);
+    sunrise_icon = NULL;
     delete_text_layer(sunset);
+    sunset = NULL;
     delete_text_layer(sunset_icon);
+    sunset_icon = NULL;
     delete_text_layer(compass);
+    compass = NULL;
     delete_text_layer(degrees);
+    degrees = NULL;
     delete_text_layer(seconds);
+    seconds = NULL;
 
     #if defined(PBL_HEALTH)
     delete_text_layer(steps);
+    steps = NULL;
     delete_text_layer(dist);
+    dist = NULL;
     delete_text_layer(sleep);
+    sleep = NULL;
     delete_text_layer(cal);
+    cal = NULL;
     delete_text_layer(deep);
+    deep = NULL;
     delete_text_layer(active);
+    active = NULL;
     delete_text_layer(heart);
+    heart = NULL;
     delete_text_layer(heart_icon);
+    heart_icon = NULL;
     #endif
 }
 
