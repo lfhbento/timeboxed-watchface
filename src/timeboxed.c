@@ -398,8 +398,12 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
         sec_count++;
         if (sec_count > timeout_sec) {
             sec_count = 0;
-            reset_tap_handler();
-            reset_wrist_handler();
+            if (tap_mode_visible()) {
+                reset_tap_handler();
+            }
+            if (wrist_mode_visible()) {
+                reset_wrist_handler();
+            }
         }
     }
     #endif
