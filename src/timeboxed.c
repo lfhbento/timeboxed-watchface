@@ -13,14 +13,150 @@
 #include "compass.h"
 
 static Window *watchface;
-static int timeout_sec = 0;
+
+static uint32_t color_keys[] = {
+    KEY_BGCOLOR,
+    KEY_HOURSCOLOR,
+    KEY_ALTHOURSCOLOR,
+    KEY_DATECOLOR,
+    KEY_BLUETOOTHCOLOR,
+    KEY_UPDATECOLOR,
+    KEY_BATTERYCOLOR,
+    KEY_BATTERYLOWCOLOR,
+    KEY_TEMPCOLOR,
+    KEY_WEATHERCOLOR,
+    KEY_MINCOLOR,
+    KEY_MAXCOLOR,
+    KEY_WINDDIRCOLOR,
+    KEY_WINDSPEEDCOLOR,
+    KEY_COMPASSCOLOR,
+    KEY_SUNRISECOLOR,
+    KEY_SUNSETCOLOR,
+    KEY_SECONDSCOLOR
+};
+static uint8_t num_colors = 18;
+
+static uint32_t config_keys[] = {
+    KEY_WEATHER,
+    KEY_SHOWSLEEP,
+    KEY_USECELSIUS,
+    KEY_ENABLEADVANCED,
+    KEY_BLUETOOTHDISCONNECT,
+    KEY_UPDATE,
+    KEY_LEADINGZERO,
+    KEY_SIMPLEMODE,
+    KEY_TIMEZONES,
+    KEY_QUICKVIEW,
+    KEY_SHOWTAP,
+    KEY_SHOWWRIST
+};
+static uint32_t config_flags[] = {
+    FLAG_WEATHER,
+    FLAG_SLEEP,
+    FLAG_CELSIUS,
+    FLAG_ADVANCED,
+    FLAG_BLUETOOTH,
+    FLAG_UPDATE,
+    FLAG_LEADINGZERO,
+    FLAG_SIMPLEMODE,
+    FLAG_TIMEZONES,
+    FLAG_QUICKVIEW,
+    FLAG_TAP,
+    FLAG_WRIST
+};
+static bool config_defaults[] = {
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true
+};
+static uint8_t num_configs = 12;
+
+static uint32_t int_keys[] = {
+    KEY_FONTTYPE,
+    KEY_LOCALE,
+    KEY_DATEFORMAT,
+    KEY_TEXTALIGN,
+    KEY_SPEEDUNIT,
+    KEY_WEATHERTIME,
+    KEY_DATESEPARATOR
+};
+static uint8_t num_int = 7;
+
+static uint32_t slot_keys[] = {
+    KEY_SLOTA,
+    KEY_SLOTB,
+    KEY_SLOTC,
+    KEY_SLOTD,
+    KEY_SLOTE,
+    KEY_SLOTF,
+};
+static uint32_t slot_values[] = {
+    SLOT_A,
+    SLOT_B,
+    SLOT_C,
+    SLOT_D,
+    SLOT_E,
+    SLOT_F,
+};
+uint8_t num_slots = 6;
 
 #if defined(PBL_HEALTH)
 static int min_count = 0;
+static uint8_t health_color_keys[] = {
+    KEY_STEPSCOLOR,
+    KEY_STEPSBEHINDCOLOR,
+    KEY_DISTCOLOR,
+    KEY_DISTBEHINDCOLOR,
+    KEY_CALCOLOR,
+    KEY_CALBEHINDCOLOR,
+    KEY_SLEEPCOLOR,
+    KEY_SLEEPBEHINDCOLOR,
+    KEY_DEEPCOLOR,
+    KEY_DEEPBEHINDCOLOR,
+    KEY_ACTIVECOLOR,
+    KEY_ACTIVEBEHINDCOLOR,
+    KEY_HEARTCOLOR,
+    KEY_HEARTCOLOROFF
+};
+static uint8_t num_health_colors = 14;
 #endif
 
 #if !defined PBL_PLATFORM_APLITE
+static uint32_t slot_sleep_keys[] = {
+    KEY_SLEEPSLOTA,
+    KEY_SLEEPSLOTB,
+    KEY_SLEEPSLOTC,
+    KEY_SLEEPSLOTD,
+    KEY_SLEEPSLOTE,
+    KEY_SLEEPSLOTF,
+};
+static uint32_t slot_tap_keys[] = {
+    KEY_TAPSLOTA,
+    KEY_TAPSLOTB,
+    KEY_TAPSLOTC,
+    KEY_TAPSLOTD,
+    KEY_TAPSLOTE,
+    KEY_TAPSLOTF,
+};
+static uint32_t slot_wrist_keys[] = {
+    KEY_WRISTSLOTA,
+    KEY_WRISTSLOTB,
+    KEY_WRISTSLOTC,
+    KEY_WRISTSLOTD,
+    KEY_WRISTSLOTE,
+    KEY_WRISTSLOTF,
+};
 static int sec_count = 0;
+static int timeout_sec = 0;
 #endif
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
@@ -75,25 +211,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     static char tz_name[TZ_LEN];
 
     Tuple *key_value = NULL;
-    key_value = dict_find(iterator, KEY_SHOWSLEEP);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_SLEEP;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SHOWTAP);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_TAP;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SHOWWRIST);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_WRIST;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_USECELSIUS);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_CELSIUS;
-    }
 
     key_value = NULL; key_value = dict_find(iterator, KEY_TIMEZONES);
     if (key_value) {
@@ -114,161 +231,38 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         strcpy(tz_name, tz_code);
         if (tz_code[0] != '#') configs += FLAG_TIMEZONES;
     }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_BGCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_BGCOLOR, key_value->value->int32);
+    
+    // configs
+    for (int i = 0; i < num_configs; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, config_keys[i]);
+        if (key_value) {
+            if (!!key_value->value->int8 == config_defaults[i]) configs += config_flags[i];
+        }
     }
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_HOURSCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_HOURSCOLOR, key_value->value->int32);
+    // options
+    for (int i = 0; i < num_int; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, int_keys[i]);
+        if (key_value) {
+            persist_write_int(int_keys[i], key_value->value->int8);
+        }
     }
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_ENABLEADVANCED);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_ADVANCED;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DATECOLOR);
-    if (key_value) {
-        persist_write_int(KEY_DATECOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_ALTHOURSCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_ALTHOURSCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_BATTERYCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_BATTERYCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_BATTERYLOWCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_BATTERYLOWCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_WEATHERCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_WEATHERCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_TEMPCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_TEMPCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_MINCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_MINCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_MAXCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_MAXCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_WINDDIRCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_WINDDIRCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_WINDSPEEDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_WINDSPEEDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SUNRISECOLOR);
-    if (key_value) {
-        persist_write_int(KEY_SUNRISECOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SUNSETCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_SUNSETCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_COMPASSCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_COMPASSCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SECONDSCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_SECONDSCOLOR, key_value->value->int32);
+    // colors
+    for (int i = 0; i < num_colors; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, color_keys[i]);
+        if (key_value) {
+            persist_write_int(color_keys[i], key_value->value->int32);
+        }
     }
 
     #if defined(PBL_HEALTH)
-    key_value = NULL; key_value = dict_find(iterator, KEY_STEPSCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_STEPSCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DISTCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_DISTCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_CALCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_CALCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_SLEEPCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DEEPCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_DEEPCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_STEPSBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_STEPSBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DISTBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_DISTBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_CALBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_CALBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_SLEEPBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DEEPBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_DEEPBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_ACTIVECOLOR);
-    if (key_value) {
-        persist_write_int(KEY_ACTIVECOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_ACTIVEBEHINDCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_ACTIVEBEHINDCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_HEARTCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_HEARTCOLOR, key_value->value->int32);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_HEARTCOLOROFF);
-    if (key_value) {
-        persist_write_int(KEY_HEARTCOLOROFF, key_value->value->int32);
+    // health colors
+    for (int i = 0; i < num_health_colors; ++i) { 
+        key_value = NULL; key_value = dict_find(iterator, health_color_keys[i]);
+        if (key_value) {
+            persist_write_int(health_color_keys[i], key_value->value->int32);
+        }
     }
 
     key_value = NULL; key_value = dict_find(iterator, KEY_HEARTLOW);
@@ -282,193 +276,46 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     }
     #endif
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_FONTTYPE);
-    if (key_value) {
-        persist_write_int(KEY_FONTTYPE, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_BLUETOOTHDISCONNECT);
-    if (key_value) {
-        if(key_value->value->int8) configs += FLAG_BLUETOOTH;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_BLUETOOTHCOLOR);
-    if (key_value) {
-        persist_write_int(KEY_BLUETOOTHCOLOR, key_value->value->int32);
-    }
-
     key_value = NULL; key_value = dict_find(iterator, KEY_OVERRIDELOCATION);
     if (key_value) {
         persist_write_string(KEY_OVERRIDELOCATION, key_value->value->cstring);
     }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_UPDATE);
-    if (key_value) {
-        if (!key_value->value->int8) configs += FLAG_UPDATE;
+    
+    // slots
+    for (int i = 0; i < num_slots; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, slot_keys[i]);
+        if (key_value) {
+            set_module(slot_values[i], key_value->value->int8, STATE_NORMAL);
+            persist_write_int(slot_keys[i], key_value->value->int8);
+        }
     }
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_UPDATECOLOR);
-    if (key_value) {
-        persist_write_int(KEY_UPDATECOLOR, key_value->value->int32);
+    #if !defined PBL_PLATFORM_APLITE
+    // sleep slots
+    for (int i = 0; i < num_slots; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, slot_sleep_keys[i]);
+        if (key_value) {
+            set_module(slot_values[i], key_value->value->int8, STATE_SLEEP);
+            persist_write_int(slot_sleep_keys[i], key_value->value->int8);
+        }
     }
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_LOCALE);
-    if (key_value) {
-        persist_write_int(KEY_LOCALE, key_value->value->int8);
+    // tap slots
+    for (int i = 0; i < num_slots; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, slot_tap_keys[i]);
+        if (key_value) {
+            set_module(slot_values[i], key_value->value->int8, STATE_TAP);
+            persist_write_int(slot_tap_keys[i], key_value->value->int8);
+        }
     }
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_DATEFORMAT);
-    if (key_value) {
-        persist_write_int(KEY_DATEFORMAT, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_TEXTALIGN);
-    if (key_value) {
-        persist_write_int(KEY_TEXTALIGN, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SPEEDUNIT);
-    if (key_value) {
-        persist_write_int(KEY_SPEEDUNIT, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_LEADINGZERO);
-    if (key_value) {
-        if (!key_value->value->int8) configs += FLAG_LEADINGZERO;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SIMPLEMODE);
-    if (key_value) {
-        if (key_value->value->int8) configs += FLAG_SIMPLEMODE;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_QUICKVIEW);
-    if (key_value) {
-        if (!key_value->value->int8) configs += FLAG_QUICKVIEW;
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTA);
-    if (key_value) {
-        set_module(SLOT_A, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTA, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTB);
-    if (key_value) {
-        set_module(SLOT_B, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTB, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTC);
-    if (key_value) {
-        set_module(SLOT_C, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTC, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTD);
-    if (key_value) {
-        set_module(SLOT_D, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTD, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTE);
-    if (key_value) {
-        set_module(SLOT_E, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTE, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLOTF);
-    if (key_value) {
-        set_module(SLOT_F, key_value->value->int8, STATE_NORMAL);
-        persist_write_int(KEY_SLOTF, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTA);
-    if (key_value) {
-        set_module(SLOT_A, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTA, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTB);
-    if (key_value) {
-        set_module(SLOT_B, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTB, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTC);
-    if (key_value) {
-        set_module(SLOT_C, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTC, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTD);
-    if (key_value) {
-        set_module(SLOT_D, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTD, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTE);
-    if (key_value) {
-        set_module(SLOT_E, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTE, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_SLEEPSLOTF);
-    if (key_value) {
-        set_module(SLOT_F, key_value->value->int8, STATE_SLEEP);
-        persist_write_int(KEY_SLEEPSLOTF, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTA);
-    if (key_value) {
-        set_module(SLOT_A, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTA, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTB);
-    if (key_value) {
-        set_module(SLOT_B, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTB, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTC);
-    if (key_value) {
-        set_module(SLOT_C, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTC, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTD);
-    if (key_value) {
-        set_module(SLOT_D, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTD, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTE);
-    if (key_value) {
-        set_module(SLOT_E, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTE, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_TAPSLOTF);
-    if (key_value) {
-        set_module(SLOT_F, key_value->value->int8, STATE_TAP);
-        persist_write_int(KEY_TAPSLOTF, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTA);
-    if (key_value) {
-        set_module(SLOT_A, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTA, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTB);
-    if (key_value) {
-        set_module(SLOT_B, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTB, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTC);
-    if (key_value) {
-        set_module(SLOT_C, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTC, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTD);
-    if (key_value) {
-        set_module(SLOT_D, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTD, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTE);
-    if (key_value) {
-        set_module(SLOT_E, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTE, key_value->value->int8);
-    }
-    key_value = NULL; key_value = dict_find(iterator, KEY_WRISTSLOTF);
-    if (key_value) {
-        set_module(SLOT_F, key_value->value->int8, STATE_WRIST);
-        persist_write_int(KEY_WRISTSLOTF, key_value->value->int8);
+    // wrist slots
+    for (int i = 0; i < num_slots; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, slot_wrist_keys[i]);
+        if (key_value) {
+            set_module(slot_values[i], key_value->value->int8, STATE_WRIST);
+            persist_write_int(slot_wrist_keys[i], key_value->value->int8);
+        }
     }
 
     key_value = NULL; key_value = dict_find(iterator, KEY_TAPTIME);
@@ -476,16 +323,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         timeout_sec = key_value->value->int8;
         persist_write_int(KEY_TAPTIME, key_value->value->int8);
     }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_WEATHERTIME);
-    if (key_value) {
-        persist_write_int(KEY_WEATHERTIME, key_value->value->int8);
-    }
-
-    key_value = NULL; key_value = dict_find(iterator, KEY_DATESEPARATOR);
-    if (key_value) {
-        persist_write_int(KEY_DATESEPARATOR, key_value->value->int8);
-    }
+    #endif
 
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
@@ -535,7 +373,9 @@ static void watchface_load(Window *window) {
     set_face_fonts();
 
     load_timezone_from_storage();
+    #if !defined PBL_PLATFORM_APLITE
     timeout_sec = persist_exists(KEY_TAPTIME) ? persist_read_int(KEY_TAPTIME) : 7;
+    #endif
 }
 
 static void watchface_unload(Window *window) {

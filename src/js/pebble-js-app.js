@@ -97,10 +97,20 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_MASTERKEYEMAIL;
     delete dict.KEY_MASTERKEYPIN;
 
+    if (Pebble.getActiveWatchInfo().platform === 'aplite') {
+        Object.keys(dict).filter(function(value) {
+            return value.indexOf('WRIST') !== -1 || value.indexOf('TAP') !== -1 || typeof dict[value] == 'undefined';
+        }).map(function(value) {
+            console.log('removing ' + value);
+            delete dict[value];
+        });
+    }
+
+    console.log('sending');
     Pebble.sendAppMessage(dict, function() {
 	console.log('Send config successful: ' + JSON.stringify(dict));
-    }, function() {
-	console.log('Send failed!');
+    }, function(data, e) {
+	console.log('Send failed! ' + JSON.stringify(dict) + ' --> ' + JSON.stringify(data));
     });
 });
 
@@ -327,6 +337,7 @@ function findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation) {
         return;
     }
 
+    var pos;
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
     var query = 'select centroid from geo.places(1) where text="' + overrideLocation + '"';
     url += encodeURIComponent(query);
@@ -336,7 +347,7 @@ function findLocationAndExecuteQuery(weatherKey, useCelsius, overrideLocation) {
         try {
             var resp = JSON.parse(responseText);
             var res = resp.query.results.place.centroid;
-            var pos = { coords: {
+            pos = { coords: {
                 latitude: parseFloat(res.latitude),
                 longitude: parseFloat(res.longitude),
             }};

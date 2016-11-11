@@ -42,8 +42,11 @@ void reload_fonts() {
 void recreate_text_layers(Window * watchface) {
     destroy_text_layers();
     create_text_layers(watchface);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "hey");
     set_face_fonts();
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "hey");
     notify_update(false);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "hey");
 }
 
 void redraw_screen(Window *watchface) {
