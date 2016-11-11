@@ -223,7 +223,7 @@ void create_text_layers(Window* window) {
     slot = get_slot_for_module(MODULE_WEATHER);
     if (slot != -1) {
         pos = get_pos_for_item(slot, WEATHER_ITEM, mode, selected_font, width, height);
-        weather = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, IF_BIG_SCREEN_ELSE(45, 38)), 50));
+        weather = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, IF_BIG_SCREEN_ELSE(46, 40)), 50));
         text_layer_set_background_color(weather, GColorClear);
         text_layer_set_text_alignment(weather, GTextAlignmentCenter);
 
