@@ -45,7 +45,6 @@ static uint32_t config_keys[] = {
     KEY_UPDATE,
     KEY_LEADINGZERO,
     KEY_SIMPLEMODE,
-    KEY_TIMEZONES,
     KEY_QUICKVIEW,
     KEY_SHOWTAP,
     KEY_SHOWWRIST
@@ -59,7 +58,6 @@ static uint32_t config_flags[] = {
     FLAG_UPDATE,
     FLAG_LEADINGZERO,
     FLAG_SIMPLEMODE,
-    FLAG_TIMEZONES,
     FLAG_QUICKVIEW,
     FLAG_TAP,
     FLAG_WRIST
@@ -73,12 +71,11 @@ static bool config_defaults[] = {
     false,
     false,
     true,
-    true,
     false,
     true,
     true
 };
-static uint8_t num_configs = 12;
+static uint8_t num_configs = 11;
 
 static uint32_t int_keys[] = {
     KEY_FONTTYPE,
@@ -229,9 +226,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         char* tz_code = key_value->value->cstring;
         persist_write_string(KEY_TIMEZONESCODE, tz_code);
         strcpy(tz_name, tz_code);
-        if (tz_code[0] != '#') configs += FLAG_TIMEZONES;
     }
-    
+
     // configs
     for (int i = 0; i < num_configs; ++i) {
         key_value = NULL; key_value = dict_find(iterator, config_keys[i]);
@@ -258,7 +254,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
     #if defined(PBL_HEALTH)
     // health colors
-    for (int i = 0; i < num_health_colors; ++i) { 
+    for (int i = 0; i < num_health_colors; ++i) {
         key_value = NULL; key_value = dict_find(iterator, health_color_keys[i]);
         if (key_value) {
             persist_write_int(health_color_keys[i], key_value->value->int32);
@@ -280,7 +276,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (key_value) {
         persist_write_string(KEY_OVERRIDELOCATION, key_value->value->cstring);
     }
-    
+
     // slots
     for (int i = 0; i < num_slots; ++i) {
         key_value = NULL; key_value = dict_find(iterator, slot_keys[i]);
@@ -355,7 +351,6 @@ static void unobstructed_area_handle_changes() {
     GRect full_bounds = layer_get_bounds(window_layer);
     GRect bounds = layer_get_unobstructed_bounds(window_layer);
     toggle_center_slots(bounds.size.h == full_bounds.size.h);
-
     recreate_text_layers(watchface);
     load_screen(RELOAD_REDRAW, watchface);
 }

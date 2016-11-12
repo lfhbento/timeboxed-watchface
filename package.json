@@ -44,7 +44,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9!a-zA-Z. ]",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_32",
@@ -236,7 +236,7 @@
         },
         {
           "type": "font",
-          "characterRegex": "[0-9!a-zA-Z. ]",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_38",
