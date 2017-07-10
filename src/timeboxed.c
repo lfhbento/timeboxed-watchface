@@ -412,14 +412,14 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
                 if (is_user_sleeping()) {
                     min_count++;
                     if (min_count > 90) {
-                        update_weather();
+                        update_weather(false);
                         min_count = 0;
                     }
                 } else {
-                    update_weather();
+                    update_weather(false);
                 }
             #else
-                update_weather();
+                update_weather(false);
             #endif
         }
         update_time();

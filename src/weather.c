@@ -60,9 +60,9 @@ static char* weather_conditions[] = {
     "\U0000F073", // hurricane: 46
 };
 
-void update_weather(void) {
+void update_weather(bool force) {
     int current_time = (int)time(NULL);
-    if (last_update == 0 || (current_time - last_update) >= weather_interval * 60) {
+    if (force || last_update == 0 || (current_time - last_update) >= weather_interval * 60) {
         DictionaryIterator *iter;
         app_message_outbox_begin(&iter);
         app_message_outbox_send();
@@ -286,7 +286,7 @@ void toggle_weather(uint8_t reload_origin) {
         use_celsius = is_use_celsius_enabled();
         update_weather_from_storage();
         if (reload_origin == RELOAD_MODULE || reload_origin == RELOAD_CONFIGS) {
-            update_weather();
+            update_weather(true);
         }
     } else {
         set_temp_cur_layer_text("");
