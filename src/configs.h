@@ -32,6 +32,7 @@ bool is_timezone_enabled();
 bool is_quickview_disabled();
 bool is_tap_enabled();
 bool is_wrist_enabled();
+bool is_mute_on_quiet_enabled();
 
 int get_wind_speed_unit();
 void toggle_center_slots(bool);

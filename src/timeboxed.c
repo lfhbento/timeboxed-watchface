@@ -47,7 +47,8 @@ static uint32_t config_keys[] = {
     KEY_SIMPLEMODE,
     KEY_QUICKVIEW,
     KEY_SHOWTAP,
-    KEY_SHOWWRIST
+    KEY_SHOWWRIST,
+    KEY_MUTEONQUIET
 };
 static uint32_t config_flags[] = {
     FLAG_WEATHER,
@@ -60,7 +61,8 @@ static uint32_t config_flags[] = {
     FLAG_SIMPLEMODE,
     FLAG_QUICKVIEW,
     FLAG_TAP,
-    FLAG_WRIST
+    FLAG_WRIST,
+    FLAG_MUTEONQUIET
 };
 static bool config_defaults[] = {
     true,
@@ -73,9 +75,10 @@ static bool config_defaults[] = {
     true,
     false,
     true,
-    true
+    true,
+    false
 };
-static uint8_t num_configs = 11;
+static uint8_t num_configs = 12;
 
 static uint32_t int_keys[] = {
     KEY_FONTTYPE,

@@ -1,5 +1,5 @@
 {
-  "version": "4.1.0",
+  "version": "4.2.0",
   "author": "Luis Bento",
   "private": true,
   "dependencies": {},
@@ -504,7 +504,8 @@
       "KEY_TAPSLOTE": 102,
       "KEY_TAPSLOTF": 103,
       "KEY_WRISTSLOTE": 104,
-      "KEY_WRISTSLOTF": 105
+      "KEY_WRISTSLOTF": 105,
+      "KEY_MUTEONQUIET": 106
     },
     "enableMultiJS": false,
     "displayName": "Timeboxed",

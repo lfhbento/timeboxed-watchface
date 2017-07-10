@@ -57,7 +57,8 @@ void bt_handler(bool connected) {
         persist_write_int(KEY_BLUETOOTHDISCONNECT, 0);
     } else {
         bool did_vibrate = persist_exists(KEY_BLUETOOTHDISCONNECT) ? persist_read_int(KEY_BLUETOOTHDISCONNECT): 0;
-        if (is_bluetooth_vibrate_enabled() && !is_user_sleeping() && !did_vibrate) {
+        bool should_vibrate_if_quiet = !is_mute_on_quiet_enabled() || !quiet_time_is_active();
+        if (is_bluetooth_vibrate_enabled() && should_vibrate_if_quiet && !is_user_sleeping() && !did_vibrate) {
             vibes_long_pulse();
             persist_write_int(KEY_BLUETOOTHDISCONNECT, 1);
         }

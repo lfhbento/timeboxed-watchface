@@ -193,6 +193,10 @@ bool is_wrist_enabled() {
     return get_config_toggles() & FLAG_WRIST;
 }
 
+bool is_mute_on_quiet_enabled() {
+    return get_config_toggles() && FLAG_MUTEONQUIET;
+}
+
 #if !defined PBL_PLATFORM_APLITE
 int get_slot_for_module(int module) {
     if (!modules_loaded) {
