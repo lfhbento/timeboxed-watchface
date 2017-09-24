@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "4.2";
+var currentVersion = "4.4";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -421,8 +421,8 @@ function formatTimestamp(timestamp) {
 }
 
 function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?appid=e617a20aa44b64245ff669964d9bfacc';
-    var urlForecast = 'http://api.openweathermap.org/data/2.5/forecast/daily?appid=e617a20aa44b64245ff669964d9bfacc&format=json&cnt=3';
+    var url = 'http://api.openweathermap.org/data/2.5/weather?appid=1383fad15be1ec274cd421c8eba36c49';
+    var urlForecast = 'http://api.openweathermap.org/data/2.5/forecast/daily?appid=1383fad15be1ec274cd421c8eba36c49&format=json&cnt=3';
 
     if (!overrideLocation) {
         url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;

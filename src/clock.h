@@ -9,4 +9,3 @@ void set_timezone(char *name, int hour, int minute);
 void update_seconds(struct tm* tick_time);
 
 #endif
-
