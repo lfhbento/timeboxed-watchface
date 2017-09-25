@@ -52,7 +52,8 @@ Pebble.addEventListener('appmessage',
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/?';
     url = 'http://localhost:8080/?nonce=' + new Date().getTime() + '&';
-    var config = LZString.compressToEncodedURIComponent((localStorage.configDict || '{}'));
+    var config = encodeURIComponent(LZString.compressToBase64((localStorage.configDict || '{}')));
+    console.log(localStorage.configDict);
     console.log(config);
     Pebble.openURL(url +
         'c=' + config +
@@ -65,7 +66,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
     if (!e.response) {
         return;
     }
-    var configData = JSON.parse(LZString.decompressFromEncodedURIComponent(e.response));
+
+    var configData = JSON.parse(LZString.decompressFromBase64(e.response));
     console.log(JSON.stringify(configData));
 
     localStorage.configDict = JSON.stringify(configData);
@@ -108,6 +110,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_MASTERKEYEMAIL;
     delete dict.KEY_MASTERKEYPIN;
     delete dict.KEY_OPENWEATHERKEY;
+    delete dict.KEY_PRESETS;
 
     if (Pebble.getActiveWatchInfo().platform === 'aplite') {
         Object.keys(dict).filter(function(value) {

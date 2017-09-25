@@ -12,4 +12,4 @@ repos:
   hooks:
     - id: fixmyjs
       args: ['-l', '-c', '.jshintrc']
-      exclude: '(config\/js\/slate.*|config\/v1.*)'
+      exclude: '(src\/js\/lz-string.js)'
