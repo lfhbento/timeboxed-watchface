@@ -40,7 +40,7 @@ void update_time() {
 
     set_hours(tick_time, hour_text, sizeof(hour_text));
 
-    if (is_module_enabled(MODULE_TIMEZONE)) {
+    if (is_module_enabled(MODULE_TIMEZONE) && tz_name[0] != '#') {
         set_hours(gmt_time, tz_text, sizeof(tz_text));
 
         if ((gmt_time->tm_year == tick_time->tm_year && gmt_time->tm_mon == tick_time->tm_mon && gmt_time->tm_mday > tick_time->tm_mday) ||

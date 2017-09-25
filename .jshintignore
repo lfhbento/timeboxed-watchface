@@ -1,2 +1,1 @@
-config/js/slate*
-config/v1*/**/*
+src/js/lz-string.js

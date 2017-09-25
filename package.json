@@ -1,5 +1,5 @@
 {
-  "version": "4.4.0",
+  "version": "4.5.0",
   "author": "Luis Bento",
   "private": true,
   "dependencies": {},
@@ -507,7 +507,7 @@
       "KEY_WRISTSLOTF": 105,
       "KEY_MUTEONQUIET": 106
     },
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "displayName": "Timeboxed",
     "watchapp": {
       "onlyShownOnCommunication": false,

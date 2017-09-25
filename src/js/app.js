@@ -2,12 +2,14 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "4.4";
+var currentVersion = "4.5";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
 var YAHOO = 2;
 var FORECAST = 3;
+
+var LZString = require('./lz-string');
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -24,7 +26,7 @@ Pebble.addEventListener('appmessage',
         } else {
             console.log('Fetching weather info...');
             var weatherKey = localStorage.weatherKey;
-            var provider = weatherKey ? 1 : 0;
+            var provider = 2;
             if (localStorage.weatherProvider) {
                 provider = parseInt(localStorage.weatherProvider, 10);
                 switch (provider) {
@@ -33,6 +35,9 @@ Pebble.addEventListener('appmessage',
                         break;
                     case FORECAST:
                         weatherKey = localStorage.forecastKey;
+                        break;
+                    case OPEN_WEATHER:
+                        weatherKey = localStorage.openWeatherKey;
                         break;
                     default:
                         weatherKey = '';
@@ -45,10 +50,13 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    var url = 'http://www.lbento.space/pebble-apps/timeboxed/config/?';
-    //url = 'http://www.timeboxed.watch/pebble-apps/timeboxed/config/?nonce=' + new Date().getTime() + '&';
+    var url = 'http://www.lbento.space/?';
+    url = 'http://localhost:8080/?nonce=' + new Date().getTime() + '&';
+    var config = LZString.compressToEncodedURIComponent((localStorage.configDict || '{}'));
+    console.log(config);
     Pebble.openURL(url +
-        'v=' + currentVersion +
+        'c=' + config +
+        '&v=' + currentVersion +
         '&p=' + Pebble.getActiveWatchInfo().platform +
         '&l=' + Pebble.getActiveWatchInfo().language);
 });
@@ -57,8 +65,10 @@ Pebble.addEventListener('webviewclosed', function(e) {
     if (!e.response) {
         return;
     }
-    var configData = JSON.parse(decodeURIComponent(e.response));
+    var configData = JSON.parse(LZString.decompressFromEncodedURIComponent(e.response));
     console.log(JSON.stringify(configData));
+
+    localStorage.configDict = JSON.stringify(configData);
 
     var dict = {};
 
@@ -89,6 +99,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
     localStorage.overrideLocation = dict.KEY_OVERRIDELOCATION;
     localStorage.weatherProvider = dict.KEY_WEATHERPROVIDER;
     localStorage.forecastKey = dict.KEY_FORECASTKEY;
+    localStorage.openWeatherKey = dict.KEY_OPENWEATHERKEY;
 
     delete dict.KEY_WEATHERKEY;
     delete dict.KEY_WEATHERPROVIDER;
@@ -96,6 +107,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_FORECASTKEY;
     delete dict.KEY_MASTERKEYEMAIL;
     delete dict.KEY_MASTERKEYPIN;
+    delete dict.KEY_OPENWEATHERKEY;
 
     if (Pebble.getActiveWatchInfo().platform === 'aplite') {
         Object.keys(dict).filter(function(value) {
@@ -104,9 +116,9 @@ Pebble.addEventListener('webviewclosed', function(e) {
                 value.indexOf('SLEEP') !== -1 || value.indexOf('HEART') !== -1 ||
                 value.indexOf('DEEP') !== -1 || value.indexOf('ACTIVE') !== -1 ||
                 value.indexOf('_CAL') !== -1 || value.indexOf('STEPS') !== -1 ||
-                value.indexOf('DIST') !== -1 || typeof dict[value] == 'undefined'
+                value.indexOf('DIST') !== -1 || typeof dict[value] === 'undefined'
             );
-        }).map(function(value) {
+        }).forEach(function(value) {
             delete dict[value];
         });
     }
@@ -128,7 +140,7 @@ function locationSuccess(pos, provider, weatherKey, useCelsius, overrideLocation
 
     switch (provider) {
         case OPEN_WEATHER:
-            fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
+            fetchOpenWeatherMapData(pos, weatherKey, useCelsius, overrideLocation);
             break;
         case WUNDERGROUND:
             fetchWeatherUndergroundData(pos, weatherKey, useCelsius, overrideLocation);
@@ -138,6 +150,10 @@ function locationSuccess(pos, provider, weatherKey, useCelsius, overrideLocation
             break;
         case FORECAST:
             fetchForecastApiData(pos, weatherKey, useCelsius, overrideLocation);
+            break;
+        default:
+            fetchYahooData(pos, useCelsius, overrideLocation);
+            break;
     }
 }
 
@@ -420,9 +436,9 @@ function formatTimestamp(timestamp) {
     return parseInt(timestamp, 10);
 }
 
-function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?appid=1383fad15be1ec274cd421c8eba36c49';
-    var urlForecast = 'http://api.openweathermap.org/data/2.5/forecast/daily?appid=1383fad15be1ec274cd421c8eba36c49&format=json&cnt=3';
+function fetchOpenWeatherMapData(pos, weatherKey, useCelsius, overrideLocation) {
+    var url = 'http://api.openweathermap.org/data/2.5/weather?appid=' + weatherKey;
+    var urlForecast = 'http://api.openweathermap.org/data/2.5/forecast/daily?appid=' + weatherKey + '&format=json&cnt=3';
 
     if (!overrideLocation) {
         url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
@@ -482,14 +498,16 @@ function fetchOpenWeatherMapData(pos, useCelsius, overrideLocation) {
 
                     sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
                 } catch (ex) {
-                    console.log('Failure requesting forecast data from OpenWeatherMap');
+                    console.log('Failure requesting forecast data from OpenWeatherMap. Falling back to Yahoo.');
                     console.log(ex.stack);
+                    fetchYahooData(pos, useCelsius, overrideLocation);
                 }
             });
 
         } catch (ex) {
-            console.log('Failure requesting current weather from OpenWeatherMap');
+            console.log('Failure requesting current weather from OpenWeatherMap. Falling back to Yahoo.');
             console.log(ex.stack);
+            fetchYahooData(pos, useCelsius, overrideLocation);
         }
     });
 }
@@ -560,7 +578,7 @@ function locationError(err) {
 
 function getWeather(provider, weatherKey, useCelsius, overrideLocation) {
     console.log('Requesting weather: ' + provider + ', ' + weatherKey + ', ' + useCelsius + ', ' + overrideLocation);
-    provider = provider || 0;
+    provider = provider !== undefined ? provider : 2;
     weatherKey = weatherKey || '';
     useCelsius = useCelsius || false;
     overrideLocation = overrideLocation || '';
