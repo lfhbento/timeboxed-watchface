@@ -51,7 +51,7 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/?';
-    url = 'http://localhost:8080/?nonce=' + new Date().getTime() + '&';
+    //url = 'http://localhost:8080/?nonce=' + new Date().getTime() + '&';
     var config = encodeURIComponent(LZString.compressToBase64((localStorage.configDict || '{}')));
     console.log(localStorage.configDict);
     console.log(config);
