@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "4.5";
+var currentVersion = "4.6";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -10,6 +10,7 @@ var YAHOO = 2;
 var FORECAST = 3;
 
 var LZString = require('./lz-string');
+var getSettings = require('./settings/generated.js');
 
 Pebble.addEventListener("ready",
     function(e) {
@@ -50,16 +51,16 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    var url = 'http://www.lbento.space/?';
-    //url = 'http://192.168.0.12:8080/?nonce=' + new Date().getTime() + '&';
+    var emulator = !Pebble || Pebble.platform === 'pypkjs';
     var config = encodeURIComponent(localStorage.configDict || LZString.compressToBase64('{}'));
     console.log(localStorage.configDict);
     console.log(config);
-    Pebble.openURL(url +
-        'c=' + config +
-        '&v=' + currentVersion +
-        '&p=' + Pebble.getActiveWatchInfo().platform +
-        '&l=' + Pebble.getActiveWatchInfo().language);
+    var settings = getSettings()
+        .replace('__TIMEBOXED_CONFIGS__', encodeURIComponent(config))
+        .replace('__TIMEBOXED_PLATFORM__', encodeURIComponent(Pebble.getActiveWatchInfo().platform))
+        .replace('__TIMEBOXED_VERSION__', encodeURIComponent(currentVersion))
+        .replace('__TIMEBOXED_RETURN__', encodeURIComponent(emulator ? '$$$RETURN_TO$$$' : 'pebblejs://close#'));
+    Pebble.openURL('data:text/html;charset=utf-8,' + settings);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
