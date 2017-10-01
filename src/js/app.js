@@ -51,8 +51,8 @@ Pebble.addEventListener('appmessage',
 
 Pebble.addEventListener('showConfiguration', function(e) {
     var url = 'http://www.lbento.space/?';
-    //url = 'http://localhost:8080/?nonce=' + new Date().getTime() + '&';
-    var config = encodeURIComponent(LZString.compressToBase64((localStorage.configDict || '{}')));
+    //url = 'http://192.168.0.12:8080/?nonce=' + new Date().getTime() + '&';
+    var config = encodeURIComponent(localStorage.configDict || LZString.compressToBase64('{}'));
     console.log(localStorage.configDict);
     console.log(config);
     Pebble.openURL(url +
@@ -67,10 +67,17 @@ Pebble.addEventListener('webviewclosed', function(e) {
         return;
     }
 
-    var configData = JSON.parse(LZString.decompressFromBase64(e.response));
+    console.log(e.response);
+
+    var configData;
+    try {
+        configData = JSON.parse(e.response);
+    } catch (error) {
+        configData = JSON.parse(LZString.decompressFromBase64(e.response));
+    }
     console.log(JSON.stringify(configData));
 
-    localStorage.configDict = JSON.stringify(configData);
+    localStorage.configDict = e.response;
 
     var dict = {};
 
