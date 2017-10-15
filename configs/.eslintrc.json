@@ -1,0 +1,121 @@
+{
+    "root": true,
+    "parser": "babel-eslint",
+    "rules": {
+        "max-len": ["warn", 120],
+        "constructor-super": "warn",
+        "multiline-ternary": ["warn", "always-multiline"],
+        "indent": [
+            "warn",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": ["warn", "single"],
+        "linebreak-style": ["warn", "unix"],
+        "brace-style": [
+            "warn",
+            "1tbs",
+            {
+                "allowSingleLine": false
+            }
+        ],
+        "curly": ["warn", "multi-line", "consistent"],
+        "no-case-declarations": "warn",
+        "no-console": "warn",
+        "no-constant-condition": "warn",
+        "no-extra-semi": "warn",
+        "no-empty": "warn",
+        "no-empty-pattern": "warn",
+        "no-fallthrough": "warn",
+        "no-inner-declarations": "warn",
+        "no-irregular-whitespace": "warn",
+        "no-mixed-spaces-and-tabs": "warn",
+        "no-extra-boolean-cast": "warn",
+        "no-redeclare": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": "warn",
+        "no-lonely-if": "warn",
+        "no-useless-concat": "warn",
+        "prefer-template": "off",
+        "eqeqeq": "warn",
+        "no-useless-escape": "warn",
+        "no-eval": "error",
+        "no-implied-eval": "error",
+        "no-undef-init": "warn",
+        "capitalized-comments": "off",
+        "no-nested-ternary": "warn",
+        "one-var": ["warn", "never"],
+        "semi": ["warn", "always"],
+        "arrow-parens": ["warn", "always"],
+        "comma-dangle": ["warn", "always-multiline"],
+        "promise/always-return": "warn",
+        "promise/no-return-wrap": "warn",
+        "promise/param-names": "warn",
+        "promise/catch-or-return": [
+            "off",
+            {
+                "allowThen": true
+            }
+        ],
+        "promise/no-native": "off",
+        "promise/no-nesting": "off",
+        "promise/no-promise-in-callback": "off",
+        "promise/no-callback-in-promise": "off",
+        "promise/avoid-new": "off",
+        "prefer-object-spread/prefer-object-spread": "off",
+        "sort-imports-es6-autofix/sort-imports-es6": "warn",
+        "no-loops/no-loops": "warn",
+        "prefer-template": "warn",
+        "promise/no-promise-in-callback": "warn",
+        "promise/no-callback-in-promise": "warn",
+        "prefer-object-spread/prefer-object-spread": "warn",
+        "no-var": "error",
+        "react/jsx-closing-bracket-location": [
+            "warn",
+            { "selfClosing": "line-aligned", "nonEmpty": "after-props" }
+        ],
+        "react/jsx-wrap-multilines": [
+            "warn",
+            {
+                "declaration": true,
+                "assignment": true,
+                "return": true,
+                "arrow": true
+            }
+        ],
+        "react/no-deprecated": "warn",
+        "react/jsx-key": "warn",
+        "react/no-children-prop": "warn",
+        "react/no-string-refs": "warn",
+        "react/no-find-dom-node": "warn"
+    },
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true,
+        "mocha": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "plugins": [
+        "promise",
+        "prefer-object-spread",
+        "no-loops",
+        "sort-imports-es6-autofix",
+        "prefer-object-spread",
+        "react",
+        "promise"
+    ]
+}

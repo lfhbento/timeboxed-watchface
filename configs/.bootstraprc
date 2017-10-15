@@ -1,0 +1,15 @@
+bootstrapVersion: 4
+
+useFlexbox: true
+
+extractStyles: true
+
+styleLoaders:
+  - style
+  - css
+  - sass
+  - postcss
+
+styles: true
+
+scripts: false

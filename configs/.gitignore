@@ -1,0 +1,10 @@
+.DS_Store
+/.lock-*
+*.swp
+*.swo
+*.log
+node_modules/
+dist/
+deploy/
+deploy-openshift/
+standalone-config/generated.js
