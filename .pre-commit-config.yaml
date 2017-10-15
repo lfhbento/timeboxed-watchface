@@ -7,9 +7,35 @@ repos:
   sha: v2.9.5
   hooks:
     - id: jshint
+      exclude: '(src\/js\/lz-string.js|settings\/)'
 - repo: git://github.com/pre-commit/mirrors-fixmyjs
   sha: v2.0.0
   hooks:
     - id: fixmyjs
       args: ['-l', '-c', '.jshintrc']
-      exclude: '(src\/js\/lz-string.js)'
+      exclude: '(src\/js\/lz-string.js|settings\/)'
+- repo: git://github.com/pre-commit/mirrors-eslint
+  sha: v4.1.1
+  hooks:
+  - id: eslint
+    additional_dependencies: [
+      'eslint',
+      'babel-eslint',
+      'eslint-plugin-babel',
+      'eslint-plugin-react',
+      'eslint-plugin-promise',
+      'eslint-plugin-prefer-object-spread',
+      'eslint-plugin-no-loops',
+      'eslint-plugin-sort-imports-es6-autofix'
+    ]
+    args: [--quiet]
+    files: 'settings/'
+    types: [javascript]
+    exclude: '(settings\/app\/js\/util\/lz-string.js|settings\/standalone-config\/generated.js|src\/js\/settings\/generated.js)'
+- repo: git://github.com/lfhbento/mirrors-prettier-eslint-cli
+  sha: v4.1.1
+  hooks:
+  - id: prettier-eslint
+    files: 'settings/'
+    types: [javascript]
+    exclude: '(settings\/app\/js\/util\/lz-string.js|settings\/standalone-config\/generated.js|src\/js\/settings\/generated.js)'
