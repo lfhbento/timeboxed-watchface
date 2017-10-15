@@ -589,6 +589,6 @@
     "deploy": "mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/",
     "build-deploy": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/",
     "build-deploy-start": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/ && node configs/deploy/server.js",
-    "build-standalone": "webpack --config ./configs/webpack-config.js --bail --colors --progress && (cd configs/standalone-config && node ./generate-config.js) && mv configs/standalone-config/generated.js src/js/settings/generated.js"
+    "build-configs": "webpack --config ./configs/webpack-config.js --bail --colors --progress && (cd configs/standalone-config && node ./generate-config.js) && mv configs/standalone-config/generated.js src/js/settings/generated.js"
   }
 }
