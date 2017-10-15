@@ -529,19 +529,6 @@
   },
   "name": "Timeboxed",
   "dependencies": {
-    "bootstrap": "4.0.0-alpha.4",
-    "bootstrap-toggle": "^2.2.2",
-    "classnames": "^2.2.3",
-    "es6-promise": "^3.2.1",
-    "express": "^4.14.0",
-    "isomorphic-fetch": "^2.2.1",
-    "jquery": "^2.2.3",
-    "object-assign": "^4.1.0",
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0",
-    "react-fastclick": "^2.1.2",
-    "react-fastclick-alt": "^1.0.1",
-    "webpack": "^1.13.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -580,7 +567,20 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.10.0"
+    "webpack-merge": "^0.10.0",
+    "bootstrap": "4.0.0-alpha.4",
+    "bootstrap-toggle": "^2.2.2",
+    "classnames": "^2.2.3",
+    "es6-promise": "^3.2.1",
+    "express": "^4.14.0",
+    "isomorphic-fetch": "^2.2.1",
+    "jquery": "^2.2.3",
+    "object-assign": "^4.1.0",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-fastclick": "^2.1.2",
+    "react-fastclick-alt": "^1.0.1",
+    "webpack": "^1.13.1"
   },
   "scripts": {
     "build": "webpack --config ./configs/webpack-config.js --bail --colors --progress",
