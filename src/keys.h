@@ -134,6 +134,7 @@
 #define PROTOTYPE_FONT 5
 #define LECO_FONT 6
 #define KONSTRUCT_FONT 7
+#define ROBOTO_FONT 8
 
 #define ALIGN_LEFT 0
 #define ALIGN_CENTER 1

@@ -204,6 +204,30 @@
         },
         {
           "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_15",
+          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_24",
+          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_46",
+          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+        },
+        {
+          "type": "font",
           "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072\uf0b1\uf051\uf052]",
           "compatibility": "2.7",
           "file": "fonts/weathericons-regular-webfont.ttf",
@@ -392,6 +416,30 @@
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_60",
+          "targetPlatforms": ["emery"]
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_15",
+          "targetPlatforms": ["emery"]
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:a-zA-Z.+%!()/= -]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_24",
+          "targetPlatforms": ["emery"]
+        },
+        {
+          "type": "font",
+          "characterRegex": "[0-9:]",
+          "compatibility": "2.7",
+          "file": "fonts/RobotoMono-Bold.ttf",
+          "name": "FONT_ROBOTO_46",
           "targetPlatforms": ["emery"]
         }
       ]
@@ -584,11 +632,14 @@
   },
   "scripts": {
     "build": "webpack --config ./configs/webpack-config.js --bail --colors --progress",
-    "build-watch": "webpack --config ./configs/webpack-config.js --watch --colors --progress",
+    "build:watch": "webpack --config ./configs/webpack-config.js --watch --colors --progress",
     "clean": "rm -rf configs/dist/ && rm -rf node_modules/ && rm -rf configs/deploy/ && mkdir configs/deploy",
     "deploy": "mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/",
-    "build-deploy": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/",
-    "build-deploy-start": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/ && node configs/deploy/server.js",
-    "build-configs": "webpack --config ./configs/webpack-config.js --bail --colors --progress && (cd configs/standalone-config && node ./generate-config.js) && mv configs/standalone-config/generated.js src/js/settings/generated.js"
+    "build:deploy": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/",
+    "build:deploy:start": "webpack --config ./configs/webpack-config.js --bail --colors --progress && mkdir -p configs/deploy/dist/ && cp -R configs/server/* configs/deploy/ && cp -R configs/server-common/* configs/deploy/ && cp -R configs/dist/* configs/deploy/dist/ && node configs/deploy/server.js",
+    "build:configs": "webpack --config ./configs/webpack-config.js --bail --colors --progress && (cd configs/standalone-config && node ./generate-config.js) && mv configs/standalone-config/generated.js src/js/settings/generated.js",
+    "build:all": "npm run build:configs && pebble build",
+    "build:phone": "npm run build:all && pebble install --phone",
+    "build:emulator": "npm run build:all && pebble install --emulator"
   }
 }

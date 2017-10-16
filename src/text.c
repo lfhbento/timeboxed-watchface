@@ -530,6 +530,11 @@ void load_face_fonts() {
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_22, RESOURCE_ID_FONT_KONSTRUCT_17)));
         base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_KONSTRUCT_15, RESOURCE_ID_FONT_KONSTRUCT_11)));
         loaded_font = KONSTRUCT_FONT;
+    } else if (selected_font == ROBOTO_FONT) {
+        time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ROBOTO_46, RESOURCE_ID_FONT_ROBOTO_46)));
+        medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ROBOTO_24, RESOURCE_ID_FONT_ROBOTO_24)));
+        base_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_ROBOTO_15, RESOURCE_ID_FONT_ROBOTO_15)));
+        loaded_font = ROBOTO_FONT;
     } else {
         time_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_70, RESOURCE_ID_FONT_BLOCKO_56)));
         medium_font = fonts_load_custom_font(resource_get_handle(IF_BIG_SCREEN_ELSE(RESOURCE_ID_FONT_BLOCKO_38, RESOURCE_ID_FONT_BLOCKO_24)));
