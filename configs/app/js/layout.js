@@ -30,9 +30,9 @@ class Layout extends Component {
         this.currentVersion = getCurrentVersion();
         this.platform = getPlatform();
 
-        this.defaultState = defaultState;
+        this.defaultState = { ...defaultState };
 
-        this.defaultColors = defaultColors;
+        this.defaultColors = { ...defaultColors };
 
         this.ignoreKeys = ['showDebug'];
 
@@ -825,10 +825,10 @@ class Layout extends Component {
                 {state.showDebug && (
                     <OptionGroup title={this._('Debug')}>
                         <ul className="debug-list">
-                            {Object.keys(window.localStorage).map((key) => {
+                            {Object.keys(this.state).map((key) => {
                                 return (
                                     <li key={key}>
-                                        {key}: {window.localStorage[key]}
+                                        {key}: {JSON.stringify(this.state[key])}
                                     </li>
                                 );
                             })}

@@ -14,7 +14,7 @@ try {
 
     const getStoredData = (source) => {
         return Object.keys(source).reduce((data, key) => {
-            let value = source[key] || '';
+            let value = source[key] === undefined ? '' : source[key];
 
             value = value === 'true' || value === 'false' ? JSON.parse(value) : value;
             value = typeof value === 'string' && value.indexOf('0x') !== -1 ? value.replace('0x', '#') : value;

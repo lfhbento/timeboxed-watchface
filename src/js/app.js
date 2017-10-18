@@ -28,7 +28,15 @@ Pebble.addEventListener('appmessage',
             console.log('Fetching weather info...');
             var weatherKey = localStorage.weatherKey;
             var provider = 2;
-            var useCelsius = localStorage.useCelsius || 'false';
+            var useCelsius = localStorage.useCelsius || false;
+            if (typeof useCelsius === "string") {
+                try {
+                    useCelsius = parse(useCelsius.toLowerCase());
+                } catch (err) {
+                    console.log('error parsing useCelsius! ' + err.message);
+                    useCelsius = false;
+                }
+            }
             if (localStorage.weatherProvider) {
                 provider = parseInt(localStorage.weatherProvider, 10);
                 switch (provider) {
@@ -46,7 +54,7 @@ Pebble.addEventListener('appmessage',
                 }
                 console.log(weatherKey);
             }
-            getWeather(provider, weatherKey, parse(useCelsius.toLowerCase()), localStorage.overrideLocation);
+            getWeather(provider, weatherKey, useCelsius, localStorage.overrideLocation);
         }
     }
 );
