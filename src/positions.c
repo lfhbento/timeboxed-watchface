@@ -269,36 +269,6 @@ static void get_text_positions_konstruct(GTextAlignment align, struct TextPositi
     );
 }
 
-static void get_text_positions_roboto(GTextAlignment align, struct TextPositions* positions, int width, int height) {
-    int midpoint = height / 2;
-    positions->hours = create_point(
-        PBL_IF_ROUND_ELSE(0, 2),
-        IF_BIG_SCREEN_ELSE(midpoint - 40, midpoint - 34)
-    );
-    positions->date = create_point(
-        PBL_IF_ROUND_ELSE(0, 2),
-        IF_BIG_SCREEN_ELSE(midpoint, midpoint + 8)
-    );
-    positions->bluetooth = create_point(
-        PBL_IF_ROUND_ELSE(134, get_pos(align, -2, IF_BIG_SCREEN_ELSE(-2, 126), -2)),
-        PBL_IF_ROUND_ELSE(midpoint + 34,
-            IF_BIG_SCREEN_ELSE(
-                midpoint - 38,
-                get_pos(align, midpoint - 24, midpoint + 34, midpoint - 24)
-            )
-        )
-    );
-    positions->updates = create_point(
-        PBL_IF_ROUND_ELSE(120, get_pos(align, -2, IF_BIG_SCREEN_ELSE(-2, 112), -2)),
-        PBL_IF_ROUND_ELSE(midpoint + 34,
-            IF_BIG_SCREEN_ELSE(
-                midpoint - 18,
-                get_pos(align, midpoint - 6, midpoint + 34, midpoint - 6)
-            )
-        )
-    );
-}
-
 void get_text_positions(int selected_font, GTextAlignment alignment, struct TextPositions* positions, int width, int height) {
     switch(selected_font) {
         case BLOCKO_FONT:
@@ -325,9 +295,6 @@ void get_text_positions(int selected_font, GTextAlignment alignment, struct Text
         case KONSTRUCT_FONT:
             get_text_positions_konstruct(alignment, positions, width, height);
             break;
-        case ROBOTO_FONT:
-            get_text_positions_roboto(alignment, positions, width, height);
-            break;
         default:
             get_text_positions_blocko(alignment, positions, width, height);
     }
@@ -347,7 +314,6 @@ static GPoint get_weather_positions(int mode, int font, int width, int height) {
                 case PROTOTYPE_FONT:
                 case LECO_FONT:
                 case KONSTRUCT_FONT:
-                case ROBOTO_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(-16, 0), 0);
             }
             break;
@@ -376,8 +342,6 @@ static GPoint get_temp_positions(int mode, int font, int width, int height) {
                     return create_point(PBL_IF_ROUND_ELSE(15, IF_BIG_SCREEN_ELSE(44, 39)), 5);
                 case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(15, IF_BIG_SCREEN_ELSE(44, 39)), 9);
-                case ROBOTO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(18, IF_BIG_SCREEN_ELSE(44, 40)), PBL_IF_ROUND_ELSE(5, 3));
             }
             break;
         default:
@@ -404,8 +368,6 @@ static GPoint get_tempmin_positions(int mode, int font, int width, int height) {
                     return create_point(PBL_IF_ROUND_ELSE(68, IF_BIG_SCREEN_ELSE(15, 10)), 5);
                 case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(68, IF_BIG_SCREEN_ELSE(15, 10)), 9);
-                case ROBOTO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(70, IF_BIG_SCREEN_ELSE(16, 12)), PBL_IF_ROUND_ELSE(5, 3));
             }
             break;
         default:
@@ -433,8 +395,6 @@ static GPoint get_tempminicon_positions(int mode, int font, int width, int heigh
                     return create_point(PBL_IF_ROUND_ELSE(59, 1), IF_BIG_SCREEN_ELSE(4, 3));
                 case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(59, 1), IF_BIG_SCREEN_ELSE(5, 5));
-                case ROBOTO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(60, 2), IF_BIG_SCREEN_ELSE(5, 3));
             }
             break;
         default:
@@ -461,8 +421,6 @@ static GPoint get_tempmax_positions(int mode, int font, int width, int height) {
                     return create_point(PBL_IF_ROUND_ELSE(108, IF_BIG_SCREEN_ELSE(61, 45)), 5);
                 case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(108, IF_BIG_SCREEN_ELSE(61, 45)), 9);
-                case ROBOTO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(108, IF_BIG_SCREEN_ELSE(61, 45)), PBL_IF_ROUND_ELSE(5, 3));
             }
             break;
         default:
@@ -490,8 +448,6 @@ static GPoint get_tempmaxicon_positions(int mode, int font, int width, int heigh
                     return create_point(PBL_IF_ROUND_ELSE(99, IF_BIG_SCREEN_ELSE(47, 36)), IF_BIG_SCREEN_ELSE(4, 3));
                 case KONSTRUCT_FONT:
                     return create_point(PBL_IF_ROUND_ELSE(99, IF_BIG_SCREEN_ELSE(47, 36)), IF_BIG_SCREEN_ELSE(5, 5));
-                case ROBOTO_FONT:
-                    return create_point(PBL_IF_ROUND_ELSE(99, IF_BIG_SCREEN_ELSE(47, 36)), IF_BIG_SCREEN_ELSE(5, 3));
             }
             break;
         default:
@@ -519,8 +475,6 @@ static GPoint get_heart_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(x_pos, 9);
-                case ROBOTO_FONT:
                     return create_point(x_pos, 9);
             }
             break;
@@ -553,8 +507,6 @@ static GPoint get_heart_icon_positions(int mode, int font, int width, int height
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 6);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 6);
             }
             break;
         default:
@@ -583,8 +535,6 @@ static GPoint get_speed_positions(int mode, int font, int width, int height) {
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 9);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 5);
             }
             break;
         default:
@@ -610,8 +560,6 @@ static GPoint get_direction_positions(int mode, int font, int width, int height)
                 case LECO_FONT:
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(x_pos, 5);
-                case ROBOTO_FONT:
                     return create_point(x_pos, 5);
             }
             break;
@@ -644,8 +592,6 @@ static GPoint get_wind_unit_positions(int mode, int font, int width, int height)
                     return create_point(x_pos, IF_BIG_SCREEN_ELSE(2, 1));
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 2);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 2);
             }
             break;
         default:
@@ -673,8 +619,6 @@ static GPoint get_sunrise_positions(int mode, int font, int width, int height) {
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 9);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 5);
             }
             break;
         default:
@@ -706,8 +650,6 @@ static GPoint get_sunrise_icon_positions(int mode, int font, int width, int heig
                     return create_point(x_pos, 4);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 5);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 3);
             }
             break;
         default:
@@ -735,8 +677,6 @@ static GPoint get_sunset_positions(int mode, int font, int width, int height) {
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 9);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 5);
             }
             break;
         default:
@@ -768,8 +708,6 @@ static GPoint get_sunset_icon_positions(int mode, int font, int width, int heigh
                     return create_point(x_pos, 4);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 5);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 3);
             }
             break;
         default:
@@ -797,8 +735,6 @@ static GPoint get_degrees_positions(int mode, int font, int width, int height) {
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
                     return create_point(x_pos, 9);
-                case ROBOTO_FONT:
-                    return create_point(x_pos, 5);
             }
             break;
         default:
@@ -824,8 +760,6 @@ static GPoint get_compass_positions(int mode, int font, int width, int height) {
                 case LECO_FONT:
                     return create_point(x_pos, 5);
                 case KONSTRUCT_FONT:
-                    return create_point(x_pos, 5);
-                case ROBOTO_FONT:
                     return create_point(x_pos, 5);
             }
             break;
@@ -853,8 +787,6 @@ static GPoint get_text_only_positions(int mode, int font, int width, int height)
                     return create_point(0, 5);
                 case KONSTRUCT_FONT:
                     return create_point(0, 9);
-                case ROBOTO_FONT:
-                    return create_point(0, 5);
             }
             break;
         default:
@@ -886,8 +818,6 @@ static GPoint get_slot_e_positions(int mode, int font, int width, int height) {
                     return create_point(2, IF_BIG_SCREEN_ELSE(midpoint - 63, midpoint - 48));
                 case KONSTRUCT_FONT:
                     return create_point(2, IF_BIG_SCREEN_ELSE(midpoint - 60, midpoint - 41));
-                case ROBOTO_FONT:
-                    return create_point(2, IF_BIG_SCREEN_ELSE(midpoint - 60, midpoint - 46));
             }
             break;
         default:
@@ -919,8 +849,6 @@ static GPoint get_slot_f_positions(int mode, int font, int width, int height) {
                     return create_point(2, IF_BIG_SCREEN_ELSE(midpoint + 28, midpoint + 26));
                 case KONSTRUCT_FONT:
                     return create_point(2, IF_BIG_SCREEN_ELSE(midpoint + 16, midpoint + 19));
-                case ROBOTO_FONT:
-                    return create_point(2, IF_BIG_SCREEN_ELSE(midpoint + 16, midpoint + 26));
             }
             break;
         default:
