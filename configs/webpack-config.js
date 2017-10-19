@@ -54,7 +54,15 @@ var config = {
             }
         ]
     },
-    postcss: [autoprefixer({ browsers: ['iOS 8'] })]
+    postcss: [autoprefixer({ browsers: ['iOS 8'] })],
+    resolve: {
+        alias: {
+            react: 'preact-compat',
+            'react-dom': 'preact-compat',
+            // Not necessary unless you consume a module using `createClass`
+            'create-react-class': 'preact-compat/lib/create-react-class'
+        }
+    }
 };
 
 module.exports = config;

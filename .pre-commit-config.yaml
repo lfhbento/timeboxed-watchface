@@ -31,11 +31,11 @@ repos:
     args: [--quiet]
     files: ^configs\/
     types: [javascript]
-    exclude: (configs\/app\/js\/util\/lz-string.js|configs\/standalone-config\/generated.js|src\/js\/settings\/generated.js|configs\/server-openshift\/)
+    exclude: (configs\/app\/js\/util\/lz-string.js|configs\/standalone-config\/generated.js|src\/js\/settings\/generated.js|configs\/server\/)
 - repo: git://github.com/lfhbento/mirrors-prettier-eslint-cli
   sha: v4.1.1
   hooks:
   - id: prettier-eslint
     files: ^configs\/
     types: [javascript]
-    exclude: (configs\/app\/js\/util\/lz-string.js|configs\/standalone-config\/generated.js|src\/js\/settings\/generated.js|configs\/server-openshift\/)
+    exclude: (configs\/app\/js\/util\/lz-string.js|configs\/standalone-config\/generated.js|src\/js\/settings\/generated.js|configs\/server\/)
