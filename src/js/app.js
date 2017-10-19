@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = "5.0";
+var currentVersion = "5.1";
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -64,7 +64,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
     var config = encodeURIComponent(localStorage.configDict || LZString.compressToBase64('{}'));
     console.log(localStorage.configDict);
     console.log(config);
-    var settings = getSettings()
+    var settings = LZString.decompressFromBase64(getSettings())
         .replace('__TIMEBOXED_CONFIGS__', encodeURIComponent(config))
         .replace('__TIMEBOXED_PLATFORM__', encodeURIComponent(Pebble.getActiveWatchInfo().platform))
         .replace('__TIMEBOXED_VERSION__', encodeURIComponent(currentVersion))
