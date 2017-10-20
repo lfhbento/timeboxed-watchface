@@ -2,14 +2,6 @@
 #ifndef __TIMEBOXED_CONFIGS
 #define __TIMEBOXED_CONFIGS
 
-#if defined(PBL_PLATFORM_EMERY)
-    #define IS_BIG_SCREEN true
-    #define IF_BIG_SCREEN_ELSE(big, other) (big)
-#else
-    #define IS_BIG_SCREEN false
-    #define IF_BIG_SCREEN_ELSE(big, other) (other)
-#endif
-
 void set_config_toggles(int);
 int get_config_toggles();
 bool is_module_enabled(int);
