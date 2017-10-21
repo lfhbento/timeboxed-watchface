@@ -2124,9 +2124,7 @@ class ColorPresets extends Component {
                                 <li className="list-group-item" key={key} onClick={this.onClick.bind(this, key)}>
                                     {key}
                                     {Object.keys(this.defaultPresets).indexOf(key) === -1 ? (
-                                        <span
-                                            className="pull-xs-right remove-preset"
-                                            onClick={this.onRemoveClick.bind(this, key)}>
+                                        <span className="remove-preset" onClick={this.onRemoveClick.bind(this, key)}>
                                             &#x2573;
                                         </span>
                                     ) : null}
