@@ -143,10 +143,12 @@ body {
 
 .side-by-side--left {
     flex-grow: 1;
+    width: 50%;
 }
 
 .side-by-side--right {
     flex-grow: 1;
+    width: 50%;
     .field-label {
         text-align: right;
     }
