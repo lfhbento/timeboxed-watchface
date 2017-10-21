@@ -60,16 +60,21 @@ Pebble.addEventListener('appmessage',
 );
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    var emulator = !Pebble || Pebble.platform === 'pypkjs';
+    var isEmulator = !Pebble || Pebble.platform === 'pypkjs';
     var config = encodeURIComponent(localStorage.configDict || LZString.compressToBase64('{}'));
     console.log(localStorage.configDict);
     console.log(config);
-    var settings = LZString.decompressFromBase64(getSettings())
+    var settings = getSettings()
         .replace('__TIMEBOXED_CONFIGS__', encodeURIComponent(config))
         .replace('__TIMEBOXED_PLATFORM__', encodeURIComponent(Pebble.getActiveWatchInfo().platform))
         .replace('__TIMEBOXED_VERSION__', encodeURIComponent(currentVersion))
-        .replace('__TIMEBOXED_RETURN__', encodeURIComponent(emulator ? '$$$RETURN_TO$$$' : 'pebblejs://close#'));
-    Pebble.openURL('data:text/html;charset=utf-8,' + settings);
+        .replace('__TIMEBOXED_RETURN__', encodeURIComponent(isEmulator ? '$$$RETURN_TO$$$' : 'pebblejs://close#'));
+
+    var urlString = 'data:text/html;charset=utf-8,' + settings;
+
+    console.log(urlString.length);
+
+    Pebble.openURL(urlString);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -231,13 +236,11 @@ function executeYahooQuery(pos, useCelsius, woeid, overrideLocation) {
                 sendData(temp, max, min, condition, feels, speed, direction, sunrise, sunset);
             } catch (ex) {
                 console.log(ex);
-                console.log('Yahoo weather failed, falling back to open weather');
-                fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
+                console.log('Yahoo weather failed!');
             }
         });
     } else {
-        console.log('No woeid found, falling back to open weather');
-        fetchOpenWeatherMapData(pos, useCelsius, overrideLocation);
+        console.log('No woeid found!');
     }
 }
 

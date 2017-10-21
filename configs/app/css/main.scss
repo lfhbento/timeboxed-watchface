@@ -1,4 +1,22 @@
-@import 'node_modules/bootstrap-toggle/css/bootstrap-toggle';
+// Core variables and mixins
+@import "node_modules/bootstrap/scss/custom";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+
+// Reset and dependencies
+@import "node_modules/bootstrap/scss/normalize";
+
+// Core CSS
+@import "node_modules/bootstrap/scss/reboot";
+@import "node_modules/bootstrap/scss/type";
+@import "node_modules/bootstrap/scss/forms";
+@import "node_modules/bootstrap/scss/buttons";
+
+// Components
+@import "node_modules/bootstrap/scss/button-group";
+@import "node_modules/bootstrap/scss/list-group";
+@import "node_modules/bootstrap/scss/card";
+@import "node_modules/bootstrap/scss/nav";
 
 html, body {
     font-size: 12px;
@@ -220,31 +238,8 @@ html, body {
     }
 }
 
-.rt-toggle__container--bbounce {
-    height: initial;
-    margin: 0;
-
-    .bbounce__badge {
-        background: #0275d8;
-        &::after {
-            background: url(data:image/svg+xml,%3Csvg%20fill%3D%22%23FFF%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%20fill%3D%22none%22/%3E%0A%20%20%20%20%3Cpath%20d%3D%22M9%2016.17L4.83%2012l-1.42%201.41L9%2019%2021%207l-1.41-1.41z%22/%3E%0A%3C/svg%3E);
-            background-repeat: no-repeat;
-            background-size: 1em 1.2em;
-        }
-    }
-
-    .bbounce__badge--negative {
-        background: #FFF;
-        &::after {
-            background: url(data:image/svg+xml,%3Csvg%20fill%3D%22%23dadde1%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M19%206.41L17.59%205%2012%2010.59%206.41%205%205%206.41%2010.59%2012%205%2017.59%206.41%2019%2012%2013.41%2017.59%2019%2019%2017.59%2013.41%2012z%22/%3E%0A%20%20%20%20%3Cpath%20d%3D%22M0%200h24v24H0z%22%20fill%3D%22none%22/%3E%0A%3C/svg%3E);
-            background-repeat: no-repeat;
-            background-size: 1em 1.2em;
-        }
-    }
-}
-
-label.rt-toggle {
-    margin-top: 4px;
+.toggle.react-toggle--checked .react-toggle-track {
+  background-color: #0275d8;
 }
 
 .card--custom {

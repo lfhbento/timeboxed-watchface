@@ -12,19 +12,29 @@
       "media": [
         {
           "type": "font",
-          "characterRegex": "[\uf003\uf058\uf044\uf00d\uf002\uf0b6\uf008\uf0b2\uf00a\uf00e\uf00c\uf02e\uf086\uf028\uf02a\uf02c\uf031\uf04a\uf036\uf037\uf0b3\uf038\uf03a\uf081\uf013\uf019\uf01a\uf01b\uf01d\uf01b\uf0b5\uf07b\uf04e\uf050\uf076\uf073\uf056\uf015\uf062\uf072\uf0b1\uf051\uf052]",
+          "characterRegex": "[]",
           "compatibility": "2.7",
           "file": "fonts/weathericons-regular-webfont.ttf",
           "name": "FONT_WEATHER_24",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
-          "characterRegex": "[\uf051\uf052]",
+          "characterRegex": "[]",
           "compatibility": "2.7",
           "file": "fonts/weathericons-regular-webfont.ttf",
           "name": "FONT_WEATHER_16",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -32,7 +42,12 @@
           "compatibility": "2.7",
           "file": "fonts/custom-icons.ttf",
           "name": "FONT_ICONS_20",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -40,7 +55,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_19",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -48,7 +68,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_32",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -56,7 +81,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_64",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -64,7 +94,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_16",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -72,7 +107,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_24",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -80,7 +120,12 @@
           "compatibility": "2.7",
           "file": "fonts/Blocko.ttf",
           "name": "FONT_BLOCKO_56",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -88,7 +133,12 @@
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
           "name": "FONT_LECO_14",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -96,7 +146,12 @@
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
           "name": "FONT_LECO_21",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -104,7 +159,12 @@
           "compatibility": "2.7",
           "file": "fonts/leco-regular.ttf",
           "name": "FONT_LECO_47",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -112,7 +172,12 @@
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
           "name": "FONT_KONSTRUCT_11",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -120,7 +185,12 @@
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
           "name": "FONT_KONSTRUCT_17",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -128,7 +198,12 @@
           "compatibility": "2.7",
           "file": "fonts/konstruct.ttf",
           "name": "FONT_KONSTRUCT_33",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -136,7 +211,12 @@
           "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_18",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -144,7 +224,12 @@
           "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_28",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -152,7 +237,12 @@
           "compatibility": "2.7",
           "file": "fonts/ArchivoNarrow-Bold.ttf",
           "name": "FONT_ARCHIVO_56",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -160,7 +250,12 @@
           "compatibility": "2.7",
           "file": "fonts/OSP-DIN.ttf",
           "name": "FONT_DIN_20",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -168,7 +263,12 @@
           "compatibility": "2.7",
           "file": "fonts/OSP-DIN.ttf",
           "name": "FONT_DIN_26",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -176,7 +276,12 @@
           "compatibility": "2.7",
           "file": "fonts/OSP-DIN.ttf",
           "name": "FONT_DIN_58",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -184,7 +289,12 @@
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_16",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -192,7 +302,12 @@
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_22",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         },
         {
           "type": "font",
@@ -200,7 +315,12 @@
           "compatibility": "2.7",
           "file": "fonts/Prototype.ttf",
           "name": "FONT_PROTOTYPE_48",
-          "targetPlatforms": ["aplite", "basalt", "chalk", "diorite"]
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ]
         }
       ]
     },
@@ -335,8 +455,6 @@
     ]
   },
   "name": "Timeboxed",
-  "dependencies": {
-  },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
     "babel-core": "^6.26.0",
@@ -346,9 +464,13 @@
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-2": "^6.24.1",
+    "bootstrap": "4.0.0-alpha.4",
     "bootstrap-loader": "^1.0.10",
+    "bootstrap-toggle": "^2.2.2",
+    "classnames": "^2.2.3",
     "compression-webpack-plugin": "^0.3.1",
     "css-loader": "^0.23.1",
+    "es6-promise": "^3.2.1",
     "eslint": "^4.1.1",
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-no-loops": "^0.3.0",
@@ -356,38 +478,36 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.1.1",
+    "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.15.0",
     "imports-loader": "^0.6.5",
+    "isomorphic-fetch": "^2.2.1",
+    "jquery-slim": "^3.0.0",
+    "js-base64": "^2.3.2",
     "node-sass": "^3.4.2",
+    "object-assign": "^4.1.0",
     "postcss-loader": "^0.9.1",
+    "preact": "^8.2.5",
+    "preact-compat": "^3.17.0",
     "prettier": "^1.7.0",
     "prettier-eslint": "^8.1.1",
     "prettier-eslint-cli": "^4.3.2",
-    "react-input-toggle": "^0.3.0",
-    "react-select": "^1.0.0-beta13",
-    "resolve-url-loader": "^1.4.3",
-    "sass-loader": "^3.2.0",
-    "style-loader": "^0.13.1",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.0",
-    "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.10.0",
-    "bootstrap": "4.0.0-alpha.4",
-    "bootstrap-toggle": "^2.2.2",
-    "classnames": "^2.2.3",
-    "es6-promise": "^3.2.1",
-    "express": "^4.14.0",
-    "isomorphic-fetch": "^2.2.1",
-    "jquery": "^2.2.3",
-    "object-assign": "^4.1.0",
+    "react-dropdown": "^1.3.2",
     "react-fastclick": "^2.1.2",
     "react-fastclick-alt": "^1.0.1",
+    "react-input-toggle": "^0.3.0",
+    "react-toggle": "^4.0.2",
+    "resolve-url-loader": "^1.4.3",
+    "sass-loader": "^3.2.0",
+    "strip-comments": "^0.4.4",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
-    "preact": "^8.2.5",
-    "preact-compat": "^3.17.0"
+    "webpack-dev-server": "^1.14.1",
+    "webpack-merge": "^0.10.0"
   },
   "scripts": {
     "build": "webpack --config ./configs/webpack-config.js --bail --colors --progress",
