@@ -1,24 +1,25 @@
 // Core variables and mixins
-@import "node_modules/bootstrap/scss/custom";
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/mixins";
+@import 'node_modules/bootstrap/scss/custom';
+@import 'node_modules/bootstrap/scss/variables';
+@import 'node_modules/bootstrap/scss/mixins';
 
 // Reset and dependencies
-@import "node_modules/bootstrap/scss/normalize";
+@import 'node_modules/bootstrap/scss/normalize';
 
 // Core CSS
-@import "node_modules/bootstrap/scss/reboot";
-@import "node_modules/bootstrap/scss/type";
-@import "node_modules/bootstrap/scss/forms";
-@import "node_modules/bootstrap/scss/buttons";
+@import 'node_modules/bootstrap/scss/reboot';
+@import 'node_modules/bootstrap/scss/type';
+@import 'node_modules/bootstrap/scss/forms';
+@import 'node_modules/bootstrap/scss/buttons';
 
 // Components
-@import "node_modules/bootstrap/scss/button-group";
-@import "node_modules/bootstrap/scss/list-group";
-@import "node_modules/bootstrap/scss/card";
-@import "node_modules/bootstrap/scss/nav";
+@import 'node_modules/bootstrap/scss/button-group';
+@import 'node_modules/bootstrap/scss/list-group';
+@import 'node_modules/bootstrap/scss/card';
+@import 'node_modules/bootstrap/scss/nav';
 
-html, body {
+html,
+body {
     font-size: 12px;
 }
 
@@ -31,9 +32,9 @@ html, body {
     background-color: #f5f5f5;
     font-size: 2rem;
     text-transform: uppercase;
-    -webkit-box-shadow: 1px 1px 4px 0 #efefef;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-    -moz-box-shadow:    1px 1px 4px 0 #efefef;  /* Firefox 3.5 - 3.6 */
-    box-shadow:         1px 1px 4px 0 #efefef;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    -webkit-box-shadow: 1px 1px 4px 0 #efefef; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 1px 4px 0 #efefef; /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 1px 4px 0 #efefef; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
 }
 
 .version {
@@ -238,14 +239,19 @@ html, body {
     }
 }
 
-.toggle.react-toggle--checked .react-toggle-track {
-  background-color: #0275d8;
+.toggle.react-toggle--checked .react-toggle-track,
+.toggle.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+    background-color: #0275d8;
+}
+
+.toggle.react-toggle--checked .react-toggle-thumb {
+    border-color: #0275d8;
 }
 
 .card--custom {
-    -webkit-box-shadow: 1px 1px 4px 0 #efefef;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-    -moz-box-shadow:    1px 1px 4px 0 #efefef;  /* Firefox 3.5 - 3.6 */
-    box-shadow:         1px 1px 4px 0 #efefef;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    -webkit-box-shadow: 1px 1px 4px 0 #efefef; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 1px 4px 0 #efefef; /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 1px 4px 0 #efefef; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
     margin: 8px;
     border-radius: 4px;
 }
