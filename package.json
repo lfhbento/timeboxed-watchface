@@ -455,7 +455,8 @@
       "KEY_CRYPTOPRICEC": 125,
       "KEY_CRYPTOPRICED": 126,
       "KEY_CRYPTOMARKETC": 127,
-      "KEY_CRYPTOMARKETD": 128
+      "KEY_CRYPTOMARKETD": 128,
+      "KEY_CRYPTOTIME": 129
     },
     "enableMultiJS": true,
     "displayName": "Timeboxed",

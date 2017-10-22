@@ -105,9 +105,10 @@ static uint32_t int_keys[] = {
     KEY_TEXTALIGN,
     KEY_SPEEDUNIT,
     KEY_WEATHERTIME,
-    KEY_DATESEPARATOR
+    KEY_DATESEPARATOR,
+    KEY_CRYPTOTIME,
 };
-static uint8_t num_int = 7;
+static uint8_t num_int = 8;
 
 static uint32_t slot_keys[] = {
     KEY_SLOTA,

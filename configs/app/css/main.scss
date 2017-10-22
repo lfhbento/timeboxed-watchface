@@ -18,45 +18,57 @@
 @import 'node_modules/bootstrap/scss/card';
 @import 'node_modules/bootstrap/scss/nav';
 
+$bg: #555;
+$lighter-bg: #666;
+$text: #FFF;
+$hint-text: #CCC;
+$btn-text: #FFF;
+$shadow: #333;
+$border: #444;
+$accent: #0090d8;
+$accent-dark: #007bb9;
+$secondary-accent: #4c964d;
+$secondary-accent-dark: #428243;
+
 html,
 body {
     font-size: 12px;
+    color: $text;
+    background-color: $bg;
 }
 
 .title {
     margin: 1rem 0;
     padding: 1rem 0 1.5rem 0;
     text-align: center;
-    border-bottom: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    background-color: #f5f5f5;
+    border-bottom: 1px solid $border;
+    border-top: 1px solid $border;
+    background-color: $lighter-bg;
     font-size: 2rem;
     text-transform: uppercase;
-    -webkit-box-shadow: 1px 1px 4px 0 #efefef; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-    -moz-box-shadow: 1px 1px 4px 0 #efefef; /* Firefox 3.5 - 3.6 */
-    box-shadow: 1px 1px 4px 0 #efefef; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    -webkit-box-shadow: 1px 1px 4px 0 $shadow; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 1px 4px 0 $shadow; /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 1px 4px 0 $shadow; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
 }
 
 .version {
     font-size: 1rem;
-    color: #999;
     text-align: center;
     margin: -2.5rem 0.5rem 2rem 0;
     display: block;
     min-height: 18px;
 }
 
-.update {
-    color: #090;
-    margin-left: 8px;
-}
-
 .form-control {
     font-size: 12px;
-}
-
-.form-control {
     height: 28px;
+    color: $btn-text;
+    background-color: $bg;
+    border: 1px solid $border;
+
+    &::placeholder {
+        color: $lighter-bg;
+    }
 }
 
 .toggle.btn {
@@ -120,12 +132,51 @@ body {
     width: 100%;
 }
 
+.btn-outline-primary {
+    color: $accent;
+    border-color: $accent;
+
+    &:hover, &:active:focus, &:focus {
+        border-color: transparent;
+        background-color: $accent;
+        color: $btn-text;
+    }
+}
+
+.btn-outline-primary.active {
+    color: $btn-text;
+    border-color: $accent;
+    background-color: $accent;
+
+    &:hover, &:active:focus, &:focus {
+        border-color: $accent-dark;
+        background-color: $accent-dark;
+    }
+}
+
+.btn-primary {
+    color: $btn-text;
+    background-color: $accent;
+    border-color: $accent;
+
+    &:hover, &:active:focus, &:focus {
+        border-color: $accent-dark;
+        background-color: $accent-dark;
+    }
+}
+
 .field-text {
     display: flex;
 
     .form-control {
         height: 32px;
     }
+}
+
+.list-group-item {
+    color: $btn-text;
+    background-color: $bg;
+    border: 1px solid $border;
 }
 
 .field-text--btn {
@@ -141,7 +192,8 @@ body {
     display: flex;
 }
 
-.side-by-side--left, .side-by-side--right {
+.side-by-side--left,
+.side-by-side--right {
     flex-grow: 1;
     width: 50%;
 }
@@ -153,7 +205,7 @@ body {
 }
 
 .helper-text {
-    color: #999;
+    color: $hint-text;
     line-height: 14px;
     text-align: left;
 }
@@ -174,6 +226,14 @@ body {
 
 .btn--donate {
     margin-left: 6px;
+    color: $btn-text;
+    background-color: $secondary-accent;
+    border-color: $secondary-accent;
+
+    &:hover {
+        border-color: $secondary-accent-dark;
+        background-color: $secondary-accent-dark;
+    }
 }
 
 .color-picker {
@@ -220,7 +280,7 @@ body {
     height: 32px;
     width: 56px;
     padding: 4px;
-    border: 1px solid #999;
+    border: 1px solid $border;
     border-radius: 4px;
     display: inline-block;
     margin-left: 6px;
@@ -241,19 +301,20 @@ body {
 
 .toggle.react-toggle--checked .react-toggle-track,
 .toggle.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-    background-color: #0275d8;
+    background-color: $accent;
 }
 
 .toggle.react-toggle--checked .react-toggle-thumb {
-    border-color: #0275d8;
+    border-color: $accent;
 }
 
 .card--custom {
-    -webkit-box-shadow: 1px 1px 4px 0 #efefef; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-    -moz-box-shadow: 1px 1px 4px 0 #efefef; /* Firefox 3.5 - 3.6 */
-    box-shadow: 1px 1px 4px 0 #efefef; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    -webkit-box-shadow: 1px 1px 4px 0 $shadow; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 1px 4px 0 $shadow; /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 1px 4px 0 $shadow; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
     margin: 8px;
     border-radius: 4px;
+    background-color: $bg;
 }
 
 .block--footer {
@@ -273,6 +334,7 @@ body {
     padding: 0.5rem 1rem;
     text-transform: uppercase;
     font-weight: normal;
+    background-color: $lighter-bg;
 }
 
 label {
@@ -285,7 +347,7 @@ label {
 }
 
 .remove-preset {
-    color: #999;
+    color: $text;
     display: block;
     padding: 0 6px;
     margin-right: -6px;
@@ -300,4 +362,44 @@ label {
     display: flex;
     margin-bottom: 10px;
     align-items: center;
+}
+
+.card-header.subtitle {
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: $lighter-bg;
+}
+
+.Dropdown-root.dropdown {
+    .Dropdown-control, .Dropdown-menu, .Dropdown-option {
+        color: $text;
+        border-color: $border;
+        background-color: $bg;
+    }
+
+    .Dropdown-option {
+        &.is-selected, &:hover {
+            background-color: $lighter-bg;
+            color: $text;
+        }
+    }
+}
+
+.nav {
+    border-bottom: 1px solid $border;
+    .nav-link:hover {
+        border: 1px solid $border;
+    }
+    .nav-link.active, .nav-link.active:hover {
+        color: $text;
+        background-color: $lighter-bg;
+        border-color: $border $border transparent $border;
+    }
+}
+
+a {
+    color: $accent;
+    &:hover, &:active:focus, &:focus {
+        color: $accent-dark;
+    }
 }

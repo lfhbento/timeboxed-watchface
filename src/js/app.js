@@ -136,6 +136,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
             key === 'KEY_DATESEPARATOR' ||
             key === 'KEY_TAPTIME' ||
             key === 'KEY_WEATHERTIME' ||
+            key === 'KEY_CRYPTOTIME' ||
             key === 'KEY_HEARTHIGH' ||
             key === 'KEY_HEARTLOW'
         ) {
@@ -950,7 +951,7 @@ var getCryptocurrencies = function() {
                         console.log('Error sending cryptocurrencies info to Pebble!');
                     }
                 );
-            } else if (retries > 10) {
+            } else if (retries > 20) {
                 console.log('Too many retries. Canceling crypto request.');
                 clearInterval(interval);
                 sendError();
@@ -959,7 +960,7 @@ var getCryptocurrencies = function() {
                 retries += 1;
             }
 
-        }, 500);
+        }, 200);
 
         Object.keys(info).forEach(function(key) {
             var reqInfo = info[key];

@@ -29,6 +29,14 @@ void update_crypto(bool force) {
             result = app_message_outbox_send();
 
             if (result == APP_MSG_OK) {
+                if (force) {
+                    set_crypto_layer_text("loading");
+                    #if !defined PBL_PLATFORM_APLITE
+                    set_crypto_b_layer_text("loading");
+                    set_crypto_c_layer_text("loading");
+                    set_crypto_d_layer_text("loading");
+                    #endif
+                }
                 last_update = current_time;
             }
         } else if (force) {
@@ -39,12 +47,12 @@ void update_crypto(bool force) {
 
 static bool get_crypto_enabled() {
     #if !defined PBL_PLATFORM_APLITE
-    return is_module_enabled_any(MODULE_CRYPTO) ||
-        is_module_enabled_any(MODULE_CRYPTOB) ||
-        is_module_enabled_any(MODULE_CRYPTOC) ||
-        is_module_enabled_any(MODULE_CRYPTOD);
+    return is_module_enabled(MODULE_CRYPTO) ||
+        is_module_enabled(MODULE_CRYPTOB) ||
+        is_module_enabled(MODULE_CRYPTOC) ||
+        is_module_enabled(MODULE_CRYPTOD);
     #else
-    return is_module_enabled_any(MODULE_CRYPTO);
+    return is_module_enabled(MODULE_CRYPTO);
     #endif
 }
 
@@ -124,7 +132,7 @@ void store_crypto_price_d(char* price) {
 void toggle_crypto(uint8_t reload_origin) {
     crypto_enabled = get_crypto_enabled();
     if (reload_origin == RELOAD_CONFIGS || reload_origin == RELOAD_DEFAULT) {
-        crypto_interval = 15;
+        crypto_interval = persist_exists(KEY_CRYPTOTIME) ? persist_read_int(KEY_CRYPTOTIME) : 15;
     }
     if (crypto_enabled) {
         update_crypto_from_storage();

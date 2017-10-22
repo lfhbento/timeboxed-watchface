@@ -38,11 +38,11 @@ class Layout extends Component {
 
         this.moduleStateKeys = ['slotA', 'slotB', 'slotC', 'slotD', 'slotE', 'slotF'];
         this.moduleSleepStateKeys = this.moduleStateKeys.map(
-            (key) => `sleep${key.slice(0).toUpperCase()}${key.slice(1)}`
+            (key) => `sleep${key.slice(0, 1).toUpperCase()}${key.slice(1)}`
         );
-        this.moduleTapStateKeys = this.moduleStateKeys.map((key) => `tap${key.slice(0).toUpperCase()}${key.slice(1)}`);
+        this.moduleTapStateKeys = this.moduleStateKeys.map((key) => `tap${key.slice(0, 1).toUpperCase()}${key.slice(1)}`);
         this.moduleWristStateKeys = this.moduleStateKeys.map(
-            (key) => `wrist${key.slice(0).toUpperCase()}${key.slice(1)}`
+            (key) => `wrist${key.slice(0, 1).toUpperCase()}${key.slice(1)}`
         );
 
         this.state = { ...this.defaultState, ...this.defaultColors, ...newState };
@@ -64,10 +64,10 @@ class Layout extends Component {
             ...(this.platform !== 'diorite' ? [{ value: '15', label: 'Compass' }] : []),
             { value: '16', label: 'Seconds' },
             { value: '17', label: 'Battery level' },
-            { value: '20', label: 'Cryptocurrency price A' },
-            { value: '21', label: 'Cryptocurrency price B' },
-            { value: '22', label: 'Cryptocurrency price C' },
-            { value: '23', label: 'Cryptocurrency price D' },
+            { value: '20', label: 'Cryptocurrency A' },
+            { value: '21', label: 'Cryptocurrency B' },
+            { value: '22', label: 'Cryptocurrency C' },
+            { value: '23', label: 'Cryptocurrency D' },
         ];
 
         this.modulesAplite = this.modulesAll.filter((module) =>
@@ -151,6 +151,26 @@ class Layout extends Component {
             (this.isProviderSelected('3') && !this.state.forecastKey)
         ) {
             alert('Please enter a valid API key for the selected provider');
+            return;
+        }
+
+        if (this.isEnabled(['20']) && (!this.state.cryptoTo || !this.state.cryptoFrom)) {
+            alert('Please enter currencies for Cryptocurrency A');
+            return;
+        }
+
+        if (this.isEnabled(['21']) && (!this.state.cryptoToB || !this.state.cryptoFromB)) {
+            alert('Please enter currencies for Cryptocurrency B');
+            return;
+        }
+
+        if (this.isEnabled(['22']) && (!this.state.cryptoToC || !this.state.cryptoFromC)) {
+            alert('Please enter currencies for Cryptocurrency C');
+            return;
+        }
+
+        if (this.isEnabled(['23']) && (!this.state.cryptoToD || !this.state.cryptoFromD)) {
+            alert('Please enter currencies for Cryptocurrency D');
             return;
         }
 
@@ -260,9 +280,12 @@ class Layout extends Component {
                 clearable={false}
                 labelPos={item.labelPos}
                 selectedItem={
-                    this.state[mode ? `${mode}${item.slot.slice(0).toUpperCase()}${item.slot.slice(1)}` : item.slot]
+                    this.state[mode ? `${mode}${item.slot.slice(0, 1).toUpperCase()}${item.slot.slice(1)}` : item.slot]
                 }
-                onChange={this.onChangeDropdown.bind(this, item.slot)}
+                onChange={this.onChangeDropdown.bind(
+                    this,
+                    mode ? `${mode}${item.slot.slice(0, 1).toUpperCase()}${item.slot.slice(1)}` : item.slot
+                )}
             />
         );
     };
@@ -283,7 +306,7 @@ class Layout extends Component {
         }
 
         if (state.showWrist) {
-            modules['Shake'] = this.getModules(baseModules, 'shake');
+            modules['Shake'] = this.getModules(baseModules, 'wrist');
         }
 
         return modules;
@@ -305,7 +328,7 @@ class Layout extends Component {
         }
 
         if (state.showWrist) {
-            modules['Shake'] = this.getModules(baseModulesRound, 'shake');
+            modules['Shake'] = this.getModules(baseModulesRound, 'wrist');
         }
 
         return modules;
@@ -314,7 +337,8 @@ class Layout extends Component {
     renderCryptocurrency = (type) => {
         type = type || '';
         return (
-            <OptionGroup title={`Cryptocurrency price ${type || 'A'}`}>
+            <div className="card card--custom">
+                <div className="card-header subtitle">{`Cryptocurrency ${type || 'A'}`}</div>
                 <DropdownField
                     fieldName={`cryptoMarket${type}`}
                     label={'Market'}
@@ -329,35 +353,36 @@ class Layout extends Component {
                         fieldName={`cryptoFrom${type}`}
                         label="Currency"
                         value={this.state[`cryptoFrom${type}`]}
-                        onChange={this.onChange.bind(this, `cryptoFrom${type}`)}
+                        onChange={(value) => this.onChange(`cryptoFrom${type}`, (value || '').toUpperCase().trim())}
                         placeholder="BTC"
+                        labelPos="top"
                     />
                     <TextField
                         fieldName={`cryptoTo${type}`}
                         label="Show price in"
                         value={this.state[`cryptoTo${type}`]}
-                        onChange={this.onChange.bind(this, `cryptoTo${type}`)}
+                        onChange={(value) => this.onChange(`cryptoTo${type}`, (value || '').toUpperCase().trim())}
                         placeholder="USD"
+                        labelPos="top"
                     />
                 </SideBySideFields>
-            </OptionGroup>
+            </div>
         );
     };
 
     renderAlternateTimezone = (type) => {
         type = type || '';
         return (
-            <OptionGroup title={`Alternate Timezone ${type || 'A'}`}>
-                <DropdownField
-                    fieldName={`timezones${type}`}
-                    label={'Additional Timezone'}
-                    options={this.timezones}
-                    searchable={true}
-                    clearable={false}
-                    selectedItem={this.state[`timezones${type}`]}
-                    onChange={this.onChangeDropdown.bind(this, `timezones${type}`)}
-                />
-            </OptionGroup>
+            <DropdownField
+                fieldName={`timezones${type}`}
+                label={`Additional Timezone ${type || 'A'}`}
+                options={this.timezones}
+                searchable={true}
+                clearable={false}
+                selectedItem={this.state[`timezones${type}`]}
+                onChange={this.onChangeDropdown.bind(this, `timezones${type}`)}
+                labelPos="top"
+            />
         );
     };
 
@@ -508,9 +533,13 @@ class Layout extends Component {
                     )}
                 </OptionGroup>
 
-                {this.isEnabled(['18']) && this.renderAlternateTimezone()}
+                {this.isEnabled(['18', '19']) && (
+                    <OptionGroup title={'Alternate Timezones'}>
+                        {this.isEnabled(['18']) && this.renderAlternateTimezone()}
 
-                {this.isEnabled(['19']) && this.renderAlternateTimezone('B')}
+                        {this.isEnabled(['19']) && this.renderAlternateTimezone('B')}
+                    </OptionGroup>
+                )}
 
                 <OptionGroup title={'Localization'}>
                     <DropdownField
@@ -855,12 +884,8 @@ class Layout extends Component {
                         {this.isEnabled(['1', '2', '8', '11', '12']) && (
                             <RadioButtonGroup
                                 fieldName="weatherTime"
-                                label={'Weather refresh interval'}
-                                options={[
-                                    { value: '10', label: '10min' },
-                                    { value: '15', label: '15min' },
-                                    { value: '30', label: '30min' },
-                                ]}
+                                label={'Refresh interval'}
+                                options={refreshTimes}
                                 selectedItem={state.weatherTime}
                                 onChange={this.onChange.bind(this, 'weatherTime')}
                             />
@@ -897,13 +922,30 @@ class Layout extends Component {
                     </OptionGroup>
                 )}
 
-                {this.isEnabled(['20']) && this.renderCryptocurrency()}
+                {this.isEnabled(['20', '21', '22', '23']) && (
+                    <OptionGroup title={'Cryptocurrency prices'}>
+                        <HelperText standalone={true}>
+                            {
+                                'You can use any markets and currencies supported by the <a href="https://www.cryptocompare.com/api/">CryptoCompare API</a>.'
+                            }
+                        </HelperText>
+                        {this.isEnabled(['20']) && this.renderCryptocurrency()}
 
-                {this.isEnabled(['21']) && this.renderCryptocurrency('B')}
+                        {this.isEnabled(['21']) && this.renderCryptocurrency('B')}
 
-                {this.isEnabled(['22']) && this.renderCryptocurrency('C')}
+                        {this.isEnabled(['22']) && this.renderCryptocurrency('C')}
 
-                {this.isEnabled(['23']) && this.renderCryptocurrency('D')}
+                        {this.isEnabled(['23']) && this.renderCryptocurrency('D')}
+
+                        <RadioButtonGroup
+                            fieldName="cryptoTime"
+                            label={'Refresh interval'}
+                            options={refreshTimes}
+                            selectedItem={state.cryptoTime}
+                            onChange={this.onChange.bind(this, 'cryptoTime')}
+                        />
+                    </OptionGroup>
+                )}
 
                 <OptionGroup title={'Master Key (pmkey.xyz)'}>
                     <TextField
@@ -954,7 +996,7 @@ class Layout extends Component {
                     <HelperText standalone={true}>{'Remember to save to apply your settings.'}</HelperText>
                     <HelperText standalone={true}>
                         {
-                            'Fonts: <a href="http://www.dafont.com/blocko.font">Blocko</a>, <a href="https://fontlibrary.org/en/font/osp-din">OSP-DIN</a>, <a href="https://www.google.com/fonts/specimen/Archivo+Narrow">Archivo Narrow</a> and <a href="http://www.dafont.com/prototype.font">Prototype</a>.<br />Weather font used: <a href="https://erikflowers.github.io/weather-icons/">Erik Flower\'s Weather Icons</a>.'
+                            'Fonts: <a href="http://www.dafont.com/blocko.font">Blocko</a>, <a href="https://fontlibrary.org/en/font/osp-din">OSP-DIN</a>, <a href="https://www.google.com/fonts/specimen/Archivo+Narrow">Archivo Narrow</a> and <a href="http://www.dafont.com/prototype.font">Prototype</a>.<br />Weather font used: <a href="https://erikflowers.github.io/weather-icons/">Erik Flower\'s Weather Icons</a>. Cryptocurrencies API by <a href="https://www.cryptocompare.com/api/">CryptoCompare</a>'
                         }
                     </HelperText>
                     <HelperText standalone={true}>{'If you like Timeboxed, please consider donating ;)'}</HelperText>
@@ -1826,7 +1868,7 @@ class DonateButton extends React.Component {
                 value={this.state.text}
                 onClick={this.changeText}
                 id="donateBtn"
-                className="btn btn-success btn--donate"
+                className="btn btn--donate"
             />
         );
     };
@@ -1909,13 +1951,16 @@ class DropdownField extends React.Component {
     render() {
         return (
             <Field fieldName={this.props.fieldName} label={this.props.label} labelPos={this.props.labelPos}>
-                <Dropdown
-                    options={this.props.options}
-                    name={this.props.name}
-                    value={this.props.options.find((option) => option.value === this.state.selectedItem)}
-                    onChange={this.onChange}
-                    placeholder={'Select...'}
-                />
+                <FastClick>
+                    <Dropdown
+                        options={this.props.options}
+                        name={this.props.name}
+                        value={this.props.options.find((option) => option.value === this.state.selectedItem)}
+                        onChange={this.onChange}
+                        placeholder={'Select...'}
+                        className={'dropdown'}
+                    />
+                </FastClick>
             </Field>
         );
     }
@@ -2316,6 +2361,10 @@ RadioButtonGroup.propTypes = {
     label: PropTypes.string,
     labelPos: PropTypes.string,
     size: PropTypes.string,
+};
+
+RadioButtonGroup.defaultProps = {
+    labelPos: 'top',
 };
 
 // ------------------ UTILS
@@ -2783,6 +2832,7 @@ const defaultState = {
     cryptoMarketB: 'Coinbase',
     cryptoMarketC: 'Coinbase',
     cryptoMarketD: 'Coinbase',
+    cryptoTime: '15',
 };
 
 const cryptoMarkets = [
@@ -2841,6 +2891,13 @@ const cryptoMarkets = [
     { value: 'bitFlyer', label: 'bitFlyer' },
     { value: 'bitFlyerFX', label: 'bitFlyerFX' },
     { value: 'itBit', label: 'itBit' },
+];
+
+const refreshTimes = [
+    { value: '5', label: '5min' },
+    { value: '10', label: '10min' },
+    { value: '15', label: '15min' },
+    { value: '30', label: '30min' },
 ];
 
 const w = '#FFFFFF';
