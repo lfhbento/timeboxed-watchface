@@ -181,40 +181,6 @@ class Layout extends Component {
         }
     };
 
-    getStoredPresets = () => {
-        let presets = this.state.presets || {};
-        presets =
-            Object.keys(presets).length > 0
-                ? presets
-                : {
-                    ...JSON.parse(window.localStorage.presets || '{}'),
-                    ...this.getOldPresets(),
-                };
-        return presets;
-    };
-
-    getOldPresets = () => {
-        return Object.keys(localStorage).reduce((presets, key) => {
-            if (key.indexOf('preset-') === 0) {
-                let presetName = key.replace('preset-', '');
-                let newPreset = JSON.parse(localStorage[key]);
-                newPreset = Object.keys(newPreset).reduce((preset, key) => {
-                    let value = newPreset[key];
-
-                    value = value === 'true' || value === 'false' ? JSON.parse(value) : value;
-                    value = typeof value === 'string' && value.indexOf('0x') !== -1 ? value.replace('0x', '#') : value;
-
-                    preset[key] = value;
-
-                    return preset;
-                }, {});
-                presets[presetName] = newPreset;
-                delete localStorage[key];
-            }
-            return presets;
-        }, {});
-    };
-
     storePresets = (newPresets) => {
         this.setState({
             presets: newPresets,
@@ -222,7 +188,6 @@ class Layout extends Component {
     };
 
     onChange = (key, value) => {
-        console.log({ [key]: value });
         this.setState({ [key]: value });
     };
 
@@ -1359,8 +1324,12 @@ class Layout extends Component {
                         }
                     </HelperText>
                     <HelperText standalone={true}>{'If you like Timeboxed, please consider donating ;)'}</HelperText>
-                    <DonateButton />
-
+                    <DonateButton service="PayPal" />
+                    <HelperText standalone={true}>{'US only:'}</HelperText>
+                    <div className="donate-buttons">
+                        <DonateButton service="SquareCash" />
+                        <DonateButton service="Venmo" />
+                    </div>
                     <div className="block--submit">
                         <button onClick={this.onSubmit} className="btn btn-primary btn-lg btn-submit">
                             {'Save settings'}
@@ -1425,45 +1394,39 @@ class ColorPicker extends Component {
             panelVisible: false,
             secondPanelVisible: false,
         };
-        this.onColorChange = this.onColorChange.bind(this);
-        this.onSecondColorChange = this.onSecondColorChange.bind(this);
-        this.showPanel = this.showPanel.bind(this);
-        this.togglePanel = this.togglePanel.bind(this);
-        this.toggleSecondPanel = this.toggleSecondPanel.bind(this);
-        this.hidePanel = this.hidePanel.bind(this);
     }
 
-    onColorChange(color) {
+    onColorChange = (color) => {
         this.setState({ color: color });
         if (this.props.onChange) {
             this.props.onChange(color);
         }
         this.hidePanel();
-    }
+    };
 
-    onSecondColorChange(color) {
+    onSecondColorChange = (color) => {
         this.setState({ secondColor: color });
         if (this.props.onSecondColorChange) {
             this.props.onSecondColorChange(color);
         }
         this.hidePanel();
-    }
+    };
 
-    showPanel() {
+    showPanel = () => {
         this.setState({ panelVisible: true });
-    }
+    };
 
-    hidePanel() {
+    hidePanel = () => {
         this.setState({ panelVisible: false, secondPanelVisible: false });
-    }
+    };
 
-    togglePanel() {
+    togglePanel = () => {
         this.setState({ panelVisible: !this.state.panelVisible });
-    }
+    };
 
-    toggleSecondPanel() {
+    toggleSecondPanel = () => {
         this.setState({ secondPanelVisible: !this.state.secondPanelVisible });
-    }
+    };
 
     shouldComponentUpdate(nextProps, nextState) {
         return this.state !== nextState;
@@ -1612,13 +1575,11 @@ class Swatches extends Component {
         this.bwColors = [['#000000', '#AAAAAA', '#FFFFFF']];
 
         this.sunlightColors = this.colors.map((list) => list.map((item) => this.sunlightColorMap[item]));
-
-        this.onColorTypeChange = this.onColorTypeChange.bind(this);
     }
 
-    onColorTypeChange(colorType) {
+    onColorTypeChange = (colorType) => {
         this.setState({ sunny: parseInt(colorType, 10) === 1 });
-    }
+    };
 
     render() {
         return (
@@ -1696,17 +1657,11 @@ SwatchRows.propTypes = {
  * @type {[type]}
  */
 class SwatchItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onClickHandler = this.onClickHandler.bind(this);
-    }
-
-    onClickHandler() {
+    onClickHandler = () => {
         if (this.props.color) {
             this.props.onClick(this.props.color);
         }
-    }
+    };
 
     render() {
         let style = {};
@@ -2055,9 +2010,6 @@ class ColorPresets extends Component {
             presetName: '',
         };
 
-        this.onAddClick = this.onAddClick.bind(this);
-        this.storePresets = this.storePresets.bind(this);
-
         this.storePresets();
     }
 
@@ -2067,22 +2019,22 @@ class ColorPresets extends Component {
         });
     }
 
-    storePresets() {
+    storePresets = () => {
         let newPresets = { ...this.state.presets };
         Object.keys(this.defaultPresets).forEach((key) => delete newPresets[key]);
         this.props.storePresets(newPresets);
-    }
+    };
 
-    onClick(preset, e) {
-        if (confirm(`Apply preset ${preset}?`)) {
+    onClick = (preset, e) => {
+        if (confirm(`Apply preset '${preset}'?`)) {
             if (this.props.onSelect) {
                 this.props.onSelect(this.state.presets[preset]);
             }
         }
         e.stopPropagation();
-    }
+    };
 
-    onAddClick(name) {
+    onAddClick = (name) => {
         if (Object.keys(this.defaultPresets).indexOf(name) !== -1) {
             alert(`You can't replace default '${name}' preset. Choose a different name :)`);
             return;
@@ -2101,17 +2053,17 @@ class ColorPresets extends Component {
         let presets = { ...this.state.presets, ...{ [name]: this.props.colors } };
         this.setState({ presets: presets, presetName: '' });
         window.setTimeout(this.storePresets, 0);
-    }
+    };
 
-    onRemoveClick(name, e) {
-        if (confirm(`Remove the preset ${name}?`)) {
+    onRemoveClick = (name, e) => {
+        if (confirm(`Remove the preset '${name}'?`)) {
             let presets = { ...this.state.presets };
             delete presets[name];
             this.setState({ presets: presets });
             window.setTimeout(this.storePresets, 0);
         }
         e.stopPropagation();
-    }
+    };
 
     onTextChange = (text) => {
         this.setState({
@@ -2170,38 +2122,73 @@ class DonateButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: 'Donate',
+            text: `Donate (via ${this.props.service})`,
         };
-        this.changeText = this.changeText.bind(this);
     }
 
-    changeText() {
+    changeText = () => {
         this.setState({
-            text: 'Redirecting to paypal...',
+            text: `Redirecting to ${this.props.service}...`,
         });
-    }
+    };
+
+    renderButton = () => {
+        return (
+            <input
+                type="submit"
+                value={this.state.text}
+                onClick={this.changeText}
+                id="donateBtn"
+                className="btn btn-success btn--donate"
+            />
+        );
+    };
 
     render() {
         return (
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_s-xclick" />
-                <input
-                    type="hidden"
-                    name="encrypted"
-                    value="-----BEGIN PKCS7-----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-----END PKCS7-----"
-                />
-                <input
-                    type="submit"
-                    value={this.state.text}
-                    onClick={this.changeText}
-                    id="donateBtn"
-                    className="btn btn-success btn-sm btn--donate"
-                />
-                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-            </form>
+            <div>
+                {this.props.service === 'PayPal' && (
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                        <input type="hidden" name="cmd" value="_s-xclick" />
+                        <input
+                            type="hidden"
+                            name="encrypted"
+                            value="-----BEGIN PKCS7-----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-----END PKCS7-----"
+                        />
+                        {this.renderButton()}
+                        <img
+                            alt=""
+                            border="0"
+                            src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif"
+                            width="1"
+                            height="1"
+                        />
+                    </form>
+                )}
+                {this.props.service === 'SquareCash' && (
+                    <form action="https://cash.me/$lbento" method="get" target="_top">
+                        {this.renderButton()}
+                    </form>
+                )}
+                {this.props.service === 'Venmo' && (
+                    <form
+                        action="https://venmo.com/?txn=pay&note=Supporting%20Timeboxed&recipients=lbento"
+                        method="get"
+                        target="_top">
+                        <input type="hidden" name="txn" value="pay" />
+                        <input type="hidden" name="note" value="Supporting Timeboxed" />
+                        <input type="hidden" name="recipients" value="lbento" />
+                        {this.renderButton()}
+                    </form>
+                )}
+            </div>
         );
     }
 }
+
+DonateButton.propTypes = {
+    service: PropTypes.string.isRequired,
+};
 
 /**
  * DropdownField component.
@@ -2219,15 +2206,14 @@ class DropdownField extends React.Component {
                     ? props.selectedItem
                     : props.clearable ? null : props.options[0].value,
         };
-        this.onChange = this.onChange.bind(this);
     }
 
-    onChange(value) {
+    onChange = (value) => {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
         this.setState({ selectedItem: value ? value.value : null });
-    }
+    };
 
     componentWillReceiveProps(nextProps) {
         this.setState({ selectedItem: nextProps.selectedItem });
@@ -2384,12 +2370,12 @@ class TabContainer extends Component {
         };
     }
 
-    onClick(selected) {
+    onClick = (selected) => {
         this.setState({ selectedTab: selected });
         if (this.props.onChange) {
             this.props.onChange(selected);
         }
-    }
+    };
 
     componentWillReceiveProps(nextProps) {
         if (Object.keys(nextProps.tabs).length - 1 < this.state.selectedTab) {
@@ -2438,12 +2424,18 @@ TabContainer.defaultProps = {};
  * @type {[type]}
  */
 class TextField extends Component {
-    constructor(props) {
-        super(props);
+    onChange = (e) => {
+        let value = e.target.value;
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+    };
 
-        this.onChange = this.onChange.bind(this);
-        this.onButtonClick = this.onButtonClick.bind(this);
-    }
+    onButtonClick = () => {
+        if (this.props.onButtonClick) {
+            this.props.onButtonClick(this.props.value);
+        }
+    };
 
     render() {
         return (
@@ -2468,19 +2460,6 @@ class TextField extends Component {
                 </div>
             </Field>
         );
-    }
-
-    onChange(e) {
-        let value = e.target.value;
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
-    }
-
-    onButtonClick() {
-        if (this.props.onButtonClick) {
-            this.props.onButtonClick(this.props.value);
-        }
     }
 }
 
@@ -2508,8 +2487,21 @@ class ToggleField extends React.Component {
     constructor(props) {
         super(props);
         this.state = { checked: !!props.checked };
-        this.toggleCheckbox = this.toggleCheckbox.bind(this);
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.checked !== nextProps.checked) {
+            this.toggleCheckbox({ target: { checked: !!nextProps.checked } });
+        }
+    }
+
+    toggleCheckbox = (e) => {
+        let value = !!e.target.checked;
+        this.setState({ checked: value });
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+    };
 
     render() {
         return (
@@ -2521,20 +2513,6 @@ class ToggleField extends React.Component {
                 </label>
             </Field>
         );
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.checked !== nextProps.checked) {
-            this.toggleCheckbox({ target: { checked: !!nextProps.checked } });
-        }
-    }
-
-    toggleCheckbox(e) {
-        let value = !!e.target.checked;
-        this.setState({ checked: value });
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
     }
 }
 
@@ -2616,6 +2594,13 @@ class RadioButtonGroup extends React.Component {
         };
     }
 
+    toggleButton = (index) => {
+        this.setState({ selectedItem: index });
+        if (this.props.onChange) {
+            this.props.onChange(index);
+        }
+    };
+
     render() {
         return (
             <Field fieldName={this.props.fieldName} label={this.props.label} labelPos={this.props.labelPos}>
@@ -2642,13 +2627,6 @@ class RadioButtonGroup extends React.Component {
                 </FastClick>
             </Field>
         );
-    }
-
-    toggleButton(index) {
-        this.setState({ selectedItem: index });
-        if (this.props.onChange) {
-            this.props.onChange(index);
-        }
     }
 }
 
