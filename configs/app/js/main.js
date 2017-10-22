@@ -2084,11 +2084,17 @@ class ColorPresets extends Component {
 
     onAddClick(name) {
         if (Object.keys(this.defaultPresets).indexOf(name) !== -1) {
-            alert(`You cannot replace default ${name} preset. Choose a different name :)`);
+            alert(`You can't replace default '${name}' preset. Choose a different name :)`);
+            return;
+        }
+        if (Object.keys(this.state.presets).length >= Object.keys(this.defaultPresets).length + 10) {
+            alert(
+                'You can\'t have more than 10 custom presets. Please remove an existing preset before adding a new one.'
+            );
             return;
         }
         if (Object.keys(this.state.presets).indexOf(name) !== -1) {
-            if (!confirm(`This will replace the ${name} preset. Continue?`)) {
+            if (!confirm(`This will replace the '${name}' preset. Continue?`)) {
                 return;
             }
         }
