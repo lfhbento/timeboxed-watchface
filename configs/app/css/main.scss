@@ -141,14 +141,12 @@ body {
     display: flex;
 }
 
-.side-by-side--left {
+.side-by-side--left, .side-by-side--right {
     flex-grow: 1;
     width: 50%;
 }
 
-.side-by-side--right {
-    flex-grow: 1;
-    width: 50%;
+.side-by-side--right.label--right {
     .field-label {
         text-align: right;
     }

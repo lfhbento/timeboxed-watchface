@@ -11,6 +11,7 @@
 #include "clock.h"
 #include "accel.h"
 #include "compass.h"
+#include "crypto.h"
 
 static Window *watchface;
 
@@ -32,9 +33,19 @@ static uint32_t color_keys[] = {
     KEY_COMPASSCOLOR,
     KEY_SUNRISECOLOR,
     KEY_SUNSETCOLOR,
-    KEY_SECONDSCOLOR
+    KEY_SECONDSCOLOR,
+    KEY_CRYPTOCOLOR,
+    KEY_ALTHOURSBCOLOR,
+    KEY_CRYPTOBCOLOR,
+    KEY_CRYPTOCCOLOR,
+    KEY_CRYPTODCOLOR,
 };
-static uint8_t num_colors = 18;
+
+#if !defined PBL_PLATFORM_APLITE
+static uint8_t num_colors = 23;
+#else
+static uint8_t num_colors = 19;
+#endif
 
 static uint32_t config_keys[] = {
     KEY_WEATHER,
@@ -50,6 +61,13 @@ static uint32_t config_keys[] = {
     KEY_SHOWWRIST,
     KEY_MUTEONQUIET
 };
+
+static uint32_t string_config_keys[] = {
+    KEY_OVERRIDELOCATION
+};
+
+static uint8_t num_string_configs = 1;
+
 static uint32_t config_flags[] = {
     FLAG_WEATHER,
     FLAG_SLEEP,
@@ -111,6 +129,7 @@ uint8_t num_slots = 6;
 
 #if defined(PBL_HEALTH)
 static int min_count = 0;
+static int min_count_crypto = 0;
 static uint8_t health_color_keys[] = {
     KEY_STEPSCOLOR,
     KEY_STEPSBEHINDCOLOR,
@@ -205,13 +224,60 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         return;
     }
 
+    Tuple *crypto_price = dict_find(iterator, KEY_CRYPTOPRICE);
+    Tuple *crypto_price_b = dict_find(iterator, KEY_CRYPTOPRICEB);
+    Tuple *crypto_price_c = dict_find(iterator, KEY_CRYPTOPRICEC);
+    Tuple *crypto_price_d = dict_find(iterator, KEY_CRYPTOPRICED);
+
+    if (crypto_price || crypto_price_b || crypto_price_c || crypto_price_d) {
+        if (crypto_price) {
+            static char crypto_val[8];
+            char* value = crypto_price->value->cstring;
+            strcpy(crypto_val, value);
+            update_crypto_price(crypto_val);
+            store_crypto_price(crypto_val);
+        }
+
+        #if !defined PBL_PLATFORM_APLITE
+        if (crypto_price_b) {
+            static char crypto_val[8];
+            char* value = crypto_price_b->value->cstring;
+            strcpy(crypto_val, value);
+            update_crypto_price_b(crypto_val);
+            store_crypto_price_b(crypto_val);
+        }
+
+        if (crypto_price_c) {
+            static char crypto_val[8];
+            char* value = crypto_price_c->value->cstring;
+            strcpy(crypto_val, value);
+            update_crypto_price_c(crypto_val);
+            store_crypto_price_c(crypto_val);
+        }
+
+        if (crypto_price_d) {
+            static char crypto_val[8];
+            char* value = crypto_price_d->value->cstring;
+            strcpy(crypto_val, value);
+            update_crypto_price_d(crypto_val);
+            store_crypto_price_d(crypto_val);
+        }
+        #endif
+        return;
+    }
+
     int configs = 0;
     signed int tz_hour = 0;
     uint8_t tz_minute = 0;
     static char tz_name[TZ_LEN];
 
+    signed int tz_hour_b = 0;
+    uint8_t tz_minute_b = 0;
+    static char tz_name_b[TZ_LEN];
+
     Tuple *key_value = NULL;
 
+    // Timezone A
     key_value = NULL; key_value = dict_find(iterator, KEY_TIMEZONES);
     if (key_value) {
         persist_write_int(KEY_TIMEZONES, key_value->value->int8);
@@ -229,6 +295,26 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         char* tz_code = key_value->value->cstring;
         persist_write_string(KEY_TIMEZONESCODE, tz_code);
         strcpy(tz_name, tz_code);
+    }
+
+    // Timezone B
+    key_value = NULL; key_value = dict_find(iterator, KEY_TIMEZONESB);
+    if (key_value) {
+        persist_write_int(KEY_TIMEZONESB, key_value->value->int8);
+        tz_hour_b = key_value->value->int8;
+    }
+
+    key_value = NULL; key_value = dict_find(iterator, KEY_TIMEZONESBMINUTES);
+    if (key_value) {
+        persist_write_int(KEY_TIMEZONESBMINUTES, key_value->value->int8);
+        tz_minute_b = key_value->value->int8;
+    }
+
+    key_value = NULL; key_value = dict_find(iterator, KEY_TIMEZONESBCODE);
+    if (key_value) {
+        char* tz_code = key_value->value->cstring;
+        persist_write_string(KEY_TIMEZONESBCODE, tz_code);
+        strcpy(tz_name_b, tz_code);
     }
 
     // configs
@@ -275,9 +361,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     }
     #endif
 
-    key_value = NULL; key_value = dict_find(iterator, KEY_OVERRIDELOCATION);
-    if (key_value) {
-        persist_write_string(KEY_OVERRIDELOCATION, key_value->value->cstring);
+    // string configs
+    for (int i = 0; i < num_string_configs; ++i) {
+        key_value = NULL; key_value = dict_find(iterator, string_config_keys[i]);
+        if (key_value) {
+            persist_write_string(string_config_keys[i], key_value->value->cstring);
+        }
     }
 
     // slots
@@ -327,6 +416,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     persist_write_int(KEY_CONFIGS, configs);
     set_config_toggles(configs);
     set_timezone(tz_name, tz_hour, tz_minute);
+    set_timezone_b(tz_name_b, tz_hour_b, tz_minute_b);
 
     #if !defined PBL_PLATFORM_APLITE
     init_accel_service(watchface);
@@ -422,6 +512,23 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
                 update_weather(false);
             #endif
         }
+
+        if (is_crypto_enabled()) {
+            #if defined(PBL_HEALTH)
+                if (is_user_sleeping()) {
+                    min_count_crypto++;
+                    if (min_count_crypto > 90) {
+                        update_crypto(false);;
+                        min_count_crypto = 0;
+                    }
+                } else {
+                    update_crypto(false);;
+                }
+            #else
+                update_crypto(false);;
+            #endif
+        }
+
         update_time();
 
         if (!is_update_disabled() && tick_time->tm_hour == 4 && tick_time->tm_min == 0) { // updates at 4:00am

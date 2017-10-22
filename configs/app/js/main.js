@@ -16,7 +16,7 @@ import '../css/main.scss';
 /**
  * Main layout component.
  *
- * Component:Layout
+ * @@:Layout
  *
  * @type {Layout}
  */
@@ -64,20 +64,27 @@ class Layout extends Component {
             ...(this.platform !== 'diorite' ? [{ value: '15', label: 'Compass' }] : []),
             { value: '16', label: 'Seconds' },
             { value: '17', label: 'Battery level' },
+            { value: '20', label: 'Cryptocurrency price A' },
+            { value: '21', label: 'Cryptocurrency price B' },
+            { value: '22', label: 'Cryptocurrency price C' },
+            { value: '23', label: 'Cryptocurrency price D' },
         ];
 
         this.modulesAplite = this.modulesAll.filter((module) =>
-            ['0', '1', '2', '8', '11', '12', '15', '16', '17'].includes(module.value)
+            ['0', '1', '2', '8', '11', '12', '15', '16', '17', '20'].includes(module.value)
         );
 
         this.textModulesAll = [
             ...this.modulesAll.filter((module) =>
-                ['0', '3', '4', '5', '6', '7', '13', '16', '17'].includes(module.value)
+                ['0', '3', '4', '5', '6', '7', '13', '16', '17', '20', '21', '22', '23'].includes(module.value)
             ),
-            { value: '18', label: 'Alternate time zone' },
+            { value: '18', label: 'Alternate time zone A' },
+            { value: '19', label: 'Alternate time zone B' },
         ].sort((a, b) => parseInt(a.value, 10) - parseInt(b.value, 10));
 
-        this.textModulesAplite = this.textModulesAll.filter((module) => ['0', '16', '17', '18'].includes(module.value));
+        this.textModulesAplite = this.textModulesAll.filter((module) =>
+            ['0', '16', '17', '18', '20'].includes(module.value)
+        );
 
         this.timezones = allTimezones;
         this.locales = allLocales;
@@ -304,6 +311,56 @@ class Layout extends Component {
         return modules;
     };
 
+    renderCryptocurrency = (type) => {
+        type = type || '';
+        return (
+            <OptionGroup title={`Cryptocurrency price ${type || 'A'}`}>
+                <DropdownField
+                    fieldName={`cryptoMarket${type}`}
+                    label={'Market'}
+                    options={cryptoMarkets}
+                    searchable={false}
+                    clearable={false}
+                    selectedItem={this.state[`cryptoMarket${type}`]}
+                    onChange={this.onChangeDropdown.bind(this, `cryptoMarket${type}`)}
+                />
+                <SideBySideFields align={false}>
+                    <TextField
+                        fieldName={`cryptoFrom${type}`}
+                        label="Currency"
+                        value={this.state[`cryptoFrom${type}`]}
+                        onChange={this.onChange.bind(this, `cryptoFrom${type}`)}
+                        placeholder="BTC"
+                    />
+                    <TextField
+                        fieldName={`cryptoTo${type}`}
+                        label="Show price in"
+                        value={this.state[`cryptoTo${type}`]}
+                        onChange={this.onChange.bind(this, `cryptoTo${type}`)}
+                        placeholder="USD"
+                    />
+                </SideBySideFields>
+            </OptionGroup>
+        );
+    };
+
+    renderAlternateTimezone = (type) => {
+        type = type || '';
+        return (
+            <OptionGroup title={`Alternate Timezone ${type || 'A'}`}>
+                <DropdownField
+                    fieldName={`timezones${type}`}
+                    label={'Additional Timezone'}
+                    options={this.timezones}
+                    searchable={true}
+                    clearable={false}
+                    selectedItem={this.state[`timezones${type}`]}
+                    onChange={this.onChangeDropdown.bind(this, `timezones${type}`)}
+                />
+            </OptionGroup>
+        );
+    };
+
     render() {
         let state = this.state;
         return (
@@ -451,19 +508,9 @@ class Layout extends Component {
                     )}
                 </OptionGroup>
 
-                {this.isEnabled(['18']) && (
-                    <OptionGroup title={'Alternate Timezone'}>
-                        <DropdownField
-                            fieldName="timezones"
-                            label={'Additional Timezone'}
-                            options={this.timezones}
-                            searchable={true}
-                            clearable={false}
-                            selectedItem={state.timezones}
-                            onChange={this.onChangeDropdown.bind(this, 'timezones')}
-                        />
-                    </OptionGroup>
-                )}
+                {this.isEnabled(['18']) && this.renderAlternateTimezone()}
+
+                {this.isEnabled(['19']) && this.renderAlternateTimezone('B')}
 
                 <OptionGroup title={'Localization'}>
                     <DropdownField
@@ -533,9 +580,17 @@ class Layout extends Component {
                             {this.isEnabled(['18']) && (
                                 <ColorPicker
                                     fieldName="altHoursColor"
-                                    label={'Alternate timezone color'}
+                                    label={'Alternate timezone A color'}
                                     color={state.altHoursColor}
                                     onChange={this.onChange.bind(this, 'altHoursColor')}
+                                />
+                            )}
+                            {this.isEnabled(['19']) && (
+                                <ColorPicker
+                                    fieldName="altHoursBColor"
+                                    label={'Alternate timezone B color'}
+                                    color={state.altHoursBColor}
+                                    onChange={this.onChange.bind(this, 'altHoursBColor')}
                                 />
                             )}
                             {this.isEnabled(['17']) && (
@@ -695,6 +750,38 @@ class Layout extends Component {
                                     onChange={this.onChange.bind(this, 'secondsColor')}
                                 />
                             )}
+                            {this.isEnabled(['20']) && (
+                                <ColorPicker
+                                    fieldName="cryptoColor"
+                                    label={'Cryptocurrency price A color'}
+                                    color={state.cryptoColor}
+                                    onChange={this.onChange.bind(this, 'cryptoColor')}
+                                />
+                            )}
+                            {this.isEnabled(['21']) && (
+                                <ColorPicker
+                                    fieldName="cryptoBColor"
+                                    label={'Cryptocurrency price B color'}
+                                    color={state.cryptoBColor}
+                                    onChange={this.onChange.bind(this, 'cryptoBColor')}
+                                />
+                            )}
+                            {this.isEnabled(['22']) && (
+                                <ColorPicker
+                                    fieldName="cryptoCColor"
+                                    label={'Cryptocurrency price C color'}
+                                    color={state.cryptoCColor}
+                                    onChange={this.onChange.bind(this, 'cryptoCColor')}
+                                />
+                            )}
+                            {this.isEnabled(['23']) && (
+                                <ColorPicker
+                                    fieldName="cryptoDColor"
+                                    label={'Cryptocurrency price D color'}
+                                    color={state.cryptoDColor}
+                                    onChange={this.onChange.bind(this, 'cryptoDColor')}
+                                />
+                            )}
                         </div>
                     )}
                 </OptionGroup>
@@ -810,6 +897,14 @@ class Layout extends Component {
                     </OptionGroup>
                 )}
 
+                {this.isEnabled(['20']) && this.renderCryptocurrency()}
+
+                {this.isEnabled(['21']) && this.renderCryptocurrency('B')}
+
+                {this.isEnabled(['22']) && this.renderCryptocurrency('C')}
+
+                {this.isEnabled(['23']) && this.renderCryptocurrency('D')}
+
                 <OptionGroup title={'Master Key (pmkey.xyz)'}>
                     <TextField
                         fieldName="masterKeyEmail"
@@ -832,6 +927,7 @@ class Layout extends Component {
                         {'Retrieve API keys'}
                     </button>
                 </OptionGroup>
+
                 {this.isEnabled(['14']) && (
                     <OptionGroup title={'Health'}>
                         <TextField
@@ -895,7 +991,7 @@ export default Layout;
 /**
  * APIKey component.
  *
- * Component:APIKey
+ * @@:APIKey
  *
  * @param {[type]} props
  */
@@ -919,7 +1015,7 @@ APIKey.defaultProps = {};
 /**
  * Color picker component.
  *
- * Component:ColorPicker
+ * @@:ColorPicker
  *
  * @type {ColorPicker}
  */
@@ -1019,7 +1115,7 @@ ColorPicker.defaultProps = {};
 /**
  * Swatches component.
  *
- * Component:Swatches
+ * @@:Swatches
  *
  * @type {Swatches}
  */
@@ -1157,7 +1253,7 @@ Swatches.defaultProps = {};
 /**
  * SwatchRows component.
  *
- * Component:SwatchRows
+ * @@:SwatchRows
  *
  * @param {[type]} props
  */
@@ -1190,7 +1286,7 @@ SwatchRows.propTypes = {
 /**
  * SwatchItem Component.
  *
- * Component:SwatchItem
+ * @@:SwatchItem
  *
  * @type {[type]}
  */
@@ -1222,7 +1318,7 @@ SwatchItem.propTypes = {
 /**
  * Color Presets component.
  *
- * Component:ColorPresets
+ * @@:ColorPresets
  *
  * @type {ColorPresets}
  */
@@ -1233,6 +1329,14 @@ class ColorPresets extends Component {
         const w = '#FFFFFF';
         const b = '#000000';
         const l = '#AAAAAA';
+        const m = '#555555';
+        const g = '#00AA00';
+        const o = '#FFAA00';
+        const y = '#FFFF00';
+        const r = '#FF0055';
+        const e = '#FF5500';
+        const u = '#00AAFF';
+        const d = '#0055AA';
 
         this.defaultPresets = {
             'Black and white': {
@@ -1240,6 +1344,7 @@ class ColorPresets extends Component {
                 hoursColor: w,
                 dateColor: w,
                 altHoursColor: w,
+                altHoursBColor: w,
                 batteryColor: w,
                 batteryLowColor: w,
                 bluetoothColor: w,
@@ -1268,182 +1373,212 @@ class ColorPresets extends Component {
                 heartColorOff: w,
                 compassColor: w,
                 secondsColor: w,
+                cryptoColor: w,
+                cryptoBColor: w,
+                cryptoCColor: w,
+                cryptoDColor: w,
             },
             Colorful: {
                 bgColor: '#000055',
                 hoursColor: w,
                 dateColor: '#AAFFFF',
                 altHoursColor: '#00FFFF',
+                altHoursBColor: '#00FFFF',
                 batteryColor: l,
-                batteryLowColor: '#FF5500',
-                bluetoothColor: '#FF5500',
+                batteryLowColor: e,
+                bluetoothColor: e,
                 updateColor: '#00FF00',
-                weatherColor: '#FFFF00',
-                tempColor: '#FFFF00',
+                weatherColor: y,
+                tempColor: y,
                 minColor: '#00FFFF',
-                maxColor: '#FF5500',
+                maxColor: e,
                 stepsColor: '#AAFFFF',
-                stepsBehindColor: '#FFFF00',
+                stepsBehindColor: y,
                 distColor: '#AAFFFF',
-                distBehindColor: '#FFFF00',
+                distBehindColor: y,
                 calColor: '#AAFFFF',
-                calBehindColor: '#FFFF00',
+                calBehindColor: y,
                 sleepColor: '#AAFFFF',
-                sleepBehindColor: '#FFFF00',
+                sleepBehindColor: y,
                 deepColor: '#AAFFFF',
-                deepBehindColor: '#FFFF00',
+                deepBehindColor: y,
                 windDirColor: '#55FF00',
                 windSpeedColor: '#55FF00',
-                sunriseColor: '#FFFF00',
-                sunsetColor: '#FFAA00',
+                sunriseColor: y,
+                sunsetColor: o,
                 activeColor: '#AAFFFF',
-                activeBehindColor: '#FFFF00',
+                activeBehindColor: y,
                 heartColor: '#AAFFFF',
-                heartColorOff: '#FFFF00',
-                compassColor: '#FFFF00',
+                heartColorOff: y,
+                compassColor: y,
                 secondsColor: l,
+                cryptoColor: '#AAFFFF',
+                cryptoBColor: '#AAFFFF',
+                cryptoCColor: '#AAFFFF',
+                cryptoDColor: '#AAFFFF',
             },
             'Green on black': {
                 bgColor: b,
                 hoursColor: w,
                 dateColor: '#00FF00',
-                altHoursColor: '#00AA00',
+                altHoursColor: g,
+                altHoursBColor: g,
                 batteryColor: l,
-                batteryLowColor: '#FF5500',
-                bluetoothColor: '#FF5500',
+                batteryLowColor: e,
+                bluetoothColor: e,
                 updateColor: '#00FF00',
                 weatherColor: '#00FF00',
                 tempColor: '#00FF00',
                 minColor: l,
-                maxColor: '#00AA00',
-                stepsColor: '#00AA00',
+                maxColor: g,
+                stepsColor: g,
                 stepsBehindColor: l,
-                distColor: '#00AA00',
+                distColor: g,
                 distBehindColor: l,
-                calColor: '#00AA00',
+                calColor: g,
                 calBehindColor: l,
-                sleepColor: '#00AA00',
+                sleepColor: g,
                 sleepBehindColor: l,
-                deepColor: '#00AA00',
+                deepColor: g,
                 deepBehindColor: l,
                 windDirColor: l,
                 windSpeedColor: l,
-                sunriseColor: '#00AA00',
+                sunriseColor: g,
                 sunsetColor: l,
-                activeColor: '#00AA00',
+                activeColor: g,
                 activeBehindColor: l,
-                heartColor: '#00AA00',
+                heartColor: g,
                 heartColorOff: l,
-                compassColor: '#00AA00',
+                compassColor: g,
                 secondsColor: l,
+                cryptoColor: g,
+                cryptoBColor: g,
+                cryptoCColor: g,
+                cryptoDColor: g,
             },
             'Yellow/Orange on black': {
                 bgColor: b,
                 hoursColor: w,
-                dateColor: '#FFFF00',
-                altHoursColor: '#FFAA00',
+                dateColor: y,
+                altHoursColor: o,
+                altHoursBColor: o,
                 batteryColor: l,
-                batteryLowColor: '#FF5500',
-                bluetoothColor: '#FF5500',
-                updateColor: '#FFFF00',
-                weatherColor: '#FFFF00',
-                tempColor: '#FFFF00',
+                batteryLowColor: e,
+                bluetoothColor: e,
+                updateColor: y,
+                weatherColor: y,
+                tempColor: y,
                 minColor: l,
-                maxColor: '#FFAA00',
-                stepsColor: '#FFAA00',
+                maxColor: o,
+                stepsColor: o,
                 stepsBehindColor: l,
-                distColor: '#FFAA00',
+                distColor: o,
                 distBehindColor: l,
-                calColor: '#FFAA00',
+                calColor: o,
                 calBehindColor: l,
-                sleepColor: '#FFAA00',
+                sleepColor: o,
                 sleepBehindColor: l,
-                deepColor: '#FFAA00',
+                deepColor: o,
                 deepBehindColor: l,
                 windDirColor: l,
                 windSpeedColor: l,
-                sunriseColor: '#FFAA00',
+                sunriseColor: o,
                 sunsetColor: l,
-                activeColor: '#FFAA00',
+                activeColor: o,
                 activeBehindColor: l,
-                heartColor: '#FFAA00',
+                heartColor: o,
                 heartColorOff: l,
-                compassColor: '#FFAA00',
+                compassColor: o,
                 secondsColor: l,
+                cryptoColor: o,
+                cryptoBColor: o,
+                cryptoCColor: o,
+                cryptoDColor: o,
             },
             'Blue on black': {
                 bgColor: b,
                 hoursColor: w,
                 dateColor: '#00FFFF',
-                altHoursColor: '#00AAFF',
+                altHoursColor: u,
+                altHoursBColor: u,
                 batteryColor: l,
-                batteryLowColor: '#FF5500',
-                bluetoothColor: '#FF5500',
+                batteryLowColor: e,
+                bluetoothColor: e,
                 updateColor: '#00FFFF',
                 weatherColor: '#00FFFF',
                 tempColor: '#00FFFF',
                 minColor: l,
-                maxColor: '#00AAFF',
-                stepsColor: '#00AAFF',
+                maxColor: u,
+                stepsColor: u,
                 stepsBehindColor: l,
-                distColor: '#00AAFF',
+                distColor: u,
                 distBehindColor: l,
-                calColor: '#00AAFF',
+                calColor: u,
                 calBehindColor: l,
-                sleepColor: '#00AAFF',
+                sleepColor: u,
                 sleepBehindColor: l,
-                deepColor: '#00AAFF',
+                deepColor: u,
                 deepBehindColor: l,
                 windDirColor: l,
                 windSpeedColor: l,
-                sunriseColor: '#00AAFF',
+                sunriseColor: u,
                 sunsetColor: l,
-                activeColor: '#00AAFF',
+                activeColor: u,
                 activeBehindColor: l,
-                heartColor: '#00AAFF',
+                heartColor: u,
                 heartColorOff: l,
-                compassColor: '#00AAFF',
+                compassColor: u,
                 secondsColor: l,
+                cryptoColor: u,
+                cryptoBColor: u,
+                cryptoCColor: u,
+                cryptoDColor: u,
             },
             'Red on black': {
                 bgColor: b,
                 hoursColor: w,
                 dateColor: '#FF5555',
-                altHoursColor: '#FF0055',
+                altHoursColor: r,
+                altHoursBColor: r,
                 batteryColor: l,
-                batteryLowColor: '#FFAA00',
-                bluetoothColor: '#FFAA00',
+                batteryLowColor: o,
+                bluetoothColor: o,
                 updateColor: '#FF5555',
                 weatherColor: '#FF5555',
                 tempColor: '#FF5555',
                 minColor: l,
-                maxColor: '#FF0055',
-                stepsColor: '#FF0055',
+                maxColor: r,
+                stepsColor: r,
                 stepsBehindColor: l,
-                distColor: '#FF0055',
+                distColor: r,
                 distBehindColor: l,
-                calColor: '#FF0055',
+                calColor: r,
                 calBehindColor: l,
-                sleepColor: '#FF0055',
+                sleepColor: r,
                 sleepBehindColor: l,
-                deepColor: '#FF0055',
+                deepColor: r,
                 deepBehindColor: l,
                 windDirColor: l,
                 windSpeedColor: l,
-                sunriseColor: '#FF0055',
+                sunriseColor: r,
                 sunsetColor: l,
-                activeColor: '#FF0055',
+                activeColor: r,
                 activeBehindColor: l,
-                heartColor: '#FF0055',
+                heartColor: r,
                 heartColorOff: l,
-                compassColor: '#FF0055',
+                compassColor: r,
                 secondsColor: l,
+                cryptoColor: r,
+                cryptoBColor: r,
+                cryptoCColor: r,
+                cryptoDColor: r,
             },
             'Black and white (inverted)': {
                 bgColor: w,
                 hoursColor: b,
                 dateColor: b,
                 altHoursColor: b,
+                altHoursBColor: b,
                 batteryColor: b,
                 batteryLowColor: b,
                 bluetoothColor: b,
@@ -1472,74 +1607,88 @@ class ColorPresets extends Component {
                 heartColorOff: b,
                 compassColor: b,
                 secondsColor: b,
+                cryptoColor: b,
+                cryptoBColor: b,
+                cryptoCColor: b,
+                cryptoDColor: b,
             },
             'Green on white': {
                 bgColor: w,
                 hoursColor: b,
                 dateColor: '#005500',
-                altHoursColor: '#00AA00',
-                batteryColor: '#555555',
+                altHoursColor: g,
+                altHoursBColor: g,
+                batteryColor: m,
                 batteryLowColor: '#AA0000',
                 bluetoothColor: '#AA0000',
                 updateColor: '#005500',
                 weatherColor: '#005500',
                 tempColor: '#005500',
-                minColor: '#555555',
-                maxColor: '#00AA00',
-                stepsColor: '#00AA00',
-                stepsBehindColor: '#555555',
-                distColor: '#00AA00',
-                distBehindColor: '#555555',
-                calColor: '#00AA00',
-                calBehindColor: '#555555',
-                sleepColor: '#00AA00',
-                sleepBehindColor: '#555555',
-                deepColor: '#00AA00',
-                deepBehindColor: '#555555',
-                windDirColor: '#555555',
-                windSpeedColor: '#555555',
-                sunriseColor: '#00AA00',
-                sunsetColor: '#555555',
-                activeColor: '#00AA00',
-                activeBehindColor: '#555555',
-                heartColor: '#00AA00',
-                heartColorOff: '#555555',
-                compassColor: '#00AA00',
-                secondsColor: '#555555',
+                minColor: m,
+                maxColor: g,
+                stepsColor: g,
+                stepsBehindColor: m,
+                distColor: g,
+                distBehindColor: m,
+                calColor: g,
+                calBehindColor: m,
+                sleepColor: g,
+                sleepBehindColor: m,
+                deepColor: g,
+                deepBehindColor: m,
+                windDirColor: m,
+                windSpeedColor: m,
+                sunriseColor: g,
+                sunsetColor: m,
+                activeColor: g,
+                activeBehindColor: m,
+                heartColor: g,
+                heartColorOff: m,
+                compassColor: g,
+                secondsColor: m,
+                cryptoColor: g,
+                cryptoBColor: g,
+                cryptoCColor: g,
+                cryptoDColor: g,
             },
             'Blue on white': {
                 bgColor: w,
                 hoursColor: b,
                 dateColor: '#005555',
-                altHoursColor: '#0055AA',
-                batteryColor: '#555555',
+                altHoursColor: d,
+                altHoursBColor: d,
+                batteryColor: m,
                 batteryLowColor: '#AA0000',
                 bluetoothColor: '#AA0000',
                 updateColor: '#005555',
                 weatherColor: '#005555',
                 tempColor: '#005555',
-                minColor: '#555555',
-                maxColor: '#0055AA',
-                stepsColor: '#0055AA',
-                stepsBehindColor: '#555555',
-                distColor: '#0055AA',
-                distBehindColor: '#555555',
-                calColor: '#0055AA',
-                calBehindColor: '#555555',
-                sleepColor: '#0055AA',
-                sleepBehindColor: '#555555',
-                deepColor: '#0055AA',
-                deepBehindColor: '#555555',
-                windDirColor: '#555555',
-                windSpeedColor: '#555555',
-                sunriseColor: '#0055AA',
-                sunsetColor: '#555555',
-                activeColor: '#0055AA',
-                activeBehindColor: '#555555',
-                heartColor: '#0055AA',
-                heartColorOff: '#555555',
-                compassColor: '#0055AA',
-                secondsColor: '#555555',
+                minColor: m,
+                maxColor: d,
+                stepsColor: d,
+                stepsBehindColor: m,
+                distColor: d,
+                distBehindColor: m,
+                calColor: d,
+                calBehindColor: m,
+                sleepColor: d,
+                sleepBehindColor: m,
+                deepColor: d,
+                deepBehindColor: m,
+                windDirColor: m,
+                windSpeedColor: m,
+                sunriseColor: d,
+                sunsetColor: m,
+                activeColor: d,
+                activeBehindColor: m,
+                heartColor: d,
+                heartColorOff: m,
+                compassColor: d,
+                secondsColor: m,
+                cryptoColor: d,
+                cryptoBColor: d,
+                cryptoCColor: d,
+                cryptoDColor: d,
             },
         };
 
@@ -1652,7 +1801,7 @@ ColorPresets.defaultProps = {};
 /**
  * DonateButton component.
  *
- * Component:DonateButton
+ * @@:DonateButton
  *
  * @type {[type]}
  */
@@ -1731,7 +1880,7 @@ DonateButton.propTypes = {
 /**
  * DropdownField component.
  *
- * Component:DropdownField
+ * @@:DropdownField
  *
  * @type {Object}
  */
@@ -1792,7 +1941,7 @@ DropdownField.defaultProps = {
 /**
  * Field Component
  *
- * Component:Field
+ * @@:Field
  *
  * @type {[type]}
  */
@@ -1828,7 +1977,7 @@ Field.propTypes = {
 /**
  * HelperText component
  *
- * Component:HelperText
+ * @@:HelperText
  *
  * @param {[type]} props
  */
@@ -1851,7 +2000,7 @@ HelperText.defaultProps = {};
 /**
  * OptionGroup component
  *
- * Component:OptionGroup
+ * @@:OptionGroup
  *
  * @param {[type]} props
  */
@@ -1874,7 +2023,7 @@ OptionGroup.defaultProps = {};
 /**
  * SideBySideFields component
  *
- * Component:SideBySideFields
+ * @@:SideBySideFields
  *
  * @param {[type]} props
  */
@@ -1882,13 +2031,16 @@ const SideBySideFields = (props) => {
     return (
         <div className="side-by-side">
             <div className="side-by-side--left">{props.children[0]}</div>
-            <div className="side-by-side--right">{props.children[1]}</div>
+            <div className={classnames({ 'side-by-side--right': true, 'label--right': props.align })}>
+                {props.children[1]}
+            </div>
         </div>
     );
 };
 
 SideBySideFields.propTypes = {
     children: PropTypes.any,
+    align: PropTypes.bool,
 };
 
 SideBySideFields.defaultProps = {};
@@ -1896,7 +2048,7 @@ SideBySideFields.defaultProps = {};
 /**
  * TabContainer Component
  *
- * Component:TabContainer
+ * @@:TabContainer
  *
  * @type {Object}
  */
@@ -1957,7 +2109,7 @@ TabContainer.defaultProps = {};
 /**
  * TextField Component
  *
- * Component:TextField
+ * @@:TextField
  *
  * @type {[type]}
  */
@@ -1989,6 +2141,7 @@ class TextField extends Component {
                         name={this.props.fieldName}
                         value={this.props.value}
                         onChange={this.onChange}
+                        placeholder={this.props.placeholder}
                     />
                     {this.props.buttonLabel ? (
                         <button className="btn btn-primary field-text--btn" onClick={this.onButtonClick}>
@@ -2010,6 +2163,7 @@ TextField.propTypes = {
     buttonLabel: PropTypes.string,
     onChange: PropTypes.func,
     onButtonClick: PropTypes.func,
+    placeholder: PropTypes.string,
 };
 
 TextField.defaultProps = {};
@@ -2017,7 +2171,7 @@ TextField.defaultProps = {};
 /**
  * ToggleField Component
  *
- * Component:ToggleField
+ * @@:ToggleField
  *
  * @type {Object}
  */
@@ -2068,7 +2222,7 @@ ToggleField.defaultProps = {
 /**
  * VersionIndicator Component
  *
- * Component:VersionIndicator
+ * @@:VersionIndicator
  *
  * @type {Object}
  */
@@ -2105,7 +2259,7 @@ VersionIndicator.defaultProps = {};
 /**
  * RadioButtonGroup Component
  *
- * Component:RadioButtonGroup
+ * @@:RadioButtonGroup
  *
  * @type {Object}
  */
@@ -2566,6 +2720,7 @@ const defaultState = {
     bluetoothDisconnect: true,
     update: true,
     timezones: '#|0:00',
+    timezonesB: '#|0:00',
     slotA: '1',
     slotB: '2',
     slotC: '3',
@@ -2616,7 +2771,77 @@ const defaultState = {
     wristSlotF: '17',
     openWeatherKey: '',
     presets: {},
+    cryptoFrom: '',
+    cryptoTo: '',
+    cryptoFromB: '',
+    cryptoToB: '',
+    cryptoFromC: '',
+    cryptoToC: '',
+    cryptoFromD: '',
+    cryptoToD: '',
+    cryptoMarket: 'Coinbase',
+    cryptoMarketB: 'Coinbase',
+    cryptoMarketC: 'Coinbase',
+    cryptoMarketD: 'Coinbase',
 };
+
+const cryptoMarkets = [
+    { value: 'BTC38', label: 'BTC38' },
+    { value: 'BTCC', label: 'BTCC' },
+    { value: 'BTCE', label: 'BTCE' },
+    { value: 'BTCMarkets', label: 'BTCMarkets' },
+    { value: 'BTCXIndia', label: 'BTCXIndia' },
+    { value: 'BTER', label: 'BTER' },
+    { value: 'Bit2C', label: 'Bit2C' },
+    { value: 'BitBay', label: 'BitBay' },
+    { value: 'BitMarket', label: 'BitMarket' },
+    { value: 'BitSquare', label: 'BitSquare' },
+    { value: 'Bitfinex', label: 'Bitfinex' },
+    { value: 'Bitso', label: 'Bitso' },
+    { value: 'Bitstamp', label: 'Bitstamp' },
+    { value: 'Bittrex', label: 'Bittrex' },
+    { value: 'Bleutrade', label: 'Bleutrade' },
+    { value: 'CCEDK', label: 'CCEDK' },
+    { value: 'Cexio', label: 'Cexio' },
+    { value: 'CoinCheck', label: 'CoinCheck' },
+    { value: 'Coinbase', label: 'Coinbase' },
+    { value: 'Coinfloor', label: 'Coinfloor' },
+    { value: 'Coinone', label: 'Coinone' },
+    { value: 'Coinse', label: 'Coinse' },
+    { value: 'Coinsetter', label: 'Coinsetter' },
+    { value: 'Cryptopia', label: 'Cryptopia' },
+    { value: 'Cryptsy', label: 'Cryptsy' },
+    { value: 'EtherDelta', label: 'EtherDelta' },
+    { value: 'EthexIndia', label: 'EthexIndia' },
+    { value: 'Gatecoin', label: 'Gatecoin' },
+    { value: 'Gemini', label: 'Gemini' },
+    { value: 'HitBTC', label: 'HitBTC' },
+    { value: 'Huobi', label: 'Huobi' },
+    { value: 'Korbit', label: 'Korbit' },
+    { value: 'Kraken', label: 'Kraken' },
+    { value: 'LakeBTC', label: 'LakeBTC' },
+    { value: 'Liqui', label: 'Liqui' },
+    { value: 'LiveCoin', label: 'LiveCoin' },
+    { value: 'LocalBitcoins', label: 'LocalBitcoins' },
+    { value: 'Luno', label: 'Luno' },
+    { value: 'MercadoBitcoin', label: 'MercadoBitcoin' },
+    { value: 'MonetaGo', label: 'MonetaGo' },
+    { value: 'OKCoin', label: 'OKCoin' },
+    { value: 'Paymium', label: 'Paymium' },
+    { value: 'Poloniex', label: 'Poloniex' },
+    { value: 'QuadrigaCX', label: 'QuadrigaCX' },
+    { value: 'Quoine', label: 'Quoine' },
+    { value: 'TheRockTrading', label: 'TheRockTrading' },
+    { value: 'Tidex', label: 'Tidex' },
+    { value: 'Unocoin', label: 'Unocoin' },
+    { value: 'Vaultoro', label: 'Vaultoro' },
+    { value: 'Yacuna', label: 'Yacuna' },
+    { value: 'Yobit', label: 'Yobit' },
+    { value: 'Yunbi', label: 'Yunbi' },
+    { value: 'bitFlyer', label: 'bitFlyer' },
+    { value: 'bitFlyerFX', label: 'bitFlyerFX' },
+    { value: 'itBit', label: 'itBit' },
+];
 
 const w = '#FFFFFF';
 
@@ -2625,6 +2850,7 @@ const defaultColors = {
     hoursColor: w,
     dateColor: w,
     altHoursColor: w,
+    altHoursBColor: w,
     batteryColor: w,
     batteryLowColor: w,
     bluetoothColor: w,
@@ -2653,6 +2879,10 @@ const defaultColors = {
     heartColorOff: w,
     compassColor: w,
     secondsColor: w,
+    cryptoColor: w,
+    cryptoBColor: w,
+    cryptoCColor: w,
+    cryptoDColor: w,
 };
 
 //----------------- RENDER STUFF

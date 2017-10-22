@@ -64,9 +64,15 @@ void update_weather(bool force) {
     int current_time = (int)time(NULL);
     if (force || last_update == 0 || (current_time - last_update) >= weather_interval * 60) {
         DictionaryIterator *iter;
-        app_message_outbox_begin(&iter);
-        app_message_outbox_send();
-        last_update = current_time;
+        AppMessageResult result = app_message_outbox_begin(&iter);
+        if (result == APP_MSG_OK) {
+            dict_write_uint8(iter, KEY_REQUESTWEATHER, 1);
+            result = app_message_outbox_send();
+
+            if (result == APP_MSG_OK) {
+                last_update = current_time;
+            }
+        }
     }
 }
 
@@ -247,11 +253,11 @@ void update_wind_values(int speed, int direction) {
 
 static bool get_weather_enabled() {
     bool weather_module_available =
-        is_module_enabled(MODULE_WEATHER) ||
-        is_module_enabled(MODULE_FORECAST) ||
-        is_module_enabled(MODULE_WIND) ||
-        is_module_enabled(MODULE_SUNRISE) ||
-        is_module_enabled(MODULE_SUNSET);
+        is_module_enabled_any(MODULE_WEATHER) ||
+        is_module_enabled_any(MODULE_FORECAST) ||
+        is_module_enabled_any(MODULE_WIND) ||
+        is_module_enabled_any(MODULE_SUNRISE) ||
+        is_module_enabled_any(MODULE_SUNSET);
     return is_weather_toggle_enabled() || weather_module_available;
 }
 
