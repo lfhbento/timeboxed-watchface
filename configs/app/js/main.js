@@ -37,23 +37,13 @@ class Layout extends Component {
         let newState = this.filterValidKeys(this.props.state, [...this.colorKeys, ...Object.keys(this.defaultState)]);
 
         this.moduleStateKeys = ['slotA', 'slotB', 'slotC', 'slotD', 'slotE', 'slotF'];
-        this.moduleSleepStateKeys = [
-            'sleepSlotA',
-            'sleepSlotB',
-            'sleepSlotC',
-            'sleepSlotD',
-            'sleepSlotE',
-            'sleepSlotF',
-        ];
-        this.moduleTapStateKeys = ['tapSlotA', 'tapSlotB', 'tapSlotC', 'tapSlotD', 'tapSlotE', 'tapSlotF'];
-        this.moduleWristStateKeys = [
-            'wristSlotA',
-            'wristSlotB',
-            'wristSlotC',
-            'wristSlotD',
-            'wristSlotE',
-            'wristSlotF',
-        ];
+        this.moduleSleepStateKeys = this.moduleStateKeys.map(
+            (key) => `sleep${key.slice(0).toUpperCase()}${key.slice(1)}`
+        );
+        this.moduleTapStateKeys = this.moduleStateKeys.map((key) => `tap${key.slice(0).toUpperCase()}${key.slice(1)}`);
+        this.moduleWristStateKeys = this.moduleStateKeys.map(
+            (key) => `wrist${key.slice(0).toUpperCase()}${key.slice(1)}`
+        );
 
         this.state = { ...this.defaultState, ...this.defaultColors, ...newState };
 
@@ -76,81 +66,23 @@ class Layout extends Component {
             { value: '17', label: 'Battery level' },
         ];
 
-        this.modulesAplite = [
-            { value: '0', label: 'None' },
-            { value: '1', label: 'Current Weather' },
-            { value: '2', label: 'Min/Max Temp' },
-            { value: '8', label: 'Wind dir./speed' },
-            { value: '11', label: 'Sunrise' },
-            { value: '12', label: 'Sunset' },
-            { value: '15', label: 'Compass' },
-            { value: '16', label: 'Seconds' },
-            { value: '17', label: 'Battery level' },
-        ];
+        this.modulesAplite = this.modulesAll.filter((module) =>
+            ['0', '1', '2', '8', '11', '12', '15', '16', '17'].includes(module.value)
+        );
 
         this.textModulesAll = [
-            { value: '0', label: 'None' },
-            { value: '3', label: 'Steps' },
-            { value: '4', label: 'Distance' },
-            { value: '5', label: 'Calories' },
-            { value: '6', label: 'Sleep Time' },
-            { value: '7', label: 'Deep Sleep Time' },
-            { value: '13', label: 'Active time' },
-            { value: '16', label: 'Seconds' },
-            { value: '17', label: 'Battery level' },
+            ...this.modulesAll.filter((module) =>
+                ['0', '3', '4', '5', '6', '7', '13', '16', '17'].includes(module.value)
+            ),
             { value: '18', label: 'Alternate time zone' },
-        ];
+        ].sort((a, b) => parseInt(a.value, 10) - parseInt(b.value, 10));
 
-        this.textModulesAplite = [
-            { value: '0', label: 'None' },
-            { value: '16', label: 'Seconds' },
-            { value: '17', label: 'Battery level' },
-            { value: '18', label: 'Alternate time zone' },
-        ];
+        this.textModulesAplite = this.textModulesAll.filter((module) => ['0', '16', '17', '18'].includes(module.value));
 
         this.timezones = allTimezones;
-
-        this.locales = [
-            { value: '0', label: 'English' },
-            { value: '1', label: 'Portuguese' },
-            { value: '2', label: 'French' },
-            { value: '3', label: 'German' },
-            { value: '4', label: 'Spanish' },
-            { value: '5', label: 'Italian' },
-            { value: '6', label: 'Dutch' },
-            { value: '7', label: 'Danish' },
-            { value: '8', label: 'Turkish' },
-            { value: '9', label: 'Czech' },
-            { value: '10', label: 'Polish' },
-            { value: '11', label: 'Swedish' },
-            { value: '12', label: 'Finnish' },
-            { value: '13', label: 'Slovak' },
-        ];
-
-        this.fonts = [
-            { value: '0', label: 'Blocko' },
-            { value: '1', label: 'Bloco (big)' },
-            { value: '3', label: 'Archivo' },
-            { value: '4', label: 'Din' },
-            { value: '5', label: 'Prototype' },
-            { value: '6', label: 'LECO' },
-            { value: '7', label: 'Konstruct' },
-        ];
-
-        this.dateFormatOptions = [
-            { value: '0', label: 'Day of week, month, day' },
-            { value: '1', label: 'Day of week, day, month' },
-            { value: '2', label: 'Day of week, day' },
-            { value: '3', label: 'Day, month' },
-            { value: '4', label: 'Month, day' },
-            { value: '5', label: 'Day, month (number)' },
-            { value: '6', label: 'Month (number), day' },
-            { value: '7', label: 'Day of week, day, month (number)' },
-            { value: '8', label: 'Day of week, month (number), day' },
-            { value: '9', label: 'ISO-8601 (year, month, day)' },
-            { value: '10', label: 'Week number, day, month (number)' },
-            { value: '11', label: 'Week number, month (number), day' },
-        ];
+        this.locales = allLocales;
+        this.fonts = allFonts;
+        this.dateFormatOptions = allDateOptions;
 
         this.weatherModules = ['1', '2', '8', '11', '12'];
         this.healthModules = ['3', '4', '5', '6', '7', '13', '14'];
@@ -207,9 +139,9 @@ class Layout extends Component {
 
     onSubmit = () => {
         if (
-            (this.weatherProviderSelected('0') && !this.state.openWeatherKey) ||
-            (this.weatherProviderSelected('1') && !this.state.weatherKey) ||
-            (this.weatherProviderSelected('3') && !this.state.forecastKey)
+            (this.isProviderSelected('0') && !this.state.openWeatherKey) ||
+            (this.isProviderSelected('1') && !this.state.weatherKey) ||
+            (this.isProviderSelected('3') && !this.state.forecastKey)
         ) {
             alert('Please enter a valid API key for the selected provider');
             return;
@@ -271,7 +203,7 @@ class Layout extends Component {
         );
     };
 
-    weatherProviderSelected = (index) => {
+    isProviderSelected = (index) => {
         return [index].indexOf(this.state.weatherProvider) !== -1;
     };
 
@@ -292,51 +224,39 @@ class Layout extends Component {
         });
     };
 
-    getModules = (options) => {
+    getModules = (options, mode, type) => {
         return (
             <div>
                 {options.map((item) => {
                     if (Array.isArray(item)) {
                         return (
                             <SideBySideFields>
-                                <DropdownField
-                                    fieldName={item[0].name}
-                                    label={item[0].label}
-                                    options={item[0].textOnly ? this.textModules : this.modules}
-                                    searchable={false}
-                                    clearable={false}
-                                    labelPos={item[0].labelPos}
-                                    selectedItem={this.state[item[0].slot]}
-                                    onChange={this.onChangeDropdown.bind(this, item[0].slot)}
-                                />
-                                <DropdownField
-                                    fieldName={item[1].name}
-                                    label={item[1].label}
-                                    options={item[1].textOnly ? this.textModules : this.modules}
-                                    searchable={false}
-                                    clearable={false}
-                                    labelPos={item[1].labelPos}
-                                    selectedItem={this.state[item[1].slot]}
-                                    onChange={this.onChangeDropdown.bind(this, item[1].slot)}
-                                />
+                                {this.renderModuleDropdown(item[0], mode)}
+                                {this.renderModuleDropdown(item[1], mode)}
                             </SideBySideFields>
                         );
                     } else {
-                        return (
-                            <DropdownField
-                                fieldName={item.name}
-                                label={item.label}
-                                options={item.textOnly ? this.textModules : this.modules}
-                                searchable={false}
-                                clearable={false}
-                                labelPos={item.labelPos}
-                                selectedItem={this.state[item.slot]}
-                                onChange={this.onChangeDropdown.bind(this, item.slot)}
-                            />
-                        );
+                        return this.renderModuleDropdown(item, mode);
                     }
                 })}
             </div>
+        );
+    };
+
+    renderModuleDropdown = (item, mode) => {
+        return (
+            <DropdownField
+                fieldName={mode ? `${item.name}-${mode}` : item.name}
+                label={item.label}
+                options={item.textOnly ? this.textModules : this.modules}
+                searchable={false}
+                clearable={false}
+                labelPos={item.labelPos}
+                selectedItem={
+                    this.state[mode ? `${mode}${item.slot.slice(0).toUpperCase()}${item.slot.slice(1)}` : item.slot]
+                }
+                onChange={this.onChangeDropdown.bind(this, item.slot)}
+            />
         );
     };
 
@@ -344,423 +264,41 @@ class Layout extends Component {
         let state = this.state;
 
         let modules = {
-            Default: this.getModules([
-                [
-                    {
-                        name: 't-l',
-                        label: 'Top Left',
-                        slot: 'slotA',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                    {
-                        name: 't-r',
-                        label: 'Top Right',
-                        slot: 'slotB',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                ],
-                {
-                    name: 'c-t',
-                    label: 'Center Top',
-                    slot: 'slotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom',
-                    label: 'Center Bottom',
-                    slot: 'slotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                [
-                    {
-                        name: 'b-l',
-                        label: 'Bottom Left',
-                        slot: 'slotC',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                    {
-                        name: 'b-r',
-                        label: 'Bottom Right',
-                        slot: 'slotD',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                ],
-            ]),
+            Default: this.getModules(baseModules),
         };
 
         if (state.showSleep) {
-            modules['Sleep'] = this.getModules([
-                [
-                    {
-                        name: 't-l-sleep',
-                        label: 'Top Left',
-                        slot: 'sleepSlotA',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                    {
-                        name: 't-r-sleep',
-                        label: 'Top Right',
-                        slot: 'sleepSlotB',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                ],
-                {
-                    name: 'c-t-sleep',
-                    label: 'Center Top',
-                    slot: 'sleepSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-sleep',
-                    label: 'Center Bottom',
-                    slot: 'sleepSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                [
-                    {
-                        name: 'b-l-sleep',
-                        label: 'Bottom Left',
-                        slot: 'sleepSlotC',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                    {
-                        name: 'b-r-sleep',
-                        label: 'Bottom Right',
-                        slot: 'sleepSlotD',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                ],
-            ]);
+            modules['Sleep'] = this.getModules(baseModules, 'sleep');
         }
 
         if (state.showTap) {
-            modules['Tap'] = this.getModules([
-                [
-                    {
-                        name: 't-l-tap',
-                        label: 'Top Left',
-                        slot: 'tapSlotA',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                    {
-                        name: 't-r-tap',
-                        label: 'Top Right',
-                        slot: 'tapSlotB',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                ],
-                {
-                    name: 'c-t-tap',
-                    label: 'Center Top',
-                    slot: 'tapSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-tap',
-                    label: 'Center Bottom',
-                    slot: 'tapSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                [
-                    {
-                        name: 'b-l-tap',
-                        label: 'Bottom Left',
-                        slot: 'tapSlotC',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                    {
-                        name: 'b-r-tap',
-                        label: 'Bottom Right',
-                        slot: 'tapSlotD',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                ],
-            ]);
+            modules['Tap'] = this.getModules(baseModules, 'tap');
         }
 
         if (state.showWrist) {
-            modules['Shake'] = this.getModules([
-                [
-                    {
-                        name: 't-l-wrist',
-                        label: 'Top Left',
-                        slot: 'wristSlotA',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                    {
-                        name: 't-r-wrist',
-                        label: 'Top Right',
-                        slot: 'wristSlotB',
-                        textOnly: false,
-                        labelPos: 'top',
-                    },
-                ],
-                {
-                    name: 'c-t-wrist',
-                    label: 'Center Top',
-                    slot: 'wristSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-wrist',
-                    label: 'Center Bottom',
-                    slot: 'wristSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                [
-                    {
-                        name: 'b-l-wrist',
-                        label: 'Bottom Left',
-                        slot: 'wristSlotC',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                    {
-                        name: 'b-r-wrist',
-                        label: 'Bottom Right',
-                        slot: 'wristSlotD',
-                        textOnly: false,
-                        labelPos: 'bottom',
-                    },
-                ],
-            ]);
+            modules['Shake'] = this.getModules(baseModules, 'shake');
         }
 
         return modules;
-    };
-
-    getModulesRound = (options) => {
-        return (
-            <div>
-                {options.map((item) => {
-                    return (
-                        <DropdownField
-                            key={item.label}
-                            fieldName={item.name}
-                            label={item.label}
-                            options={item.textOnly ? this.textModules : this.modules}
-                            searchable={false}
-                            clearable={false}
-                            labelPos={item.labelPos}
-                            selectedItem={this.state[item.slot]}
-                            onChange={this.onChangeDropdown.bind(this, item.slot)}
-                        />
-                    );
-                })}
-            </div>
-        );
     };
 
     getEnabledModulesRound = () => {
         let state = this.state;
 
         let modules = {
-            Default: this.getModulesRound([
-                {
-                    name: 't-l',
-                    label: 'Top 1',
-                    slot: 'slotA',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 't-r',
-                    label: 'Top 2',
-                    slot: 'slotB',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'c-t',
-                    label: 'Center top',
-                    slot: 'slotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom',
-                    label: 'Center bottom',
-                    slot: 'slotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-l',
-                    label: 'Bottom 1',
-                    slot: 'slotC',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-r',
-                    label: 'Bottom 2',
-                    slot: 'slotD',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-            ]),
+            Default: this.getModules(baseModulesRound),
         };
 
         if (state.showSleep) {
-            modules['Sleep'] = this.getModulesRound([
-                {
-                    name: 't-l-sleep',
-                    label: 'Top 1',
-                    slot: 'sleepSlotA',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 't-r-sleep',
-                    label: 'Top 2',
-                    slot: 'sleepSlotB',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'c-t-sleep',
-                    label: 'Center top',
-                    slot: 'sleepSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-sleep',
-                    label: 'Center bottom',
-                    slot: 'sleepSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-l-sleep',
-                    label: 'Bottom 1',
-                    slot: 'sleepSlotC',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-r-sleep',
-                    label: 'Bottom 2',
-                    slot: 'sleepSlotD',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-            ]);
+            modules['Sleep'] = this.getModules(baseModulesRound, 'sleep');
         }
 
         if (state.showTap) {
-            modules['Tap'] = this.getModulesRound([
-                {
-                    name: 't-l-tap',
-                    label: 'Top 1',
-                    slot: 'tapSlotA',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 't-r-tap',
-                    label: 'Top 2',
-                    slot: 'tapSlotB',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'c-t-tap',
-                    label: 'Center top',
-                    slot: 'tapSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-tap',
-                    label: 'Center bottom',
-                    slot: 'tapSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-l-tap',
-                    label: 'Bottom 1',
-                    slot: 'tapSlotC',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-r-tap',
-                    label: 'Bottom 2',
-                    slot: 'tapSlotD',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-            ]);
+            modules['Tap'] = this.getModules(baseModulesRound, 'tap');
         }
 
         if (state.showWrist) {
-            modules['Shake'] = this.getModulesRound([
-                {
-                    name: 't-l-wrist',
-                    label: 'Top 1',
-                    slot: 'wristSlotA',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 't-r-wrist',
-                    label: 'Top 2',
-                    slot: 'wristSlotB',
-                    textOnly: false,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'c-t-wrist',
-                    label: 'Center top',
-                    slot: 'wristSlotE',
-                    textOnly: true,
-                    labelPos: 'top',
-                },
-                {
-                    name: 'center-bottom-wrist',
-                    label: 'Center bottom',
-                    slot: 'wristSlotF',
-                    textOnly: true,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-l-wrist',
-                    label: 'Bottom 1',
-                    slot: 'wristSlotC',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-                {
-                    name: 'b-r-wrist',
-                    label: 'Bottom 2',
-                    slot: 'wristSlotD',
-                    textOnly: false,
-                    labelPos: 'bottom',
-                },
-            ]);
+            modules['Shake'] = this.getModules(baseModulesRound, 'shake');
         }
 
         return modules;
@@ -1187,7 +725,7 @@ class Layout extends Component {
                             onChange={this.onChangeDropdown.bind(this, 'weatherProvider')}
                         />
 
-                        {this.weatherProviderSelected('0') && (
+                        {this.isProviderSelected('0') && (
                             <APIKey
                                 keyName="openWeatherKey"
                                 value={state.openWeatherKey}
@@ -1197,7 +735,7 @@ class Layout extends Component {
                                 }
                             />
                         )}
-                        {this.weatherProviderSelected('1') && (
+                        {this.isProviderSelected('1') && (
                             <APIKey
                                 keyName="weatherKey"
                                 value={state.weatherKey}
@@ -1207,7 +745,7 @@ class Layout extends Component {
                                 }
                             />
                         )}
-                        {this.weatherProviderSelected('3') && (
+                        {this.isProviderSelected('3') && (
                             <APIKey
                                 keyName="forecastKey"
                                 value={state.forecastKey}
@@ -2540,34 +2078,19 @@ class VersionIndicator extends React.Component {
 
         this.state = {
             version: getCurrentVersion(),
-            latest: getCurrentVersion(),
-            hasUpdate: false,
         };
-        this.onClick = this.onClick.bind(this);
     }
 
-    componentWillMount() {
-        checkForUpdates((hasUpdate, newVersion) => {
-            if (hasUpdate) {
-                this.setState({
-                    hasUpdate,
-                    latest: newVersion,
-                });
-            }
-        });
-    }
-
-    onClick() {
+    onClick = () => {
         if (this.props.onClick) {
             this.props.onClick();
         }
-    }
+    };
 
     render() {
         return (
             <span className="version" onClick={this.onClick}>
                 {this.state.version ? `v${this.state.version}` : ' '}
-                {this.state.hasUpdate ? <span className="update">{`[v${this.state.latest} available]`}</span> : null}
             </span>
         );
     }
@@ -2644,12 +2167,10 @@ RadioButtonGroup.propTypes = {
 // ------------------ UTILS
 
 const getCurrentVersion = () => {
-    //return getQueryParam('v');
     return window.timeboxedVersion || getQueryParam('v');
 };
 
 const getPlatform = () => {
-    //return getQueryParam('p');
     return window.pebblePlatform || getQueryParam('p');
 };
 
@@ -2664,7 +2185,6 @@ const getConfigs = () => {
 };
 
 const getReturnUrl = () => {
-    //return decodeURIComponent(getQueryParam('return_to', 'pebblejs://close#'));
     return decodeURIComponent(window.pebbleReturnTo || 'pebblejs://close#');
 };
 
@@ -2678,27 +2198,6 @@ const getQueryParam = (variable, defaultValue) => {
         }
     }
     return defaultValue || '';
-};
-
-const checkForUpdates = (callback) => {
-    if (!getCurrentVersion()) {
-        callback(false);
-    }
-    let url = `http://pblweb.com/api/v1/version/1354d7dc-b9e5-420d-9edf-533ee2fd4520.json?current=${getCurrentVersion()}`;
-
-    fetch(url)
-        .then((response) => {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
-            }
-            return response.json();
-        })
-        .then((json) => {
-            callback(json.newer, json.version);
-        })
-        .catch(() => {
-            callback(false);
-        });
 };
 
 const providerUrls = {
@@ -2776,7 +2275,7 @@ const verifyLocation = (loc, provider, apiKey, callback = () => {}) => {
             return null;
         })
         .catch((ex) => {
-            console.log(ex.stack); // eslint-disable-line no-console
+            console.log(ex.stack);
             callback(false);
         });
 };
@@ -2924,6 +2423,142 @@ const allTimezones = [
         label: '(GMT +13) NZDT: New Zealand Daylight Time',
     },
     { value: 'wst|14:00', label: '(GMT +14) WST: Western Samoa Time' },
+];
+
+const allLocales = [
+    { value: '0', label: 'English' },
+    { value: '1', label: 'Portuguese' },
+    { value: '2', label: 'French' },
+    { value: '3', label: 'German' },
+    { value: '4', label: 'Spanish' },
+    { value: '5', label: 'Italian' },
+    { value: '6', label: 'Dutch' },
+    { value: '7', label: 'Danish' },
+    { value: '8', label: 'Turkish' },
+    { value: '9', label: 'Czech' },
+    { value: '10', label: 'Polish' },
+    { value: '11', label: 'Swedish' },
+    { value: '12', label: 'Finnish' },
+    { value: '13', label: 'Slovak' },
+];
+
+const allFonts = [
+    { value: '0', label: 'Blocko' },
+    { value: '1', label: 'Bloco (big)' },
+    { value: '3', label: 'Archivo' },
+    { value: '4', label: 'Din' },
+    { value: '5', label: 'Prototype' },
+    { value: '6', label: 'LECO' },
+    { value: '7', label: 'Konstruct' },
+];
+
+const allDateOptions = [
+    { value: '0', label: 'Day of week, month, day' },
+    { value: '1', label: 'Day of week, day, month' },
+    { value: '2', label: 'Day of week, day' },
+    { value: '3', label: 'Day, month' },
+    { value: '4', label: 'Month, day' },
+    { value: '5', label: 'Day, month (number)' },
+    { value: '6', label: 'Month (number), day' },
+    { value: '7', label: 'Day of week, day, month (number)' },
+    { value: '8', label: 'Day of week, month (number), day' },
+    { value: '9', label: 'ISO-8601 (year, month, day)' },
+    { value: '10', label: 'Week number, day, month (number)' },
+    { value: '11', label: 'Week number, month (number), day' },
+];
+
+const baseModules = [
+    [
+        {
+            name: 't-l',
+            label: 'Top Left',
+            slot: 'slotA',
+            textOnly: false,
+            labelPos: 'top',
+        },
+        {
+            name: 't-r',
+            label: 'Top Right',
+            slot: 'slotB',
+            textOnly: false,
+            labelPos: 'top',
+        },
+    ],
+    {
+        name: 'c-t',
+        label: 'Center Top',
+        slot: 'slotE',
+        textOnly: true,
+        labelPos: 'top',
+    },
+    {
+        name: 'center-bottom',
+        label: 'Center Bottom',
+        slot: 'slotF',
+        textOnly: true,
+        labelPos: 'bottom',
+    },
+    [
+        {
+            name: 'b-l',
+            label: 'Bottom Left',
+            slot: 'slotC',
+            textOnly: false,
+            labelPos: 'bottom',
+        },
+        {
+            name: 'b-r',
+            label: 'Bottom Right',
+            slot: 'slotD',
+            textOnly: false,
+            labelPos: 'bottom',
+        },
+    ],
+];
+
+const baseModulesRound = [
+    {
+        name: 't-l',
+        label: 'Top 1',
+        slot: 'slotA',
+        textOnly: false,
+        labelPos: 'top',
+    },
+    {
+        name: 't-r',
+        label: 'Top 2',
+        slot: 'slotB',
+        textOnly: false,
+        labelPos: 'top',
+    },
+    {
+        name: 'c-t',
+        label: 'Center top',
+        slot: 'slotE',
+        textOnly: true,
+        labelPos: 'top',
+    },
+    {
+        name: 'center-bottom',
+        label: 'Center bottom',
+        slot: 'slotF',
+        textOnly: true,
+        labelPos: 'bottom',
+    },
+    {
+        name: 'b-l',
+        label: 'Bottom 1',
+        slot: 'slotC',
+        textOnly: false,
+        labelPos: 'bottom',
+    },
+    {
+        name: 'b-r',
+        label: 'Bottom 2',
+        slot: 'slotD',
+        textOnly: false,
+        labelPos: 'bottom',
+    },
 ];
 
 const defaultState = {

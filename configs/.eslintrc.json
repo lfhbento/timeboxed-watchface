@@ -69,8 +69,6 @@
         "sort-imports-es6-autofix/sort-imports-es6": "warn",
         "no-loops/no-loops": "warn",
         "prefer-template": "warn",
-        "promise/no-promise-in-callback": "warn",
-        "promise/no-callback-in-promise": "warn",
         "prefer-object-spread/prefer-object-spread": "warn",
         "no-var": "error",
         "react/jsx-closing-bracket-location": [
