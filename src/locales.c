@@ -1,5 +1,4 @@
 #include <pebble.h>
-#include <ctype.h>
 #include "keys.h"
 #include "locales.h"
 #include "text.h"

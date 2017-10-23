@@ -1,6 +1,6 @@
 #ifndef __TIMEBOXED_CLOCK_
 #define __TIMEBOXED_CLOCK_
-#include <time.h>
+#include <pebble.h>
 
 void set_hours(struct tm* tick_time, char* hour_text, int hour_text_len);
 void update_time();

@@ -1,5 +1,4 @@
 #include <pebble.h>
-#include <ctype.h>
 #include "text.h"
 #include "keys.h"
 #include "configs.h"
@@ -123,6 +122,14 @@ static uint8_t heart_high;
 
 static uint8_t loaded_font;
 static bool enable_advanced;
+
+int to_upper_case(char c) {
+    if (c >= 'a' && c <= 'z') {
+        return c - 32;
+    } else {
+        return c;
+    }
+}
 
 uint8_t get_loaded_font() {
     return loaded_font;
@@ -829,7 +836,7 @@ void set_date_layer_text(char* text) {
     strcpy(date_text, text);
     if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; date_text[i]; ++i) {
-            date_text[i] = toupper((unsigned char)date_text[i]);
+            date_text[i] = to_upper_case((unsigned char)date_text[i]);
         }
     }
     set_text(date, date_text);
@@ -920,7 +927,7 @@ void set_dist_layer_text(char* text) {
     strcpy(dist_text, text);
     if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; dist_text[i]; ++i) {
-            dist_text[i] = toupper((unsigned char)dist_text[i]);
+            dist_text[i] = to_upper_case((unsigned char)dist_text[i]);
         }
     }
     set_text(dist, dist_text);
@@ -930,7 +937,7 @@ void set_cal_layer_text(char* text) {
     strcpy(cal_text, text);
     if (loaded_font == LECO_FONT) {
         for (unsigned char i = 0; cal_text[i]; ++i) {
-            cal_text[i] = toupper((unsigned char)cal_text[i]);
+            cal_text[i] = to_upper_case((unsigned char)cal_text[i]);
         }
     }
     set_text(cal, cal_text);
@@ -940,7 +947,7 @@ void set_sleep_layer_text(char* text) {
     strcpy(sleep_text, text);
     if (loaded_font == LECO_FONT) {
         for (unsigned char i = 0; sleep_text[i]; ++i) {
-            sleep_text[i] = toupper((unsigned char)sleep_text[i]);
+            sleep_text[i] = to_upper_case((unsigned char)sleep_text[i]);
         }
     }
     set_text(sleep, sleep_text);
@@ -950,7 +957,7 @@ void set_deep_layer_text(char* text) {
     strcpy(deep_text, text);
     if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; deep_text[i]; ++i) {
-            deep_text[i] = toupper((unsigned char)deep_text[i]);
+            deep_text[i] = to_upper_case((unsigned char)deep_text[i]);
         }
     }
     set_text(deep, deep_text);
@@ -960,7 +967,7 @@ void set_active_layer_text(char* text) {
     strcpy(active_text, text);
     if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; active_text[i]; ++i) {
-            active_text[i] = toupper((unsigned char)active_text[i]);
+            active_text[i] = to_upper_case((unsigned char)active_text[i]);
         }
     }
     set_text(active, active_text);
@@ -970,7 +977,7 @@ void set_heart_layer_text(char* text) {
     strcpy(heart_text, text);
     if (loaded_font == LECO_FONT || loaded_font == KONSTRUCT_FONT) {
         for (unsigned char i = 0; active_text[i]; ++i) {
-            active_text[i] = toupper((unsigned char)active_text[i]);
+            active_text[i] = to_upper_case((unsigned char)active_text[i]);
         }
     }
     set_text(heart, heart_text);

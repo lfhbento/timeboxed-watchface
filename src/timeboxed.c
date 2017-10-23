@@ -1,5 +1,4 @@
 #include <pebble.h>
-#include <time.h>
 #include "keys.h"
 #include "locales.h"
 #include "health.h"

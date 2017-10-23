@@ -1,6 +1,4 @@
 #include <pebble.h>
-#include <ctype.h>
-#include <time.h>
 #include "text.h"
 #include "clock.h"
 #include "locales.h"
@@ -53,7 +51,7 @@ static void update_timezone(tm* tick_time, time_t* temp_gmt, int hour, int minut
     strcat(text, code);
 
     for (unsigned char i = 0; text[i]; ++i) {
-        text[i] = toupper((unsigned char)text[i]);
+        text[i] = to_upper_case((unsigned char)text[i]);
     }
 }
 

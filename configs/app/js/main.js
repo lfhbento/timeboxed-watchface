@@ -875,7 +875,7 @@ class Layout extends Component {
                         {this.isEnabled(['1', '2']) && (
                             <ToggleField
                                 fieldName="useCelsius"
-                                label={'Use Celsius'}
+                                label={'Show temperature in Celsius (ºC)'}
                                 checked={state.useCelsius}
                                 onChange={this.onChange.bind(this, 'useCelsius')}
                             />

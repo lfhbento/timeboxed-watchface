@@ -3,6 +3,8 @@
 
 #include <pebble.h>
 
+int to_upper_case(char);
+
 void create_text_layers(Window*);
 
 void destroy_text_layers();

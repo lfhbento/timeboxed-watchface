@@ -1,5 +1,4 @@
 #include <pebble.h>
-#include <time.h>
 #include "keys.h"
 #include "text.h"
 #include "configs.h"
