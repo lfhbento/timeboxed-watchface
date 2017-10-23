@@ -511,7 +511,7 @@
     "jquery-slim": "^3.0.0",
     "js-base64": "^2.3.2",
     "node-sass": "^3.4.2",
-    "object-assign": "^4.1.0",
+    "object-assign": "^4.1.1",
     "postcss-loader": "^0.9.1",
     "preact": "^8.2.5",
     "preact-compat": "^3.17.0",

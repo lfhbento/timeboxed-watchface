@@ -1,3 +1,7 @@
+/* eslint-disable sort-imports-es6-autofix/sort-imports-es6 */
+import objectAssign from 'object-assign';
+Object.assign = Object.assign || objectAssign;
+
 import Dropdown from 'react-dropdown';
 import FastClick from 'react-fastclick-alt';
 import LZString from './util/lz-string';
@@ -7,7 +11,6 @@ import Toggle from 'react-toggle';
 import classnames from 'classnames';
 import fetch from 'isomorphic-fetch';
 
-/* eslint-disable sort-imports-es6-autofix/sort-imports-es6 */
 import 'react-dropdown/style.css';
 import 'react-toggle/style.css';
 import '../css/main.scss';
@@ -70,20 +73,22 @@ class Layout extends Component {
             { value: '23', label: 'Cryptocurrency D' },
         ];
 
-        this.modulesAplite = this.modulesAll.filter((module) =>
-            ['0', '1', '2', '8', '11', '12', '15', '16', '17', '20'].includes(module.value)
+        this.modulesAplite = this.modulesAll.filter(
+            (module) => ['0', '1', '2', '8', '11', '12', '15', '16', '17', '20'].indexOf(module.value) !== -1
         );
 
         this.textModulesAll = [
-            ...this.modulesAll.filter((module) =>
-                ['0', '3', '4', '5', '6', '7', '13', '16', '17', '20', '21', '22', '23'].includes(module.value)
+            ...this.modulesAll.filter(
+                (module) =>
+                    ['0', '3', '4', '5', '6', '7', '13', '16', '17', '20', '21', '22', '23'].indexOf(module.value) !==
+                    -1
             ),
             { value: '18', label: 'Alternate time zone A' },
             { value: '19', label: 'Alternate time zone B' },
         ].sort((a, b) => parseInt(a.value, 10) - parseInt(b.value, 10));
 
-        this.textModulesAplite = this.textModulesAll.filter((module) =>
-            ['0', '16', '17', '18', '20'].includes(module.value)
+        this.textModulesAplite = this.textModulesAll.filter(
+            (module) => ['0', '16', '17', '18', '20'].indexOf(module.value) !== -1
         );
 
         this.timezones = allTimezones;
@@ -2944,45 +2949,38 @@ const defaultColors = {
 
 //----------------- RENDER STUFF
 
-try {
-    const onSubmit = (data) => {
-        document.location = getReturnUrl() + LZString.compressToBase64(JSON.stringify(formatDataToSend(data)));
-    };
+const onSubmit = (data) => {
+    document.location = getReturnUrl() + LZString.compressToBase64(JSON.stringify(formatDataToSend(data)));
+};
 
-    const getStoredData = (source) => {
-        return Object.keys(source).reduce((data, key) => {
-            let value = source[key] === undefined ? '' : source[key];
+const getStoredData = (source) => {
+    return Object.keys(source).reduce((data, key) => {
+        let value = source[key] === undefined ? '' : source[key];
 
-            value = value === 'true' || value === 'false' ? JSON.parse(value) : value;
-            value = typeof value === 'string' && value.indexOf('0x') !== -1 ? value.replace('0x', '#') : value;
+        value = value === 'true' || value === 'false' ? JSON.parse(value) : value;
+        value = typeof value === 'string' && value.indexOf('0x') !== -1 ? value.replace('0x', '#') : value;
 
-            return Object.assign(data, { [key]: value });
-        }, {});
-    };
+        return { ...data, [key]: value };
+    }, {});
+};
 
-    const getStoredDataFromParams = () => {
-        let config = getConfigs();
-        config = config ? JSON.parse(config) : {};
-        return getStoredData(config);
-    };
-    const formatDataToSend = (data) => {
-        let newData = Object.keys(data).reduce((items, key) => {
-            items[key] = data[key];
+const getStoredDataFromParams = () => {
+    let config = getConfigs();
+    config = config ? JSON.parse(config) : {};
+    return getStoredData(config);
+};
+const formatDataToSend = (data) => {
+    let newData = Object.keys(data).reduce((items, key) => {
+        items[key] = data[key];
 
-            if (key.indexOf('Color') !== -1) {
-                items[key] = items[key].replace('#', '0x');
-            }
+        if (key.indexOf('Color') !== -1) {
+            items[key] = items[key].replace('#', '0x');
+        }
 
-            return items;
-        }, {});
+        return items;
+    }, {});
 
-        return newData;
-    };
+    return newData;
+};
 
-    ReactDOM.render(
-        <Layout onSubmit={onSubmit} state={getStoredDataFromParams()} />,
-        document.getElementById('content')
-    );
-} catch (ex) {
-    alert(ex.stack);
-}
+ReactDOM.render(<Layout onSubmit={onSubmit} state={getStoredDataFromParams()} />, document.getElementById('content'));
