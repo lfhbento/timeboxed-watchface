@@ -25,10 +25,10 @@ Pebble.addEventListener('appmessage', function(e) {
         console.log('Fetching weather info...');
         var weatherKey = localStorage.weatherKey;
         var provider = 2;
-        var useCelsius = localStorage.useCelsius || false;
+        var useCelsius = ('' + localStorage.useCelsius || 'false').toLowerCase();
         if (typeof useCelsius === 'string') {
             try {
-                useCelsius = parse(useCelsius.toLowerCase());
+                useCelsius = parse(useCelsius);
             } catch (err) {
                 console.log('error parsing useCelsius! ' + err.message);
                 useCelsius = false;
@@ -909,10 +909,10 @@ var getCryptocurrencies = function() {
         var marketB = localStorage.cryptoMarketB;
         var marketC = localStorage.cryptoMarketC;
         var marketD = localStorage.cryptoMarketD;
-        var multiA = parse(localStorage.cryptoMulti) || false;
-        var multiB = parse(localStorage.cryptoMultiB) || false;
-        var multiC = parse(localStorage.cryptoMultiC) || false;
-        var multiD = parse(localStorage.cryptoMultiD) || false;
+        var multiA = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
+        var multiB = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
+        var multiC = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
+        var multiD = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
 
         var data = {};
         var info = {};

@@ -28,7 +28,9 @@ void load_screen(uint8_t reload_origin, Window *watchface) {
     #endif
 
     toggle_weather(reload_origin);
+    #if !defined PBL_PLATFORM_APLITE
     toggle_crypto(reload_origin);
+    #endif
     battery_handler(battery_state_service_peek());
     bt_handler(connection_service_peek_pebble_app_connection());
     time_t temp = time(NULL);

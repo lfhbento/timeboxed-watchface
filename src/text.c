@@ -38,10 +38,10 @@ static TextLayer *sunset_icon;
 static TextLayer *compass;
 static TextLayer *degrees;
 static TextLayer *seconds;
-static TextLayer *crypto;
 
 #if !defined PBL_PLATFORM_APLITE
 static TextLayer *alt_time_b;
+static TextLayer *crypto;
 static TextLayer *crypto_b;
 static TextLayer *crypto_c;
 static TextLayer *crypto_d;
@@ -98,10 +98,10 @@ static char sunset_icon_text[4];
 static char compass_text[4];
 static char degrees_text[8];
 static char seconds_text[4];
-static char crypto_text[8];
 
 #if !defined PBL_PLATFORM_APLITE
 static char alt_time_b_text[22];
+static char crypto_text[8];
 static char crypto_b_text[8];
 static char crypto_c_text[8];
 static char crypto_d_text[8];
@@ -359,6 +359,7 @@ void create_text_layers(Window* window) {
                     is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
+    #if !defined PBL_PLATFORM_APLITE
     slot = get_slot_for_module(MODULE_CRYPTO);
     if (slot != -1) {
         pos = get_pos_for_item(slot, CRYPTO_ITEM, mode, selected_font, width, height);
@@ -368,7 +369,6 @@ void create_text_layers(Window* window) {
                     is_simple_mode_enabled() || slot > 3 ? text_align : (slot % 2 == 0 ? GTextAlignmentLeft : GTextAlignmentRight)));
     }
 
-    #if !defined PBL_PLATFORM_APLITE
     slot = get_slot_for_module(MODULE_CRYPTOB);
     if (slot != -1) {
         pos = get_pos_for_item(slot, CRYPTO_ITEM, mode, selected_font, width, height);
@@ -488,9 +488,10 @@ void create_text_layers(Window* window) {
     add_text_layer(window_layer, compass);
     add_text_layer(window_layer, degrees);
     add_text_layer(window_layer, seconds);
-    add_text_layer(window_layer, crypto);
+
     #if !defined PBL_PLATFORM_APLITE
     add_text_layer(window_layer, alt_time_b);
+    add_text_layer(window_layer, crypto);
     add_text_layer(window_layer, crypto_b);
     add_text_layer(window_layer, crypto_c);
     add_text_layer(window_layer, crypto_d);
@@ -553,12 +554,12 @@ void destroy_text_layers() {
     degrees = NULL;
     delete_text_layer(seconds);
     seconds = NULL;
-    delete_text_layer(crypto);
-    crypto = NULL;
 
     #if !defined PBL_PLATFORM_APLITE
     delete_text_layer(alt_time_b);
     alt_time_b = NULL;
+    delete_text_layer(crypto);
+    crypto = NULL;
     delete_text_layer(crypto_b);
     crypto_b = NULL;
     delete_text_layer(crypto_c);
@@ -671,10 +672,10 @@ void set_face_fonts() {
     set_text_font(compass, custom_font);
     set_text_font(degrees, base_font);
     set_text_font(seconds, base_font);
-    set_text_font(crypto, base_font);
 
     #if !defined PBL_PLATFORM_APLITE
     set_text_font(alt_time_b, base_font);
+    set_text_font(crypto, base_font);
     set_text_font(crypto_b, base_font);
     set_text_font(crypto_c, base_font);
     set_text_font(crypto_d, base_font);
@@ -794,11 +795,11 @@ void set_colors(Window *window) {
     if (is_module_enabled(MODULE_SECONDS)) {
         set_text_color(seconds, enable_advanced && persist_read_int(KEY_SECONDSCOLOR) ? GColorFromHEX(persist_read_int(KEY_SECONDSCOLOR)) : base_color);
     }
+
+    #if !defined PBL_PLATFORM_APLITE
     if (is_module_enabled(MODULE_CRYPTO)) {
         set_text_color(crypto, enable_advanced && persist_read_int(KEY_CRYPTOCOLOR) ? GColorFromHEX(persist_read_int(KEY_CRYPTOCOLOR)) : base_color);
     }
-
-    #if !defined PBL_PLATFORM_APLITE
     if (is_module_enabled(MODULE_CRYPTOB)) {
         set_text_color(crypto_b, enable_advanced && persist_read_int(KEY_CRYPTOBCOLOR) ? GColorFromHEX(persist_read_int(KEY_CRYPTOBCOLOR)) : base_color);
     }
@@ -1061,12 +1062,12 @@ void set_seconds_layer_text(char* text) {
     set_text(seconds, seconds_text);
 }
 
+#if !defined PBL_PLATFORM_APLITE
 void set_crypto_layer_text(char* text) {
     strcpy(crypto_text, text);
     set_text(crypto, crypto_text);
 }
 
-#if !defined PBL_PLATFORM_APLITE
 void set_crypto_b_layer_text(char* text) {
     strcpy(crypto_b_text, text);
     set_text(crypto_b, crypto_b_text);

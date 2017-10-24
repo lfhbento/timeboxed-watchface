@@ -906,10 +906,10 @@ GPoint get_pos_for_item(int slot, int item, int mode, int font, int width, int h
         case SECONDS_ITEM:
         case BATTERY_ITEM:
         case TIMEZONE_ITEM:
-        case CRYPTO_ITEM:
             item_pos = get_text_only_positions(mode, font, width, height);
             break;
         #if !defined PBL_PLATFORM_APLITE
+        case CRYPTO_ITEM:
         case TIMEZONEB_ITEM:
             item_pos = get_text_only_positions(mode, font, width, height);
             break;

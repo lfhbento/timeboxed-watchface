@@ -14,133 +14,6 @@
 
 static Window *watchface;
 
-#if !defined PBL_PLATFORM_APLITE
-static uint32_t color_keys[] = {
-    KEY_BGCOLOR,
-    KEY_HOURSCOLOR,
-    KEY_ALTHOURSCOLOR,
-    KEY_DATECOLOR,
-    KEY_BLUETOOTHCOLOR,
-    KEY_UPDATECOLOR,
-    KEY_BATTERYCOLOR,
-    KEY_BATTERYLOWCOLOR,
-    KEY_TEMPCOLOR,
-    KEY_WEATHERCOLOR,
-    KEY_MINCOLOR,
-    KEY_MAXCOLOR,
-    KEY_WINDDIRCOLOR,
-    KEY_WINDSPEEDCOLOR,
-    KEY_COMPASSCOLOR,
-    KEY_SUNRISECOLOR,
-    KEY_SUNSETCOLOR,
-    KEY_SECONDSCOLOR,
-    KEY_CRYPTOCOLOR,
-    KEY_ALTHOURSBCOLOR,
-    KEY_CRYPTOBCOLOR,
-    KEY_CRYPTOCCOLOR,
-    KEY_CRYPTODCOLOR,
-};
-static uint8_t num_colors = 23;
-#else
-static uint32_t color_keys[] = {
-    KEY_BGCOLOR,
-    KEY_HOURSCOLOR,
-    KEY_ALTHOURSCOLOR,
-    KEY_DATECOLOR,
-    KEY_BLUETOOTHCOLOR,
-    KEY_UPDATECOLOR,
-    KEY_BATTERYCOLOR,
-    KEY_BATTERYLOWCOLOR,
-    KEY_TEMPCOLOR,
-    KEY_WEATHERCOLOR,
-    KEY_MINCOLOR,
-    KEY_MAXCOLOR,
-    KEY_WINDDIRCOLOR,
-    KEY_WINDSPEEDCOLOR,
-    KEY_COMPASSCOLOR,
-    KEY_SUNRISECOLOR,
-    KEY_SUNSETCOLOR,
-    KEY_SECONDSCOLOR,
-    KEY_CRYPTOCOLOR,
-};
-static uint8_t num_colors = 19;
-#endif
-
-static uint32_t config_keys[] = {
-    KEY_WEATHER,
-    KEY_SHOWSLEEP,
-    KEY_USECELSIUS,
-    KEY_ENABLEADVANCED,
-    KEY_BLUETOOTHDISCONNECT,
-    KEY_UPDATE,
-    KEY_LEADINGZERO,
-    KEY_SIMPLEMODE,
-    KEY_QUICKVIEW,
-    KEY_SHOWTAP,
-    KEY_SHOWWRIST,
-    KEY_MUTEONQUIET
-};
-
-static uint32_t config_flags[] = {
-    FLAG_WEATHER,
-    FLAG_SLEEP,
-    FLAG_CELSIUS,
-    FLAG_ADVANCED,
-    FLAG_BLUETOOTH,
-    FLAG_UPDATE,
-    FLAG_LEADINGZERO,
-    FLAG_SIMPLEMODE,
-    FLAG_QUICKVIEW,
-    FLAG_TAP,
-    FLAG_WRIST,
-    FLAG_MUTEONQUIET
-};
-static bool config_defaults[] = {
-    true,
-    true,
-    true,
-    true,
-    true,
-    false,
-    false,
-    true,
-    false,
-    true,
-    true,
-    false
-};
-static uint8_t num_configs = 12;
-
-static uint32_t int_keys[] = {
-    KEY_FONTTYPE,
-    KEY_LOCALE,
-    KEY_DATEFORMAT,
-    KEY_TEXTALIGN,
-    KEY_SPEEDUNIT,
-    KEY_WEATHERTIME,
-    KEY_DATESEPARATOR,
-    KEY_CRYPTOTIME,
-};
-static uint8_t num_int = 8;
-
-static uint32_t slot_keys[] = {
-    KEY_SLOTA,
-    KEY_SLOTB,
-    KEY_SLOTC,
-    KEY_SLOTD,
-    KEY_SLOTE,
-    KEY_SLOTF,
-};
-static uint32_t slot_values[] = {
-    SLOT_A,
-    SLOT_B,
-    SLOT_C,
-    SLOT_D,
-    SLOT_E,
-    SLOT_F,
-};
-uint8_t num_slots = 6;
-
 #if defined(PBL_HEALTH)
 static int min_count = 0;
 static int min_count_crypto = 0;
@@ -238,18 +111,14 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         return;
     }
 
-    Tuple *crypto_price = dict_find(iterator, KEY_CRYPTOPRICE);
 
     #if !defined PBL_PLATFORM_APLITE
+    Tuple *crypto_price = dict_find(iterator, KEY_CRYPTOPRICE);
     Tuple *crypto_price_b = dict_find(iterator, KEY_CRYPTOPRICEB);
     Tuple *crypto_price_c = dict_find(iterator, KEY_CRYPTOPRICEC);
     Tuple *crypto_price_d = dict_find(iterator, KEY_CRYPTOPRICED);
-    bool condition = (bool) (crypto_price || crypto_price_b || crypto_price_c || crypto_price_d);
-    #else
-    bool condition = (bool) crypto_price;
-    #endif
 
-    if (condition) {
+    if (crypto_price || crypto_price_b || crypto_price_c || crypto_price_d) {
         if (crypto_price) {
             static char crypto_val[8];
             char* value = crypto_price->value->cstring;
@@ -258,7 +127,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             store_crypto_price(crypto_val);
         }
 
-        #if !defined PBL_PLATFORM_APLITE
         if (crypto_price_b) {
             static char crypto_val[8];
             char* value = crypto_price_b->value->cstring;
@@ -282,9 +150,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             update_crypto_price_d(crypto_val);
             store_crypto_price_d(crypto_val);
         }
-        #endif
         return;
     }
+    #endif
 
     int configs = 0;
     signed int tz_hour = 0;
@@ -341,6 +209,51 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     }
     #endif
 
+    uint32_t config_keys[] = {
+        KEY_WEATHER,
+        KEY_SHOWSLEEP,
+        KEY_USECELSIUS,
+        KEY_ENABLEADVANCED,
+        KEY_BLUETOOTHDISCONNECT,
+        KEY_UPDATE,
+        KEY_LEADINGZERO,
+        KEY_SIMPLEMODE,
+        KEY_QUICKVIEW,
+        KEY_SHOWTAP,
+        KEY_SHOWWRIST,
+        KEY_MUTEONQUIET
+    };
+
+    uint32_t config_flags[] = {
+        FLAG_WEATHER,
+        FLAG_SLEEP,
+        FLAG_CELSIUS,
+        FLAG_ADVANCED,
+        FLAG_BLUETOOTH,
+        FLAG_UPDATE,
+        FLAG_LEADINGZERO,
+        FLAG_SIMPLEMODE,
+        FLAG_QUICKVIEW,
+        FLAG_TAP,
+        FLAG_WRIST,
+        FLAG_MUTEONQUIET
+    };
+    bool config_defaults[] = {
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false
+    };
+    uint8_t num_configs = 12;
+
     // configs
     for (int i = 0; i < num_configs; ++i) {
         key_value = NULL; key_value = dict_find(iterator, config_keys[i]);
@@ -349,6 +262,31 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         }
     }
 
+    #if !defined PBL_PLATFORM_APLITE
+    uint32_t int_keys[] = {
+        KEY_FONTTYPE,
+        KEY_LOCALE,
+        KEY_DATEFORMAT,
+        KEY_TEXTALIGN,
+        KEY_SPEEDUNIT,
+        KEY_WEATHERTIME,
+        KEY_DATESEPARATOR,
+        KEY_CRYPTOTIME,
+    };
+    uint8_t num_int = 8;
+    #else
+    uint32_t int_keys[] = {
+        KEY_FONTTYPE,
+        KEY_LOCALE,
+        KEY_DATEFORMAT,
+        KEY_TEXTALIGN,
+        KEY_SPEEDUNIT,
+        KEY_WEATHERTIME,
+        KEY_DATESEPARATOR,
+    };
+    uint8_t num_int = 7;
+    #endif
+
     // options
     for (int i = 0; i < num_int; ++i) {
         key_value = NULL; key_value = dict_find(iterator, int_keys[i]);
@@ -356,6 +294,57 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             persist_write_int(int_keys[i], key_value->value->int8);
         }
     }
+
+    #if !defined PBL_PLATFORM_APLITE
+    uint32_t color_keys[] = {
+        KEY_BGCOLOR,
+        KEY_HOURSCOLOR,
+        KEY_ALTHOURSCOLOR,
+        KEY_DATECOLOR,
+        KEY_BLUETOOTHCOLOR,
+        KEY_UPDATECOLOR,
+        KEY_BATTERYCOLOR,
+        KEY_BATTERYLOWCOLOR,
+        KEY_TEMPCOLOR,
+        KEY_WEATHERCOLOR,
+        KEY_MINCOLOR,
+        KEY_MAXCOLOR,
+        KEY_WINDDIRCOLOR,
+        KEY_WINDSPEEDCOLOR,
+        KEY_COMPASSCOLOR,
+        KEY_SUNRISECOLOR,
+        KEY_SUNSETCOLOR,
+        KEY_SECONDSCOLOR,
+        KEY_ALTHOURSBCOLOR,
+        KEY_CRYPTOCOLOR,
+        KEY_CRYPTOBCOLOR,
+        KEY_CRYPTOCCOLOR,
+        KEY_CRYPTODCOLOR,
+    };
+    uint8_t num_colors = 23;
+    #else
+    uint32_t color_keys[] = {
+        KEY_BGCOLOR,
+        KEY_HOURSCOLOR,
+        KEY_ALTHOURSCOLOR,
+        KEY_DATECOLOR,
+        KEY_BLUETOOTHCOLOR,
+        KEY_UPDATECOLOR,
+        KEY_BATTERYCOLOR,
+        KEY_BATTERYLOWCOLOR,
+        KEY_TEMPCOLOR,
+        KEY_WEATHERCOLOR,
+        KEY_MINCOLOR,
+        KEY_MAXCOLOR,
+        KEY_WINDDIRCOLOR,
+        KEY_WINDSPEEDCOLOR,
+        KEY_COMPASSCOLOR,
+        KEY_SUNRISECOLOR,
+        KEY_SUNSETCOLOR,
+        KEY_SECONDSCOLOR,
+    };
+    uint8_t num_colors = 18;
+    #endif
 
     // colors
     for (int i = 0; i < num_colors; ++i) {
@@ -389,6 +378,24 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     if (key_value) {
         persist_write_string(KEY_OVERRIDELOCATION, key_value->value->cstring);
     }
+
+    uint32_t slot_keys[] = {
+        KEY_SLOTA,
+        KEY_SLOTB,
+        KEY_SLOTC,
+        KEY_SLOTD,
+        KEY_SLOTE,
+        KEY_SLOTF,
+    };
+    uint32_t slot_values[] = {
+        SLOT_A,
+        SLOT_B,
+        SLOT_C,
+        SLOT_D,
+        SLOT_E,
+        SLOT_F,
+    };
+    uint8_t num_slots = 6;
 
     // slots
     for (int i = 0; i < num_slots; ++i) {
@@ -534,6 +541,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
             #endif
         }
 
+        #if !defined PBL_PLATFORM_APLITE
         if (is_crypto_enabled()) {
             #if defined(PBL_HEALTH)
                 if (is_user_sleeping()) {
@@ -549,6 +557,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
                 update_crypto(false);;
             #endif
         }
+        #endif
 
         update_time();
 
