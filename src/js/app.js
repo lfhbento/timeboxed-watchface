@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = '5.5';
+var currentVersion = '5.6';
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -69,7 +69,6 @@ Pebble.addEventListener('showConfiguration', function(e) {
         localStorage.configDict || LZString.compressToBase64('{}')
     );
     console.log(localStorage.configDict);
-    console.log(config);
     var settings = getSettings()
         .replace('__TIMEBOXED_CONFIGS__', encodeURIComponent(config))
         .replace(
@@ -110,7 +109,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
     var dict = {};
 
-    for (var item in configData) {
+    Object.keys(configData).forEach(function(item) {
         var key = 'KEY_' + item.toUpperCase();
         var value = configData[item];
         if (String(value).indexOf('0x') !== -1) {
@@ -126,26 +125,37 @@ Pebble.addEventListener('webviewclosed', function(e) {
             value = parseInt(newValue, 10);
         }
         if (
+            key.indexOf('SLOT') !== -1 ||
             key === 'KEY_FONTTYPE' ||
             key === 'KEY_DATEFORMAT' ||
             key === 'KEY_LOCALE' ||
             key === 'KEY_TEXTALIGN' ||
-            key === 'KEY_WEATHERPROVIDER' ||
-            key.indexOf('SLOT') !== -1 ||
             key === 'KEY_SPEEDUNIT' ||
             key === 'KEY_DATESEPARATOR' ||
-            key === 'KEY_TAPTIME' ||
-            key === 'KEY_WEATHERTIME' ||
-            key === 'KEY_CRYPTOTIME' ||
             key === 'KEY_HEARTHIGH' ||
             key === 'KEY_HEARTLOW'
         ) {
-            value = parseInt(value, 10);
+            value = parseInt(value || '0', 10);
         }
-        dict[key] = value;
-    }
 
-    localStorage.weatherEnabled = dict.KEY_ENABLEWEATHER;
+        if (
+            key === 'KEY_WEATHERTIME' ||
+            key === 'KEY_CRYPTOTIME'
+        ) {
+            value = parseInt(value || '15', 10);
+        }
+
+        if (key === 'KEY_TAPTIME') {
+            value = parseInt(value || '7', 10);
+        }
+
+        if (key === 'KEY_WEATHERPROVIDER') {
+            value = parseInt(value || '2', 10);
+        }
+
+        dict[key] = value;
+    });
+
     localStorage.useCelsius = dict.KEY_USECELSIUS;
     localStorage.weatherKey = dict.KEY_WEATHERKEY;
     localStorage.overrideLocation = dict.KEY_OVERRIDELOCATION;
@@ -164,6 +174,10 @@ Pebble.addEventListener('webviewclosed', function(e) {
     localStorage.cryptoMarketB = dict.KEY_CRYPTOMARKETB;
     localStorage.cryptoMarketC = dict.KEY_CRYPTOMARKETC;
     localStorage.cryptoMarketD = dict.KEY_CRYPTOMARKETD;
+    localStorage.cryptoMulti = dict.KEY_CRYPTOMULTI;
+    localStorage.cryptoMultiB = dict.KEY_CRYPTOMULTIB;
+    localStorage.cryptoMultiC = dict.KEY_CRYPTOMULTIC;
+    localStorage.cryptoMultiD = dict.KEY_CRYPTOMULTID;
 
     delete dict.KEY_WEATHERKEY;
     delete dict.KEY_WEATHERPROVIDER;
@@ -185,6 +199,10 @@ Pebble.addEventListener('webviewclosed', function(e) {
     delete dict.KEY_CRYPTOMARKETB;
     delete dict.KEY_CRYPTOMARKETC;
     delete dict.KEY_CRYPTOMARKETD;
+    delete dict.KEY_CRYPTOMULTI;
+    delete dict.KEY_CRYPTOMULTIB;
+    delete dict.KEY_CRYPTOMULTIC;
+    delete dict.KEY_CRYPTOMULTID;
 
     if (Pebble.getActiveWatchInfo().platform === 'aplite') {
         Object.keys(dict)
@@ -199,6 +217,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
                     value.indexOf('_CAL') !== -1 ||
                     value.indexOf('STEPS') !== -1 ||
                     value.indexOf('DIST') !== -1 ||
+                    value.indexOf('ALTHOURSBCOLOR') !== -1 ||
+                    (value.indexOf('CRYPTO') !== -1 && value.indexOf('COLOR') !== -1 && value.indexOf('CRYPTOCOLOR') === -1) ||
                     typeof dict[value] === 'undefined'
                 );
             })
@@ -208,17 +228,19 @@ Pebble.addEventListener('webviewclosed', function(e) {
     }
 
     console.log('sending');
+    console.log(JSON.stringify(dict));
     Pebble.sendAppMessage(
         dict,
-        function() {
-            console.log('Send config successful: ' + JSON.stringify(dict));
+        function(data) {
+            console.log('Send config successful: ' + JSON.stringify(data));
         },
-        function(data, e) {
+        function(data, error) {
             console.log(
                 'Send failed! ' +
                     JSON.stringify(dict) +
                     ' --> ' +
-                    JSON.stringify(data)
+                    JSON.stringify(data) +
+                    ': ' + error
             );
         }
     );
@@ -887,45 +909,29 @@ var getCryptocurrencies = function() {
         var marketB = localStorage.cryptoMarketB;
         var marketC = localStorage.cryptoMarketC;
         var marketD = localStorage.cryptoMarketD;
+        var multiA = parse(localStorage.cryptoMulti) || false;
+        var multiB = parse(localStorage.cryptoMultiB) || false;
+        var multiC = parse(localStorage.cryptoMultiC) || false;
+        var multiD = parse(localStorage.cryptoMultiD) || false;
 
         var data = {};
         var info = {};
 
         if (fromA && fromA !== 'None' && toA && toA !== 'None' && marketA && marketA !== 'None') {
             data.KEY_CRYPTOPRICE = null;
-            info.KEY_CRYPTOPRICE = {
-                url: 'https://min-api.cryptocompare.com/data/price?fsym=' + fromA + '&tsyms=' + toA + '&e=' + marketA,
-                to: toA,
-                from: fromA,
-                market: marketA
-            };
+            info.KEY_CRYPTOPRICE = { to: toA, from: fromA, market: marketA, multi: multiA };
         }
         if (fromB && fromB !== 'None' && toB && toB !== 'None' && marketB && marketB !== 'None') {
             data.KEY_CRYPTOPRICEB = null;
-            info.KEY_CRYPTOPRICEB = {
-                url: 'https://min-api.cryptocompare.com/data/price?fsym=' + fromB + '&tsyms=' + toB + '&e=' + marketB,
-                to: toB,
-                from: fromB,
-                market: marketB
-            };
+            info.KEY_CRYPTOPRICEB = { to: toB, from: fromB, market: marketB, multi: multiB };
         }
         if (fromC && fromC !== 'None' && toC && toC !== 'None' && marketC && marketC !== 'None') {
             data.KEY_CRYPTOPRICEC = null;
-            info.KEY_CRYPTOPRICEC = {
-                url: 'https://min-api.cryptocompare.com/data/price?fsym=' + fromC + '&tsyms=' + toC + '&e=' + marketC,
-                to: toC,
-                from: fromC,
-                market: marketC
-            };
+            info.KEY_CRYPTOPRICEC = { to: toC, from: fromC, market: marketC, multi: multiC };
         }
         if (fromD && fromD !== 'None' && toD && toD !== 'None' && marketD && marketD !== 'None') {
             data.KEY_CRYPTOPRICED = null;
-            info.KEY_CRYPTOPRICED = {
-                url: 'https://min-api.cryptocompare.com/data/price?fsym=' + fromD + '&tsyms=' + toD + '&e=' + marketD,
-                to: toD,
-                from: fromD,
-                market: marketD
-            };
+            info.KEY_CRYPTOPRICED = { to: toD, from: fromD, market: marketD, multi: multiD };
         }
 
         console.log(JSON.stringify(info));
@@ -964,10 +970,15 @@ var getCryptocurrencies = function() {
 
         Object.keys(info).forEach(function(key) {
             var reqInfo = info[key];
-            xhrRequest(reqInfo.url, 'GET', function(responseText) {
+            xhrRequest(
+                'https://min-api.cryptocompare.com/data/price?fsym=' + reqInfo.from + '&tsyms=' + reqInfo.to + '&e=' + reqInfo.market,
+                'GET',
+                function(responseText) {
                 console.log('Got ' + key);
                 var response = JSON.parse(responseText);
-                data[key] = formatNumber(response[reqInfo.to]);
+                data[key] = formatNumber(
+                    reqInfo.multi ? Math.round(parseFloat(response[reqInfo.to]) * 100000000) : response[reqInfo.to]
+                );
             });
         });
     } catch (ex) {

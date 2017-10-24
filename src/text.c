@@ -255,6 +255,7 @@ void create_text_layers(Window* window) {
     text_layer_set_text_alignment(update, text_align == GTextAlignmentLeft ? GTextAlignmentRight : GTextAlignmentLeft);
     layer_set_hidden(text_layer_get_layer(update), height != full_height);
 
+
     slot = get_slot_for_module(MODULE_WEATHER);
     if (slot != -1) {
         pos = get_pos_for_item(slot, WEATHER_ITEM, mode, selected_font, width, height);
@@ -350,6 +351,7 @@ void create_text_layers(Window* window) {
 
     slot = get_slot_for_module(MODULE_SECONDS);
     if (slot != -1) {
+
         pos = get_pos_for_item(slot, SECONDS_ITEM, mode, selected_font, width, height);
         seconds = text_layer_create(GRect(pos.x, pos.y, PBL_IF_ROUND_ELSE(width, slot > 3 ? width : slot_width), 50));
         text_layer_set_background_color(seconds, GColorClear);

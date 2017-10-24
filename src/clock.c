@@ -8,9 +8,11 @@
 static signed int tz_hour;
 static uint8_t tz_minute;
 static char tz_name[TZ_LEN];
+#if !defined PBL_PLATFORM_APLITE
 static signed int tz_hour_b;
 static uint8_t tz_minute_b;
 static char tz_name_b[TZ_LEN];
+#endif
 
 void set_hours(struct tm* tick_time, char* hour_text, int hour_text_len) {
     if (!is_leading_zero_disabled()) {
@@ -26,7 +28,7 @@ void set_hours(struct tm* tick_time, char* hour_text, int hour_text_len) {
     }
 }
 
-static void update_timezone(tm* tick_time, time_t* temp_gmt, int hour, int minute, char* code, char* text, int text_size) {
+static void update_timezone(struct tm* tick_time, time_t* temp_gmt, int hour, int minute, char* code, char* text, int text_size) {
     struct tm *gmt_time = gmtime(temp_gmt);
     gmt_time->tm_hour = gmt_time->tm_hour + hour;
     mktime(gmt_time);
@@ -101,11 +103,13 @@ void load_timezone_from_storage() {
         tz_hour = persist_exists(KEY_TIMEZONES) ? persist_read_int(KEY_TIMEZONES) : 0;
         tz_minute = persist_exists(KEY_TIMEZONESMINUTES) ? persist_read_int(KEY_TIMEZONESMINUTES) : 0;
     }
+    #if !defined PBL_PLATFORM_APLITE
     if (is_module_enabled(MODULE_TIMEZONEB) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESBCODE)) {
         persist_read_string(KEY_TIMEZONESBCODE, tz_name_b, sizeof(tz_name_b));
         tz_hour_b = persist_exists(KEY_TIMEZONESB) ? persist_read_int(KEY_TIMEZONESB) : 0;
         tz_minute_b = persist_exists(KEY_TIMEZONESBMINUTES) ? persist_read_int(KEY_TIMEZONESBMINUTES) : 0;
     }
+    #endif
 }
 
 void set_timezone(char *name, int hour, int minute) {
@@ -114,11 +118,13 @@ void set_timezone(char *name, int hour, int minute) {
    tz_minute = minute;
 }
 
+#if !defined PBL_PLATFORM_APLITE
 void set_timezone_b(char *name, int hour, int minute) {
    strcpy(tz_name_b, name);
    tz_hour_b = hour;
    tz_minute_b = minute;
 }
+#endif
 
 void update_seconds(struct tm* tick_time) {
     if (is_module_enabled(MODULE_SECONDS)) {

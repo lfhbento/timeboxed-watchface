@@ -5,13 +5,15 @@
 
 bool is_crypto_enabled();
 void update_crypto_price(char*);
+#if !defined PBL_PLATFORM_APLITE
 void update_crypto_price_b(char*);
 void update_crypto_price_c(char*);
 void update_crypto_price_d(char*);
+#endif
 void toggle_crypto(uint8_t);
 void store_crypto_price(char*);
-void store_crypto_price_b(char*);
 #if !defined PBL_PLATFORM_APLITE
+void store_crypto_price_b(char*);
 void store_crypto_price_c(char*);
 void store_crypto_price_d(char*);
 #endif

@@ -40,7 +40,7 @@ void update_crypto(bool force) {
                 last_update = current_time;
             }
         } else if (force) {
-            retry_timer = app_timer_register(5000, retry_handler, NULL);
+            retry_timer = app_timer_register(2000, retry_handler, NULL);
         }
     }
 }

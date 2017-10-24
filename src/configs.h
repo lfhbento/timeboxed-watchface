@@ -5,7 +5,6 @@
 void set_config_toggles(int);
 int get_config_toggles();
 bool is_module_enabled(int);
-bool is_module_enabled_any(int);
 int get_slot_for_module(int);
 
 void set_module(int, int, int);

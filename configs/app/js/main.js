@@ -371,6 +371,12 @@ class Layout extends Component {
                         labelPos="top"
                     />
                 </SideBySideFields>
+                <ToggleField
+                    fieldName={`cryptoMulti${type}`}
+                    label={'Multiply value by 10^8 (display in Satoshis)'}
+                    checked={this.state[`cryptoMulti${type}`]}
+                    onChange={this.onChange.bind(this, `cryptoMulti${type}`)}
+                />
             </div>
         );
     };
@@ -2838,6 +2844,10 @@ const defaultState = {
     cryptoMarketC: 'Coinbase',
     cryptoMarketD: 'Coinbase',
     cryptoTime: '15',
+    cryptoMulti: false,
+    cryptoMultiB: false,
+    cryptoMultiC: false,
+    cryptoMultiD: false,
 };
 
 const cryptoMarkets = [
