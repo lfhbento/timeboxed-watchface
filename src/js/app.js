@@ -2,7 +2,7 @@
 /*jshint node: true*/
 'use strict';
 
-var currentVersion = '5.6';
+var currentVersion = '5.7';
 
 var OPEN_WEATHER = 0;
 var WUNDERGROUND = 1;
@@ -910,9 +910,9 @@ var getCryptocurrencies = function() {
         var marketC = localStorage.cryptoMarketC;
         var marketD = localStorage.cryptoMarketD;
         var multiA = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
-        var multiB = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
-        var multiC = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
-        var multiD = parse(('' + localStorage.cryptoMulti || 'false').toLowerCase());
+        var multiB = parse(('' + localStorage.cryptoMultiB || 'false').toLowerCase());
+        var multiC = parse(('' + localStorage.cryptoMultiC || 'false').toLowerCase());
+        var multiD = parse(('' + localStorage.cryptoMultiD || 'false').toLowerCase());
 
         var data = {};
         var info = {};
