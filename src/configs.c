@@ -100,6 +100,21 @@ bool is_module_enabled(int module) {
     }
     return false;
 }
+
+bool is_module_enabled_any(int module) {
+    if (!modules_loaded) {
+        load_modules();
+    }
+    for (unsigned int i = 0; i < 6; ++i) {
+        if (modules[i] == module ||
+            modules_tap[i] == module ||
+            modules_wrist[i] == module ||
+            modules_sleep[i] == module) {
+            return i <= 3 || (i > 3 && center_slots_enabled);
+        }
+    }
+    return false;
+}
 #else
 bool is_module_enabled(int module) {
     if (!modules_loaded) {
@@ -111,6 +126,10 @@ bool is_module_enabled(int module) {
         }
     }
     return false;
+}
+
+bool is_module_enabled_any(int module) {
+    return is_module_enabled(module);
 }
 
 #endif

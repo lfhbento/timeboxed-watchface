@@ -98,13 +98,13 @@ void update_time() {
 
 
 void load_timezone_from_storage() {
-    if (is_module_enabled(MODULE_TIMEZONE) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
+    if (is_module_enabled_any(MODULE_TIMEZONE) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESCODE)) {
         persist_read_string(KEY_TIMEZONESCODE, tz_name, sizeof(tz_name));
         tz_hour = persist_exists(KEY_TIMEZONES) ? persist_read_int(KEY_TIMEZONES) : 0;
         tz_minute = persist_exists(KEY_TIMEZONESMINUTES) ? persist_read_int(KEY_TIMEZONESMINUTES) : 0;
     }
     #if !defined PBL_PLATFORM_APLITE
-    if (is_module_enabled(MODULE_TIMEZONEB) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESBCODE)) {
+    if (is_module_enabled_any(MODULE_TIMEZONEB) && is_timezone_enabled() && persist_exists(KEY_TIMEZONESBCODE)) {
         persist_read_string(KEY_TIMEZONESBCODE, tz_name_b, sizeof(tz_name_b));
         tz_hour_b = persist_exists(KEY_TIMEZONESB) ? persist_read_int(KEY_TIMEZONESB) : 0;
         tz_minute_b = persist_exists(KEY_TIMEZONESBMINUTES) ? persist_read_int(KEY_TIMEZONESBMINUTES) : 0;
