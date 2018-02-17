@@ -2857,6 +2857,7 @@ const cryptoMarkets = [
     { value: 'BTCMarkets', label: 'BTCMarkets' },
     { value: 'BTCXIndia', label: 'BTCXIndia' },
     { value: 'BTER', label: 'BTER' },
+    { value: 'Binance', label: 'Binance' },
     { value: 'Bit2C', label: 'Bit2C' },
     { value: 'BitBay', label: 'BitBay' },
     { value: 'BitMarket', label: 'BitMarket' },

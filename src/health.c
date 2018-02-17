@@ -207,7 +207,7 @@ static void get_sleep_data() {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Sleep data: %d / %d", current_sleep, sleep_last_week);
 
         int current_sleep_hours = current_sleep / SECONDS_PER_HOUR;
-        int current_sleep_minutes = (current_sleep - (current_sleep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
+        int current_sleep_minutes = ((current_sleep - (current_sleep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
 
         snprintf(sleep_text, sizeof(sleep_text), "%dh%02dm", current_sleep_hours, current_sleep_minutes);
 
@@ -246,7 +246,7 @@ static void get_deep_data() {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Deep sleep data: %d / %d", current_deep, deep_last_week);
 
         int current_deep_hours = current_deep / SECONDS_PER_HOUR;
-        int current_deep_minutes = (current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
+        int current_deep_minutes = ((current_deep - (current_deep_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
 
         snprintf(deep_text, sizeof(deep_text), "%dh%02dm", current_deep_hours, current_deep_minutes);
 
@@ -286,7 +286,7 @@ static void get_active_data() {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Active data: %d / %d", current_active, active_last_week);
 
         int current_active_hours = current_active / SECONDS_PER_HOUR;
-        int current_active_minutes = (current_active - (current_active_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE;
+        int current_active_minutes = ((current_active - (current_active_hours * SECONDS_PER_HOUR))/SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
 
         snprintf(active_text, sizeof(active_text), "%dh%02dm", current_active_hours, current_active_minutes);
 
