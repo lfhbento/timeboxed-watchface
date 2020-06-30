@@ -52,7 +52,6 @@ void set_heart_icon_layer_text(char*);
 #endif
 
 void set_weather_layer_text(char*);
-void set_weather_layer_color(GColor8);
 void set_max_icon_layer_text(char*);
 void set_min_icon_layer_text(char*);
 void set_update_layer_text(char*);
