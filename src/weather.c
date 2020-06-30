@@ -73,6 +73,11 @@ void update_weather(bool force) {
             }
         }
     }
+    // If we're on a color screen, color stale weather using hard-coded colors.
+    // TODO: Make these colors and the times to show them configurable.
+#if defined(PBL_COLOR)
+    update_expired_weather(current_time);
+#endif
 }
 
 char* get_wind_direction_text(int degrees) {
