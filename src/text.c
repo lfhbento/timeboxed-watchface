@@ -997,6 +997,11 @@ void set_weather_layer_text(char* text) {
     set_text(weather, weather_text);
 }
 
+void set_weather_layer_color(GColor8 color) {
+    set_text_color(weather, color);
+    set_text_color(temp_cur, color);
+}
+
 void set_max_icon_layer_text(char* text) {
     strcpy(max_icon_text, text);
     set_text(max_icon, max_icon_text);
